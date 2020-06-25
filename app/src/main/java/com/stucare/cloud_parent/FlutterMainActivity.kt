@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.stucare.cloud_parent.classrooms.ActivityClassesTabs
 import com.stucare.cloud_parent.retrofit.NetworkClient
+import com.stucare.cloud_parent.tests.OnlineTestsActivity
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.plugin.common.MethodChannel
 
@@ -36,6 +37,13 @@ class FlutterMainActivity : FlutterActivity() {
             when (call.method) {
                 "startLiveClassActivity" -> {
                     val i = Intent(this, ActivityClassesTabs::class.java)
+                    i.putExtra("stucareId", call.argument<Int>("stucareid"))
+                    i.putExtra("sessionToken", call.argument<String>("sessionToken"))
+                    i.putExtra("schoolId", call.argument<Int>("schoolId"))
+                    startActivity(i)
+                }
+                "startOnlineTestsActivity" -> {
+                    val i = Intent(this, OnlineTestsActivity::class.java)
                     i.putExtra("stucareId", call.argument<Int>("stucareid"))
                     i.putExtra("sessionToken", call.argument<String>("sessionToken"))
                     i.putExtra("schoolId", call.argument<Int>("schoolId"))

@@ -29,6 +29,7 @@
             />
 
         <activity android:name=".classrooms.ActivityClassesTabs"/>
+        <activity android:name=".tests.OnlineTestsActivity"/>
     </application>
 
 </manifest>

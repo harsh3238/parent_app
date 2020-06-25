@@ -6,7 +6,6 @@ import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import java.util.concurrent.TimeUnit
 
@@ -23,8 +22,12 @@ interface NetworkClient {
     ): Call<String>
 
     @FormUrlEncoded
-    @POST("api_v2/schools/requests/get_tests.php")
-    fun getSchoolTests(@Field("user_id") userId: String): Call<String>
+    @POST("api_v1/student/requests/get_online_tests.php")
+    fun getSchoolTests(
+        @Field("school_id") userId: Int,
+        @Field("stucare_id") stucareId: Int,
+        @Field("active_session") accessToken: String
+    ): Call<String>
 
 
     @FormUrlEncoded

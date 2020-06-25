@@ -641,6 +641,17 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
         };
         platform.invokeMethod("startLiveClassActivity", arguments).then((rs) {});
         break;
+      case "online_tests":
+        int sId = await GConstants.schoolId();
+        int userStucareId = await AppData().getSelectedStudent();
+        String sessionToken = await AppData().getSessionToken();
+        var arguments = {
+          "stucareid": userStucareId,
+          "sessionToken": sessionToken,
+          "schoolId": sId
+        };
+        platform.invokeMethod("startOnlineTestsActivity", arguments).then((rs) {});
+        break;
     }
   }
 
