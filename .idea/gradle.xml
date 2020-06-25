@@ -32,8 +32,10 @@
             <option value="C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/webview_media-0.1.2/android" />
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/commonlib" />
             <option value="$PROJECT_DIR$/flutter_parent_app" />
             <option value="$PROJECT_DIR$/flutter_parent_app/.android/Flutter" />
+            <option value="$PROJECT_DIR$/mobilertc" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

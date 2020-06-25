@@ -1,5 +1,6 @@
 package com.stucare.cloud_parent
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -12,7 +13,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         Handler().postDelayed({
             startActivity(
-                FlutterActivity.createDefaultIntent(this)
+                Intent(this, FlutterMainActivity::class.java)
             )
             finish()
         }, 2000)

@@ -77,6 +77,7 @@ class DashItem {
 }
 
 class FragmentHomeState extends State<FragmentHome> with StateHelper {
+  static const platform = const MethodChannel('com.stucare.cloud_parent/flutter_method_channel');
   List<DashItem> items = List();
   List<dynamic> _dashSliders = List();
   String _bannerUrl = '';
@@ -624,6 +625,12 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
         break;
       case "classmates":
         navigateToModule(dummyPage());
+        break;
+      case "live_class":
+        platform
+            .invokeMethod("startLiveClassActivity")
+            .then((rs) {
+        });
         break;
     }
   }
