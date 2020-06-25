@@ -77,7 +77,8 @@ class DashItem {
 }
 
 class FragmentHomeState extends State<FragmentHome> with StateHelper {
-  static const platform = const MethodChannel('com.stucare.cloud_parent/flutter_method_channel');
+  static const platform =
+      const MethodChannel('com.stucare.cloud_parent/flutter_method_channel');
   List<DashItem> items = List();
   List<dynamic> _dashSliders = List();
   String _bannerUrl = '';
@@ -129,9 +130,11 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
     var sId = await GConstants.schoolId();
     String sessionToken = await AppData().getSessionToken();
 
-    var modulesResponse = await http.post(GConstants.getActiveModulesRoute(),
-        body: {'school_id': sId.toString(),
-          'active_session': sessionToken,});
+    var modulesResponse =
+        await http.post(GConstants.getActiveModulesRoute(), body: {
+      'school_id': sId.toString(),
+      'active_session': sessionToken,
+    });
 
     //print(modulesResponse.body);
 
@@ -162,7 +165,8 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
   void _getSliders() async {
     String sessionToken = await AppData().getSessionToken();
 
-    var dashSlidersResponse = await http.post(GConstants.getDashSliderRoute(), body: {
+    var dashSlidersResponse =
+        await http.post(GConstants.getDashSliderRoute(), body: {
       'active_session': sessionToken,
     });
 
@@ -193,7 +197,8 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
   void _getFlashNews() async {
     String sessionToken = await AppData().getSessionToken();
 
-    var dashSlidersResponse = await http.post(GConstants.getFlashNewsRoute(), body: {
+    var dashSlidersResponse =
+        await http.post(GConstants.getFlashNewsRoute(), body: {
       'active_session': sessionToken,
     });
 
@@ -252,7 +257,6 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
     int userStucareId = await AppData().getSelectedStudent();
     int lastMsgId = await AppData().getLastMessageId();
     String sessionToken = await AppData().getSessionToken();
-
 
     var flyersResponse = await http.post(GConstants.getFlyersRoute(), body: {
       'stucare_id': userStucareId.toString(),
@@ -627,10 +631,15 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
         navigateToModule(dummyPage());
         break;
       case "live_class":
-        platform
-            .invokeMethod("startLiveClassActivity")
-            .then((rs) {
-        });
+        int sId = await GConstants.schoolId();
+        int userStucareId = await AppData().getSelectedStudent();
+        String sessionToken = await AppData().getSessionToken();
+        var arguments = {
+          "stucareid": userStucareId,
+          "sessionToken": sessionToken,
+          "schoolId": sId
+        };
+        platform.invokeMethod("startLiveClassActivity", arguments).then((rs) {});
         break;
     }
   }
@@ -642,8 +651,8 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
       return Scaffold(
         body: module,
       );
-    })).then((v){
-      if(v != null){
+    })).then((v) {
+      if (v != null) {
         _setHomeworkSeen(v);
       }
     });
@@ -684,9 +693,9 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
       var tData = data['todays'] as Map<String, dynamic>;
       var tTime = DateTime.parse(tData['timestamp_created']);
       var local = await AppData().getHomeworkSeen("todays");
-      if(local == null){
+      if (local == null) {
         count += 1;
-      }else{
+      } else {
         var savedTimeForSeenHomework = DateTime.parse(local);
         if (tTime.isAfter(savedTimeForSeenHomework)) {
           count += 1;
@@ -699,17 +708,15 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
       var yData = data['yesterdays'] as Map<String, dynamic>;
       var yTime = DateTime.parse(yData['timestamp_created']);
       var local = await AppData().getHomeworkSeen("yesterday");
-      if(local == null){
+      if (local == null) {
         count += 1;
-      }else{
-        var savedTimeForSeenHomework =
-        DateTime.parse(local);
+      } else {
+        var savedTimeForSeenHomework = DateTime.parse(local);
         if (yTime.isAfter(savedTimeForSeenHomework)) {
           count += 1;
           await AppData().setHomeworkSeen(yData['timestamp_created']);
         }
       }
-
     }
     setState(() {
       _unseenHomework = count;
@@ -721,13 +728,12 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
     String sessionToken = await AppData().getSessionToken();
 
     var homeworkResponse =
-    await http.post(GConstants.getHomeworkSeenRoute(), body: {
+        await http.post(GConstants.getHomeworkSeenRoute(), body: {
       'homework_id': jsonEncode(data.toList()),
       'stucare_id': studecarId.toString(),
       'active_session': sessionToken,
     });
 
     //print(homeworkResponse.body);
-
   }
 }

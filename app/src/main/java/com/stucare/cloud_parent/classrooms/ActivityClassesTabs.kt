@@ -18,6 +18,9 @@ import us.zoom.sdk.ZoomSDK
 class ActivityClassesTabs : AppCompatActivity(), InitAuthSDKCallback {
 
     lateinit var contentView: TicketsTabActivityBinding
+    var schoolId: Int? = null
+    var stucareId: Int? = null
+    var accessToken: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +29,10 @@ class ActivityClassesTabs : AppCompatActivity(), InitAuthSDKCallback {
         contentView.tabLayout.setupWithViewPager(contentView.pager)
 
         contentView.pager.adapter = DemoCollectionPagerAdapter(supportFragmentManager)
+        schoolId = intent.getIntExtra("schoolId", -1)
+        stucareId = intent.getIntExtra("stucareId", -1)
+        accessToken = intent.getStringExtra("sessionToken")
+
         InitAuthSDKHelper.getInstance().initSDK(this, this)
     }
 
@@ -53,7 +60,11 @@ class ActivityClassesTabs : AppCompatActivity(), InitAuthSDKCallback {
 
     override fun onZoomSDKInitializeResult(errorCode: Int, internalErrorCode: Int) {
         if (errorCode != ZoomError.ZOOM_ERROR_SUCCESS) {
-            Toast.makeText(this, "Failed to initialize Zoom SDK. Error: $errorCode, internalErrorCode=$internalErrorCode", Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                this,
+                "Failed to initialize Zoom SDK. Error: $errorCode, internalErrorCode=$internalErrorCode",
+                Toast.LENGTH_LONG
+            ).show()
         } else {
             ZoomSDK.getInstance().meetingSettingsHelper.enable720p(false)
             ZoomSDK.getInstance().meetingSettingsHelper.enableShowMyMeetingElapseTime(true)

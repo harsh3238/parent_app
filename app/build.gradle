@@ -48,4 +48,8 @@ dependencies {
     implementation project(':mobilertc')
     implementation project(':commonlib')
     implementation 'com.google.android.material:material:1.1.0'
+
+    implementation 'com.github.iwgang:countdownview:2.1.6'
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
 }

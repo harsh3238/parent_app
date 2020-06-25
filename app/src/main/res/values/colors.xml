@@ -7,4 +7,12 @@
     <color name="purple_light">#7E57C2</color>
     <color name="md_white_1000">#ffffff</color>
     <color name="trans_white_1000">#e6ffffff</color>
+
+    <color name="orange_dark">#F4511E</color>
+    <color name="orange_light">#FF7043</color>
+    <color name="md_grey_300">#E0E0E0</color>
+    <color name="md_green_500">#4CAF50</color>
+    <color name="md_yellow_600">#FDD835</color>
+
+
 </resources>
