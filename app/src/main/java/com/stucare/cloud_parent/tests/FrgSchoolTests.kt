@@ -86,7 +86,9 @@ class FrgSchoolTests : Fragment() {
                             contentView.recyclerView.adapter = AdapterSchoolTestsMain(
                                 activity!!,
                                 jsonArray,
-                                "(activity!!.application as MyApplication).usersData.id"
+                                parentActivity.stucareId!!.toString(),
+                                parentActivity.schoolId!!.toString(),
+                                parentActivity.accessToken!!
                             )
                         }
 

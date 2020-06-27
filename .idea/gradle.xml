@@ -36,6 +36,7 @@
             <option value="$PROJECT_DIR$/flutter_parent_app" />
             <option value="$PROJECT_DIR$/flutter_parent_app/.android/Flutter" />
             <option value="$PROJECT_DIR$/mobilertc" />
+            <option value="$PROJECT_DIR$/mymathview" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

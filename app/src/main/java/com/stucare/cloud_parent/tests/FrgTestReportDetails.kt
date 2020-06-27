@@ -61,7 +61,7 @@ class FrgTestReportDetails : Fragment() {
         mData?.userSelectedOption = v.tag.toString()
         refreshData()
       }
-      (activity as SchoolTestRoom).capturePictureSnapshot(it.questionId)
+      (activity as com.stucare.cloud_parent.tests.SchoolTestRoom).capturePictureSnapshot(it.questionId)
     }
 
   }

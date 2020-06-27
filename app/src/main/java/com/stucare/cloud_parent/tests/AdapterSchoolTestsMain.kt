@@ -16,7 +16,8 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 
-class AdapterSchoolTestsMain(private val parentActivity: FragmentActivity, val mData: JSONArray, val mUserId: String) : RecyclerView.Adapter<AdapterSchoolTestsMain.mViewHolder>() {
+class AdapterSchoolTestsMain(private val parentActivity: FragmentActivity,
+                             val mData: JSONArray, val mStucareId: String, val mSchoolId: String, val accessToken: String) : RecyclerView.Adapter<AdapterSchoolTestsMain.mViewHolder>() {
     val inTimestampFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
     val inTime = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
     val outTime = SimpleDateFormat("hh:mm a", Locale.getDefault())
@@ -42,9 +43,10 @@ class AdapterSchoolTestsMain(private val parentActivity: FragmentActivity, val m
                 boundView.attempted.visibility = View.GONE
 
                 val intent = if (data.getString("test_format") == "objective")
-                    Intent(parentActivity, MainActivity::class.java)
-                else Intent(parentActivity, MainActivity::class.java)
-
+                    Intent(parentActivity, SchoolTestRoom::class.java)
+                else Intent(parentActivity, SchoolTestRoom::class.java)//ActivitySubjectiveTestRoom
+                intent.putExtra("school_id", mSchoolId)
+                intent.putExtra("accessToken", accessToken)
 
                 if (data.getString("is_active").toInt() == 1 && data.getString("has_passed").toInt() == 0) {
                     boundView.btnInactive.visibility = View.GONE
@@ -78,11 +80,11 @@ class AdapterSchoolTestsMain(private val parentActivity: FragmentActivity, val m
                                     testEndTimeStamp.time - Calendar.getInstance().time.time
                             val testTimeLeftInMinutes = TimeUnit.MILLISECONDS.toMinutes(testTimeLeft)
                             if (diffInMinutes <= 1 && testTimeLeftInMinutes > 1 && data.getString("is_attempted").toInt() != 1) {
-                                if (mUserId.isNotBlank()) {
+                                if (mStucareId.isNotBlank()) {
                                     intent.putExtra("test_id", data.getInt("id").toString())
                                     intent.putExtra("duration", testTimeLeft)
                                     intent.putExtra("monitor_student", data.getInt("monitor_student"))
-                                    intent.putExtra("user_id", mUserId)
+                                    intent.putExtra("user_id", mStucareId)
                                     parentActivity.startActivity(intent)
                                 } else {
                                     Toast.makeText(parentActivity, "User not initialised, you may need to logout and login again", Toast.LENGTH_SHORT)
@@ -98,11 +100,11 @@ class AdapterSchoolTestsMain(private val parentActivity: FragmentActivity, val m
                                     testEndTimeStamp.time - Calendar.getInstance().time.time
                             val testTimeLeftInMinutes = TimeUnit.MILLISECONDS.toMinutes(testTimeLeft)
                             if (diffInMinutes <= 1 && testTimeLeftInMinutes > 1 && data.getString("is_attempted").toInt() != 1) {
-                                if (mUserId.isNotBlank()) {
+                                if (mStucareId.isNotBlank()) {
                                     intent.putExtra("test_id", data.getInt("id").toString())
                                     intent.putExtra("duration", testTimeLeft)
                                     intent.putExtra("monitor_student", data.getInt("monitor_student"))
-                                    intent.putExtra("user_id", mUserId)
+                                    intent.putExtra("user_id", mStucareId)
                                     parentActivity.startActivity(intent)
                                 } else {
                                     Toast.makeText(parentActivity, "User not initialised, you may need to logout and login again", Toast.LENGTH_SHORT)
@@ -121,11 +123,11 @@ class AdapterSchoolTestsMain(private val parentActivity: FragmentActivity, val m
                         }
                         itemView.setOnClickListener { v ->
                             if (data.getString("is_attempted").toInt() != 1) {
-                                if (mUserId.isNotBlank()) {
+                                if (mStucareId.isNotBlank()) {
                                     intent.putExtra("test_id", data.getInt("id").toString())
                                     intent.putExtra("duration", data.getLong("duration"))
                                     intent.putExtra("monitor_student", data.getInt("monitor_student"))
-                                    intent.putExtra("user_id", mUserId)
+                                    intent.putExtra("user_id", mStucareId)
                                     parentActivity.startActivity(intent)
                                 } else {
                                     Toast.makeText(parentActivity, "User not initialised, you may need to logout and login again", Toast.LENGTH_SHORT)
@@ -136,11 +138,11 @@ class AdapterSchoolTestsMain(private val parentActivity: FragmentActivity, val m
                         }
                         boundView.btnStart.setOnClickListener {
                             if (data.getString("is_attempted").toInt() != 1) {
-                                if (mUserId.isNotBlank()) {
+                                if (mStucareId.isNotBlank()) {
                                     intent.putExtra("test_id", data.getInt("id").toString())
                                     intent.putExtra("duration", data.getLong("duration"))
                                     intent.putExtra("monitor_student", data.getInt("monitor_student"))
-                                    intent.putExtra("user_id", mUserId)
+                                    intent.putExtra("user_id", mStucareId)
                                     parentActivity.startActivity(intent)
                                 } else {
                                     Toast.makeText(parentActivity, "User not initialised, you may need to logout and login again", Toast.LENGTH_SHORT)
@@ -158,11 +160,11 @@ class AdapterSchoolTestsMain(private val parentActivity: FragmentActivity, val m
                     }
                     itemView.setOnClickListener { v ->
                         if (data.getString("is_attempted").toInt() != 1) {
-                            if (mUserId.isNotBlank()) {
+                            if (mStucareId.isNotBlank()) {
                                 intent.putExtra("test_id", data.getInt("id").toString())
                                 intent.putExtra("duration", data.getLong("duration"))
                                 intent.putExtra("monitor_student", data.getInt("monitor_student"))
-                                intent.putExtra("user_id", mUserId)
+                                intent.putExtra("user_id", mStucareId)
                                 parentActivity.startActivity(intent)
                             } else {
                                 Toast.makeText(parentActivity, "User not initialised, you may need to logout and login again", Toast.LENGTH_SHORT)
@@ -173,11 +175,11 @@ class AdapterSchoolTestsMain(private val parentActivity: FragmentActivity, val m
                     }
                     boundView.btnStart.setOnClickListener {
                         if (data.getString("is_attempted").toInt() != 1) {
-                            if (mUserId.isNotBlank()) {
+                            if (mStucareId.isNotBlank()) {
                                 intent.putExtra("test_id", data.getInt("id").toString())
                                 intent.putExtra("duration", data.getLong("duration"))
                                 intent.putExtra("monitor_student", data.getInt("monitor_student"))
-                                intent.putExtra("user_id", mUserId)
+                                intent.putExtra("user_id", mStucareId)
                                 parentActivity.startActivity(intent)
                             } else {
                                 Toast.makeText(parentActivity, "User not initialised, you may need to logout and login again", Toast.LENGTH_SHORT)

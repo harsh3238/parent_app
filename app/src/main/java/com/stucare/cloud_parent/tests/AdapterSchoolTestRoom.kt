@@ -1,22 +1,13 @@
-/*
-//school registraion, employees registration, students, fees, attendance, transport, exams, homework
-
-package org.flipacademy.mvps.tests.school_test
+package com.stucare.cloud_parent.tests
 
 import android.app.Fragment
 import android.app.FragmentManager
 import android.os.Bundle
 import android.view.View
 import androidx.databinding.DataBindingUtil
-import org.flipacademy.R
-import org.flipacademy.databinding.CustomTabViewBinding
-import org.flipacademy.models.ModelTestQuestion
+import com.stucare.cloud_parent.R
+import com.stucare.cloud_parent.databinding.CustomTabViewBinding
 
-
-*/
-/**
- * Author: Ashish Walia(ashishwalia.me) on 21-11-2017.
- *//*
 
 class AdapterSchoolTestRoom(fragmentManager: FragmentManager, val context: SchoolTestRoom, val mData: MutableList<ModelTestQuestion>) : androidx.legacy.app.FragmentStatePagerAdapter(fragmentManager) {
 
@@ -45,4 +36,4 @@ class AdapterSchoolTestRoom(fragmentManager: FragmentManager, val context: Schoo
     view.imageView.visibility = View.GONE
     return view.root
   }
-}*/
+}

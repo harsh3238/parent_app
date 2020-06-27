@@ -30,6 +30,7 @@
 
         <activity android:name=".classrooms.ActivityClassesTabs"/>
         <activity android:name=".tests.OnlineTestsActivity"/>
+        <activity android:name=".tests.SchoolTestRoom"/>
     </application>
 
 </manifest>

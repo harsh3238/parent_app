@@ -1,5 +1,4 @@
-/*
-package org.flipacademy.mvps.tests.school_test
+package com.stucare.cloud_parent.tests
 
 import android.app.Fragment
 import android.graphics.drawable.GradientDrawable
@@ -10,14 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import org.flipacademy.R
-import org.flipacademy.databinding.FragmentSchoolTestRoomBinding
-import org.flipacademy.models.ModelTestQuestion
-
-*/
-/**
- * Author: Ashish Walia(ashishwalia.me) on 21-11-2017.
- *//*
+import com.stucare.cloud_parent.R
+import com.stucare.cloud_parent.databinding.FragmentSchoolTestRoomBinding
 
 
 class FragmentSchoolTestRoom : Fragment() {
@@ -137,9 +130,9 @@ class FragmentSchoolTestRoom : Fragment() {
 
             if (it.answer.equals("a", true)) {
               val d: GradientDrawable = activity.resources.getDrawable(R.drawable.bk_holo_rounded) as GradientDrawable
-              d.setStroke(f, ContextCompat.getColor(activity, R.color.green_dark))
+              d.setStroke(f, ContextCompat.getColor(activity, R.color.zm_green))
               contentView.backgroundViewA.background = d
-              contentView.optionAlphabetIconA.setColorFilter(ContextCompat.getColor(activity, R.color.green_dark))
+              contentView.optionAlphabetIconA.setColorFilter(ContextCompat.getColor(activity, R.color.zm_green))
             }
 
           }
@@ -154,9 +147,9 @@ class FragmentSchoolTestRoom : Fragment() {
 
             if (it.answer.equals("b", true)) {
               val d: GradientDrawable = activity.resources.getDrawable(R.drawable.bk_holo_rounded) as GradientDrawable
-              d.setStroke(f, ContextCompat.getColor(activity, R.color.green_dark))
+              d.setStroke(f, ContextCompat.getColor(activity, R.color.zm_green))
               contentView.backgroundViewB.background = d
-              contentView.optionAlphabetIconB.setColorFilter(ContextCompat.getColor(activity, R.color.green_dark))
+              contentView.optionAlphabetIconB.setColorFilter(ContextCompat.getColor(activity, R.color.zm_green))
             }
           }
           2 -> {
@@ -169,9 +162,9 @@ class FragmentSchoolTestRoom : Fragment() {
 
             if (it.answer.equals("c", true)) {
               val d: GradientDrawable = activity.resources.getDrawable(R.drawable.bk_holo_rounded) as GradientDrawable
-              d.setStroke(f, ContextCompat.getColor(activity, R.color.green_dark))
+              d.setStroke(f, ContextCompat.getColor(activity, R.color.zm_green))
               contentView.backgroundViewC.background = d
-              contentView.optionAlphabetIconC.setColorFilter(ContextCompat.getColor(activity, R.color.green_dark))
+              contentView.optionAlphabetIconC.setColorFilter(ContextCompat.getColor(activity, R.color.zm_green))
             }
           }
           3 -> {
@@ -184,9 +177,9 @@ class FragmentSchoolTestRoom : Fragment() {
 
             if (it.answer.equals("d", true)) {
               val d: GradientDrawable = activity.resources.getDrawable(R.drawable.bk_holo_rounded) as GradientDrawable
-              d.setStroke(f, ContextCompat.getColor(activity, R.color.green_dark))
+              d.setStroke(f, ContextCompat.getColor(activity, R.color.zm_green))
               contentView.backgroundViewD.background = d
-              contentView.optionAlphabetIconD.setColorFilter(ContextCompat.getColor(activity, R.color.green_dark))
+              contentView.optionAlphabetIconD.setColorFilter(ContextCompat.getColor(activity, R.color.zm_green))
             }
           }
         }
@@ -197,4 +190,4 @@ class FragmentSchoolTestRoom : Fragment() {
 
   }
 
-}*/
+}

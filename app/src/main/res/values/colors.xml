@@ -14,7 +14,11 @@
     <color name="md_green_500">#4CAF50</color>
     <color name="md_yellow_600">#FDD835</color>
     <color name="yellow">#f9a825</color>
+    <color name="text_default">#3a3a3a</color>
+    <color name="text_light">#808080</color>
 
+    <color name="cyan_light">#00bcd4</color>
+    <color name="black_trans">#cc000000</color>
 
 
 </resources>

@@ -1,3 +1,4 @@
+include ':mymathview'
 include ':mobilertc'
 include ':commonlib'
 include ':app'

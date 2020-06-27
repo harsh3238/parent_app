@@ -31,29 +31,32 @@ interface NetworkClient {
 
 
     @FormUrlEncoded
-    @POST("api_v2/schools/requests/get_test_questions.php")
-    fun getOptionalTestQuestions(@Field("test_id") testId: String): Call<String>
+    @POST("api_v1/student/requests/get_test_questions.php")
+    fun getOptionalTestQuestions(@Field("test_id") testId: String,
+                                 @Field("active_session") accessToken: String): Call<String>
 
     @FormUrlEncoded
-    @POST("api_v2/schools/requests/get_signed_url.php")
-    fun getSignedUrlForS3(@Field("object_key") testId: String): Call<String>
+    @POST
+    fun getSignedUrlForS3(@Url url: String, @Field("object_key") testId: String): Call<String>
 
 
     @PUT
     fun uploadS3(@Url url: String, @Body file: RequestBody): Call<String>
 
     @FormUrlEncoded
-    @POST("api_v2/schools/requests/save_test_submission.php")
+    @POST("api_v1/student/requests/save_test_submission.php")
     fun saveTest(
-        @Field("user_id") userId: String,
+        @Field("stucare_id") stucareId: String,
         @Field("test_id") testId: String,
         @Field("q_count") qCount: String,
         @Field("c_count") cCount: String,
         @Field("a_count") aCount: String,
         @Field("data") allQuestionData: String,
         @Field("time_spent") timeSpent: String,
-        @Field("file_key") fileKey: String
-    ): Call<String>
+        @Field("file_key") fileKey: String,
+        @Field("school_id") schoolId: String,
+        @Field("active_session") accessToken: String
+        ): Call<String>
 
     @FormUrlEncoded
     @POST("api_v2/schools/requests/get_subjective_question_paper.php")
@@ -85,6 +88,8 @@ interface NetworkClient {
         @Field("user_id") userId: String,
         @Field("test_id") testId: String
     ): Call<String>
+
+    abstract fun getOptionalTestQuestions(testId: String?): Call<String>
 
     companion object {
         var baseUrl: String = "https://demo.stucarecloud.com/"

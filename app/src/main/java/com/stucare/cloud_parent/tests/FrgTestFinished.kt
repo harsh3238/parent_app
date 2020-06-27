@@ -31,9 +31,9 @@ class FrgTestFinished : Fragment() {
         progressDialog = LoaderDialog(activity, R.style.PurpleTheme)
         (activity?.application as MyApplication).getAppComponent().inject(this)
 
-        contentView.txtViewAttempted.text = (activity as SchoolTestRoom).getAttemptedQuesCount().toString()
-        contentView.txtViewUnattempted.text = (activity as SchoolTestRoom).getUnAttemptedQuesCount().toString()
-        contentView.txtViewSkipped.text = (activity as SchoolTestRoom).getSkipped().toString()
+        contentView.txtViewAttempted.text = (activity as com.stucare.cloud_parent.tests.SchoolTestRoom).getAttemptedQuesCount().toString()
+        contentView.txtViewUnattempted.text = (activity as com.stucare.cloud_parent.tests.SchoolTestRoom).getUnAttemptedQuesCount().toString()
+        contentView.txtViewSkipped.text = (activity as com.stucare.cloud_parent.tests.SchoolTestRoom).getSkipped().toString()
         return contentView.root
 
     }
@@ -42,7 +42,7 @@ class FrgTestFinished : Fragment() {
     fun seeAllQuestions(v: View) {
 
         val bundle = Bundle()
-        bundle.putSerializable("list", (activity as SchoolTestRoom).getQuestionList())
+        bundle.putSerializable("list", (activity as com.stucare.cloud_parent.tests.SchoolTestRoom).getQuestionList())
 
         val i = Intent(activity, ActivityAllQuestions::class.java)
         i.putExtra("data", bundle)
@@ -50,6 +50,6 @@ class FrgTestFinished : Fragment() {
     }
 
     fun submitTestClicked(v: View) {
-        (activity as SchoolTestRoom).submitRoutine()
+        (activity as com.stucare.cloud_parent.tests.SchoolTestRoom).submitRoutine()
     }
 }*/
