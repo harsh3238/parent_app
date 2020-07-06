@@ -173,7 +173,12 @@ class HomeworkState extends State<Homework> with StateHelper {
           shrinkWrap: true,
           slivers: <Widget>[
             SliverToBoxAdapter(
-              child: Expanded(),
+              child: Calendar(
+                onDateSelected: (DateTime d) {
+                  _getHomeworkData(
+                      date: DateFormat().addPattern("yyyy-MM-dd").format(d));
+                },
+              ),
             ),
             SliverPadding(
               padding: const EdgeInsets.all(8.0),

@@ -9,6 +9,7 @@ import 'package:click_campus_parent/views/photo_gallery/photo_gallery_main.dart'
 import 'package:click_campus_parent/views/state_helper.dart';
 import 'package:click_campus_parent/views/teachers/image_viewer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -33,10 +34,11 @@ class HomeworkDetailsState extends State<HomeworkDetails> with StateHelper {
     showProgressDialog();
     String sessionToken = await AppData().getSessionToken();
 
-    var homeworkResponse = await http.post(
-        GConstants.getHomeworkAttachmentRoute(),
-        body: {'homework_id': widget._homework.id.toString(),
-          'active_session': sessionToken,});
+    var homeworkResponse =
+        await http.post(GConstants.getHomeworkAttachmentRoute(), body: {
+      'homework_id': widget._homework.id.toString(),
+      'active_session': sessionToken,
+    });
 
     //print(homeworkResponse.body);
 
@@ -145,11 +147,10 @@ class HomeworkDetailsState extends State<HomeworkDetails> with StateHelper {
         await http.post(GConstants.getHomeworkSeenRoute(), body: {
       'homework_id': jsonEncode([widget._homework.id.toString()]),
       'stucare_id': studecarId.toString(),
-          'active_session': sessionToken,
+      'active_session': sessionToken,
     });
 
     //print(homeworkResponse.body);
-
   }
 
   @override
@@ -233,14 +234,21 @@ class HomeworkDetailsState extends State<HomeworkDetails> with StateHelper {
               height: 40,
             ),
             Flexible(
-              child: Text(
-                (widget._homework.content != null &&
-                        widget._homework.content.trim().length > 0)
-                    ? widget._homework.content
-                    : "",
-                style: TextStyle(color: Colors.white, fontSize: 14),
-              ),
-            ),
+                child: Linkify(
+              text: (widget._homework.content != null &&
+                      widget._homework.content.trim().length > 0)
+                  ? widget._homework.content
+                  : "",
+              linkStyle: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.white),
+              onOpen: (link) async {
+                if (await canLaunch(link.url)) {
+                  await launch(link.url);
+                } else {
+                  throw 'Could not launch $link';
+                }
+              },
+            )),
             SizedBox(
               height: (widget._homework.content != null &&
                       widget._homework.content.trim().length > 0)
