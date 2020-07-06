@@ -55,6 +55,7 @@ dependencies:
   dio: 3.0.9
   open_file: ^3.0.1
   flutter_linkify: ^3.1.0
+  firebase_auth: ^0.16.1
 
 dev_dependencies:
   flutter_test:
