@@ -1,6 +1,6 @@
-include ':mymathview'
 include ':mobilertc'
 include ':commonlib'
+include ':mymathview'
 include ':app'
 setBinding(new Binding([gradle: this]))
 evaluate(new File(

@@ -99,6 +99,9 @@ class GConstants {
   static const _HOMEWORK_SEEN =
       "api_v1/student/requests/update_homeowrk_received.php";
 
+  static const _AFTER_FIREBASE_AUTH = "api_v1/student/requests/create_app_session.php";
+
+
   static setSchoolRootUrl(String rootUrl) {
     SCHOOL_ROOT = rootUrl;
     SCHOOL_ROOT_AUTH = rootUrl.substring(8, rootUrl.length);
@@ -218,5 +221,7 @@ class GConstants {
   static getHomeworkSubmissionsRoute() => SCHOOL_ROOT + _HOMEWORK_SUBMISSIONS;
 
   static getHomeworkSeenRoute() => SCHOOL_ROOT + _HOMEWORK_SEEN;
+
+  static afterFirebaseAuthRoute() => SCHOOL_ROOT + _AFTER_FIREBASE_AUTH;
 
 }

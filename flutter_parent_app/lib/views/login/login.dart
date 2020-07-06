@@ -7,6 +7,7 @@ import 'package:click_campus_parent/data/db_school_info.dart';
 import 'package:click_campus_parent/views/dashboard/the_dashboard_main.dart';
 import 'package:click_campus_parent/views/login/activity_impersonation.dart';
 import 'package:click_campus_parent/views/state_helper.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -78,11 +79,15 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
           Map loginResponseObject = json.decode(loginResponse.body);
           if (loginResponseObject.containsKey("status")) {
             if (loginResponseObject["status"] == "success") {
-              hideProgressDialog();
-              setState(() {
-                _showOtpUi = true;
-              });
-              startResendOtp();
+              if (loginResponseObject["otp"] == "firebase") {
+                _verifyPhoneNumber();
+              } else {
+                hideProgressDialog();
+                setState(() {
+                  _showOtpUi = true;
+                });
+                startResendOtp();
+              }
               return null;
             } else {
               showSnackBar(loginResponseObject["message"]);
@@ -176,11 +181,8 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
   }
 
   Future<int> saveLoginReport(int loginId) async {
-
-    var loginReportResponse = await http.post(GConstants. loginReportRoute(),
-        body: {'login_id': loginId.toString(),
-          'event': "in"
-        });
+    var loginReportResponse = await http.post(GConstants.loginReportRoute(),
+        body: {'login_id': loginId.toString(), 'event': "in"});
     //print(loginReportResponse.body);
 
     if (loginReportResponse.statusCode == 200) {
@@ -224,6 +226,117 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
             builder: (BuildContext context) =>
                 ImpersonationMain(_schoolIdTextController.text)));
   }
+
+  bool authCompleted = false;
+  String _verificationId;
+  FirebaseAuth _firebaseAuth;
+
+
+  void _verifyPhoneNumber() async {
+    authCompleted = false;
+    final PhoneVerificationCompleted verificationCompleted =
+        (AuthCredential phoneAuthCredential) {
+      authCompleted = true;
+      try {
+        hideProgressDialog();
+      } catch (e) {}
+      _signInWithPhoneNumber(phoneAuthCredential);
+    };
+
+    final PhoneVerificationFailed verificationFailed =
+        (AuthException authException) {
+      hideProgressDialog();
+      _scaffoldState.currentState?.showSnackBar(SnackBar(
+        content: Text("Firebase auth error"),
+      ));
+    };
+
+    final PhoneCodeSent codeSent =
+        (String verificationId, [int forceResendingToken]) async {
+      _verificationId = verificationId;
+      //sendOtp.value = true;
+      hideProgressDialog();
+      setState(() {
+        _showOtpUi = true;
+      });
+      _scaffoldState.currentState?.showSnackBar(SnackBar(
+        content: Text("OTP has been sent"),
+      ));
+    };
+
+    final PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout =
+        (String verificationId) {
+      _verificationId = verificationId;
+    };
+
+    await _firebaseAuth.verifyPhoneNumber(
+        phoneNumber: "+91${_mobileNumberTextController.text}",
+        timeout: const Duration(seconds: 60),
+        verificationCompleted: verificationCompleted,
+        verificationFailed: verificationFailed,
+        codeSent: codeSent,
+        codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
+  }
+
+  void _signInWithPhoneNumber(AuthCredential crendials) async {
+    showProgressDialog();
+    try {
+     _afterFirebaseAuthRoutine();
+    } catch (e) {
+      hideProgressDialog();
+      _scaffoldState?.currentState?.showSnackBar(SnackBar(
+        content: Text("Wrong OTP"),
+      ));
+    }
+  }
+
+
+  void _afterFirebaseAuthRoutine() async {
+    showProgressDialog();
+
+    var otpResponse = await http.post(GConstants.afterFirebaseAuthRoute(), body: {
+      'mobile_no': _mobileNumberTextController.text,
+    });
+    //print(otpResponse.body);
+
+    if (otpResponse.statusCode == 200) {
+      Map loginResponseObject = json.decode(otpResponse.body);
+      if (loginResponseObject.containsKey("status")) {
+        if (loginResponseObject["status"] == "success") {
+          int loginRecordId =
+          await saveLoginReport(int.parse(loginResponseObject['login_id']));
+          if (loginRecordId != 0) {
+            loginResponseObject["login_record_id"] = loginRecordId;
+
+            loginResponseObject.remove("status");
+            loginResponseObject.remove("message");
+
+            await AppData().saveUsersData(loginResponseObject);
+            await AppData().setNormalSchoolRootUrlAndId(
+                GConstants.SCHOOL_ROOT, _schoolIdTextController.text);
+            hideProgressDialog();
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (BuildContext context) {
+                  return Scaffold(
+                    body: DashboardMain(false),
+                  );
+                }));
+          } else {
+            showSnackBar(loginResponseObject["message"]);
+          }
+          return null;
+        } else {
+          showSnackBar(loginResponseObject["message"]);
+        }
+      } else {
+        showServerError();
+      }
+    } else {
+      showServerError();
+    }
+    hideProgressDialog();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -400,10 +513,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
                                                         EdgeInsets.all(0),
                                                     style: TextStyle(color: Colors.grey),
                                                     validator: (txt) {
-                                                      RegExp regex = new RegExp(
-                                                          "^\\d{4}\$");
-                                                      if (!regex
-                                                          .hasMatch(txt)) {
+                                                      if(txt.isEmpty){
                                                         return "  Invalid OTP";
                                                       }
                                                       return null;
@@ -423,7 +533,15 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
                                                   if (_showOtpUi) {
                                                     if (_formKeyOtp.currentState
                                                         .validate()) {
-                                                      _otpVerifyRequest();
+                                                      if(_verificationId != null){
+                                                        final AuthCredential credential = PhoneAuthProvider.getCredential(
+                                                          verificationId: _verificationId,
+                                                          smsCode: _mobileNumberTextController.text,
+                                                        );
+                                                        _signInWithPhoneNumber(credential);
+                                                      }else{
+                                                        _otpVerifyRequest();
+                                                      }
                                                     }
                                                   } else {
                                                     if (_formKey.currentState
@@ -608,6 +726,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
   void initState() {
     super.initState();
     super.init(context, _scaffoldState);
+    _firebaseAuth = FirebaseAuth.instance;
     KeyboardVisibilityNotification().addNewListener(
       onChange: (bool visible) {
         setState(() {
