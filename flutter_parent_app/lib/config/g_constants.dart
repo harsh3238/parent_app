@@ -101,6 +101,8 @@ class GConstants {
 
   static const _AFTER_FIREBASE_AUTH = "api_v1/student/requests/create_app_session.php";
 
+  static const _LIVE_CLASSES = "api_v1/student/requests/get_live_classes.php";
+
 
   static setSchoolRootUrl(String rootUrl) {
     SCHOOL_ROOT = rootUrl;
@@ -223,5 +225,7 @@ class GConstants {
   static getHomeworkSeenRoute() => SCHOOL_ROOT + _HOMEWORK_SEEN;
 
   static afterFirebaseAuthRoute() => SCHOOL_ROOT + _AFTER_FIREBASE_AUTH;
+
+  static getLiveClassesRoute() => SCHOOL_ROOT + _LIVE_CLASSES;
 
 }

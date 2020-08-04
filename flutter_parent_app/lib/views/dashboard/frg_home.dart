@@ -16,6 +16,7 @@ import 'package:click_campus_parent/views/homework/homework_main.dart';
 import 'package:click_campus_parent/views/leave/leave_main.dart';
 import 'package:click_campus_parent/views/news/news_main.dart';
 import 'package:click_campus_parent/views/notifications/notification_main.dart';
+import 'package:click_campus_parent/views/online_classes/online_classes_tab_main.dart';
 import 'package:click_campus_parent/views/photo_gallery/photo_gallery_main.dart';
 import 'package:click_campus_parent/views/polls/polls.dart';
 import 'package:click_campus_parent/views/references/references_main_list.dart';
@@ -631,15 +632,21 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
         navigateToModule(dummyPage());
         break;
       case "live_class":
-        int sId = await GConstants.schoolId();
-        int userStucareId = await AppData().getSelectedStudent();
-        String sessionToken = await AppData().getSessionToken();
-        var arguments = {
-          "stucareid": userStucareId,
-          "sessionToken": sessionToken,
-          "schoolId": sId
-        };
-        platform.invokeMethod("startLiveClassActivity", arguments).then((rs) {});
+
+        if (Platform.isIOS){
+          navigateToModule(OnlineClassTabMain());
+        }else{
+          int sId = await GConstants.schoolId();
+          int userStucareId = await AppData().getSelectedStudent();
+          String sessionToken = await AppData().getSessionToken();
+          var arguments = {
+            "stucareid": userStucareId,
+            "sessionToken": sessionToken,
+            "schoolId": sId
+          };
+          platform.invokeMethod("startLiveClassActivity", arguments).then((rs) {});
+        }
+
         break;
       case "online_tests":
         int sId = await GConstants.schoolId();
