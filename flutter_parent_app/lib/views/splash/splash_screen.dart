@@ -188,8 +188,16 @@ class SplashScreen extends StatelessWidget {
     }
   }
 
+  bool _didGetData = false;
+
+
   SplashScreen({Key key}) : super(key: key) {
-    _getSchoolInfo();
+    if (!_didGetData) {
+      _didGetData = true;
+      Future.delayed(Duration.zero, () async {
+        _getSchoolInfo();
+      });
+    }
     Future.delayed(Duration(seconds: 2), () async {
       areWeDone = true;
     });
