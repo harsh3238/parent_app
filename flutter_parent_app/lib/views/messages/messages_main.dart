@@ -64,7 +64,6 @@ class MessagesMainState extends State<MessagesMainFragment> with StateHelper {
   }
 
   Widget _buildFriendListTile(BuildContext context, int index) {
-    return Expanded(child: Container());
     return new ListTile(
       leading: new Container(
         width: 50.0,

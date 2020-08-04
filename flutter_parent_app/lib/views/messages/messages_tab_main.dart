@@ -22,7 +22,7 @@ class MessageTabMain extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            Expanded(),
+            Announcement(),
             MessagesMainFragment(),
           ],
         ),
