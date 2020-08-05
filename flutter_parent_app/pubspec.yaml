@@ -82,6 +82,7 @@ flutter:
     - assets/color_back.jpg
     - assets/ic_megaphone.png
     - assets/profile.png
+    - assets/class_icons/
 
   # This section identifies your Flutter project as a module meant for
   # embedding in a native host app.  These identifiers should _not_ ordinarily

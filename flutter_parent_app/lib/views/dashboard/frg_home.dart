@@ -9,6 +9,7 @@ import 'package:click_campus_parent/data/db_school_info.dart';
 import 'package:click_campus_parent/views/attendance/attendance_main.dart';
 import 'package:click_campus_parent/views/dashboard/marquee_widget.dart';
 import 'package:click_campus_parent/views/dashboard/the_dashboard_main.dart';
+import 'package:click_campus_parent/views/downloads/downloads_main.dart';
 import 'package:click_campus_parent/views/events/events_main.dart';
 import 'package:click_campus_parent/views/exams/exams_main.dart';
 import 'package:click_campus_parent/views/fee/fee_main.dart';
@@ -658,6 +659,9 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
           "schoolId": sId
         };
         platform.invokeMethod("startOnlineTestsActivity", arguments).then((rs) {});
+        break;
+      case "downloads":
+        navigateToModule(DownloadsMain());
         break;
     }
   }
