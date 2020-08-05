@@ -640,10 +640,12 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
           int sId = await GConstants.schoolId();
           int userStucareId = await AppData().getSelectedStudent();
           String sessionToken = await AppData().getSessionToken();
+          String studentName = await AppData().getSelectedStudentName();
           var arguments = {
             "stucareid": userStucareId,
             "sessionToken": sessionToken,
-            "schoolId": sId
+            "schoolId": sId,
+            "studentName": studentName,
           };
           platform.invokeMethod("startLiveClassActivity", arguments).then((rs) {});
         }

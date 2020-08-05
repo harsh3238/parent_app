@@ -40,6 +40,7 @@ class FlutterMainActivity : FlutterActivity() {
                     i.putExtra("stucareId", call.argument<Int>("stucareid"))
                     i.putExtra("sessionToken", call.argument<String>("sessionToken"))
                     i.putExtra("schoolId", call.argument<Int>("schoolId"))
+                    i.putExtra("studentName", call.argument<String>("studentName"))
                     startActivity(i)
                 }
                 "startOnlineTestsActivity" -> {

@@ -162,7 +162,8 @@ class DashboardMainState extends State<DashboardMain>
                     barrierDismissible: false)
                 .then((value) {
               //print("SELECTED stucare ID = $value");
-              AppData().setSelectedStudent(int.parse(value));
+              AppData().setSelectedStudent(int.parse(value[0]));
+              AppData().setSelectedStudentName(value[1]);
               _homeFragment.refresh(true);
               //_getActiveModules();
             });
@@ -170,6 +171,7 @@ class DashboardMainState extends State<DashboardMain>
             Map<String, dynamic> singleStu = studentList[0];
             //print("SELECTED stucare ID = ${singleStu['stucare_id']}");
             AppData().setSelectedStudent(int.parse(singleStu['stucare_id']));
+            AppData().setSelectedStudentName(singleStu['stu_fname']);
             _homeFragment.refresh(true);
           }
           return null;
@@ -207,7 +209,8 @@ class DashboardMainState extends State<DashboardMain>
           ),
         ),
         onPressed: () {
-          Navigator.pop(context, aStudent['stucare_id']);
+          Navigator.pop(
+              context, [aStudent['stucare_id'], aStudent['stu_fname']]);
         },
       ));
     }

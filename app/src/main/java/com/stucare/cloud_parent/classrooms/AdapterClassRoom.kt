@@ -132,7 +132,7 @@ class AdapterClassRoom(val parentActivity: ActivityClassesTabs, val data: JSONAr
 
                     val params = JoinMeetingParams()
 
-                    params.displayName = "User Name"
+                    params.displayName = parentActivity.studentName
                     params.meetingNo = data.getJSONObject(position).getString("live_link")
                     params.password = data.getJSONObject(position).getString("live_password")
 

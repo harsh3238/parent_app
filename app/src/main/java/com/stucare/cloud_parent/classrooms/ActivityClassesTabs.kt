@@ -21,6 +21,7 @@ class ActivityClassesTabs : AppCompatActivity(), InitAuthSDKCallback {
     var schoolId: Int? = null
     var stucareId: Int? = null
     var accessToken: String? = null
+    var studentName: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +33,7 @@ class ActivityClassesTabs : AppCompatActivity(), InitAuthSDKCallback {
         schoolId = intent.getIntExtra("schoolId", -1)
         stucareId = intent.getIntExtra("stucareId", -1)
         accessToken = intent.getStringExtra("sessionToken")
+        studentName = intent.getStringExtra("studentName")
 
         InitAuthSDKHelper.getInstance().initSDK(this, this)
     }

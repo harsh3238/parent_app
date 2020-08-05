@@ -43,6 +43,17 @@ class AppData {
     return null;
   }
 
+  Future<String> getSelectedStudentName() async {
+    await getPrefs();
+    return _prefs.getString("selected_student_name") ?? null;
+  }
+
+  Future<void> setSelectedStudentName(String studentName) async {
+    await getPrefs();
+    _prefs.setString("selected_student_name", studentName);
+    return null;
+  }
+
   Future<bool> areWeLoggedIn() async {
     int users = await getUserCount();
     if (users > 0) {
