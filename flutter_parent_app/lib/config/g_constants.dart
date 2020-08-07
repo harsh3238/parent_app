@@ -105,6 +105,9 @@ class GConstants {
 
   static const _DOWNLOADS = "api_v1/student/requests/get_downloads.php";
 
+  static const _DISABLE_FLIP = "api_v1/student/requests/disbale_flip.php";
+
+
 
 
   static setSchoolRootUrl(String rootUrl) {
@@ -232,6 +235,9 @@ class GConstants {
   static getLiveClassesRoute() => SCHOOL_ROOT + _LIVE_CLASSES;
 
   static getDownloadsRoute() => SCHOOL_ROOT + _DOWNLOADS;
+
+  static getDisbaleFLipRoute() => SCHOOL_ROOT + _DISABLE_FLIP;
+
 
 
 }

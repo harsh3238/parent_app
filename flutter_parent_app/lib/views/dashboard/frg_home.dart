@@ -126,6 +126,17 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
     // //print("DIGEST READ = ${contents}");
   }
 
+  void _disableFLip() async {
+    int userStucareId = await AppData().getSelectedStudent();
+    String sessionToken = await AppData().getSessionToken();
+    var sId = await GConstants.schoolId();
+    var loginResponse = await http.post(GConstants.getDisbaleFLipRoute(), body: {
+      'stucare_id': userStucareId.toString(),
+      'active_session': sessionToken,
+      'school_id': sId.toString()
+    });
+  }
+
   void _getActiveModules() async {
     showProgressDialog();
     setFlipLoginInfo();
@@ -148,6 +159,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
           for (int i = 0; i < modulesData.length; i++) {
             items.add(DashItem.fromJson(modulesData[i]));
           }
+          _disableFLip();
           _getSliders();
           return null;
         } else {
