@@ -78,25 +78,6 @@ class AdapterClassRoom(val parentActivity: ActivityClassesTabs, val data: JSONAr
                 boundView.txtViewPassword.visibility = View.GONE
             }
 
-            if (data.getJSONObject(position).getString("school_id") == "0") {
-                boundView.txtContentType.text = "Flip"
-                boundView.txtContentType.backgroundTintList = ColorStateList.valueOf(
-                    ContextCompat.getColor(
-                        parentActivity,
-                        R.color.md_yellow_600
-                    )
-                )
-            } else {
-                boundView.txtContentType.text = "School"
-                boundView.txtContentType.backgroundTintList = ColorStateList.valueOf(
-                    ContextCompat.getColor(
-                        parentActivity,
-                        R.color.md_green_500
-                    )
-                )
-
-            }
-
             val ooo = data.getJSONObject(position).getString("start_ms").split('.')[0]
             val sMs = ooo.toLong() * 1000
             val now = Calendar.getInstance().timeInMillis
