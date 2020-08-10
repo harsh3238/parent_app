@@ -79,13 +79,14 @@ class FrgClassRoomsMain : Fragment() {
     }
 
     fun markAttendance(classId: String) {
-        /*val call = networkClient.markLiveClassAttendance((activity?.applicationContext as MyApplication).usersData.id, classId)
+        val parentActivity = activity as ActivityClassesTabs
+        val call = NetworkClient.create().markLiveClassAttendance(parentActivity.stucareId.toString(), classId, parentActivity.accessToken!!)
         call.enqueue(object : Callback<String> {
           override fun onResponse(call: Call<String>?, response: Response<String>?) {
           }
 
           override fun onFailure(call: Call<String>?, t: Throwable?) {
           }
-        })*/
+        })
     }
 }
