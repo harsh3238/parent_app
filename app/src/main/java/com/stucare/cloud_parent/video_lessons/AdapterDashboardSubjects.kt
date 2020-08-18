@@ -1,5 +1,6 @@
 package com.stucare.cloud_parent.video_lessons
 
+import android.content.Intent
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.squareup.picasso.Picasso
@@ -22,7 +23,17 @@ class AdapterDashboardSubjects(
                 .into(boundContentView.subjectIcon)
             boundContentView.subjectName.text =
                 data.getJSONObject(position).getString("subject_name")
+
+            boundContentView.okay.setOnClickListener {
+                val intent = Intent(parentActivity, SubjectHome::class.java)
+                intent.putExtra("stucareId", parentActivity.stucareId)
+                intent.putExtra("sessionToken", parentActivity.accessToken)
+                intent.putExtra("schoolId", parentActivity.schoolId)
+                intent.putExtra("subjectId", data.getJSONObject(position).getString("id"))
+                parentActivity.startActivity(intent)
+            }
         }
+
     }
 
 
@@ -39,9 +50,12 @@ class AdapterDashboardSubjects(
         holder.bindData(position)
         holder.itemView.isClickable = true
         holder.itemView.setOnClickListener {
-            /*val intent = Intent(parentActivity, SubjectHome::class.java)
-            intent.putExtra(Constants.SubjectData, applicationInstance.parsedSubjectsData[position])
-            parentActivity.startActivity(intent)*/
+            val intent = Intent(parentActivity, SubjectHome::class.java)
+            intent.putExtra("stucareId", parentActivity.stucareId)
+            intent.putExtra("sessionToken", parentActivity.accessToken)
+            intent.putExtra("schoolId", parentActivity.schoolId)
+            intent.putExtra("subjectId", data.getJSONObject(position).getString("id"))
+            parentActivity.startActivity(intent)
         }
     }
 

@@ -34,6 +34,10 @@
             android:name=".video_lessons.ActivityVideoLessons"
             android:theme="@style/AppThemeActionBar" />
 
+        <activity
+            android:name=".video_lessons.SubjectHome"
+            android:theme="@style/AppThemeActionBar" />
+
     </application>
 
 </manifest>

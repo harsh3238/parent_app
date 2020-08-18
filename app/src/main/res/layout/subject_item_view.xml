@@ -13,11 +13,14 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:layout_margin="4dp">
+        android:layout_margin="4dp"
+        android:clickable="true"
+        android:focusable="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="150dp"
+            android:id="@+id/okay"
             android:clickable="true"
             android:focusable="true">
 
