@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.stucare.cloud_parent">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name="io.flutter.app.FlutterApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:name="io.flutter.app.FlutterApplication">
+        android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,15 +22,18 @@
 
         <activity
             android:name=".FlutterMainActivity"
-            android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustResize"
-            />
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize" />
 
-        <activity android:name=".classrooms.ActivityClassesTabs"/>
-        <activity android:name=".tests.OnlineTestsActivity"/>
-        <activity android:name=".tests.SchoolTestRoom"/>
+        <activity android:name=".classrooms.ActivityClassesTabs" />
+        <activity android:name=".tests.OnlineTestsActivity" />
+        <activity android:name=".tests.SchoolTestRoom" />
+        <activity
+            android:name=".video_lessons.ActivityVideoLessons"
+            android:theme="@style/AppThemeActionBar" />
+
     </application>
 
 </manifest>
