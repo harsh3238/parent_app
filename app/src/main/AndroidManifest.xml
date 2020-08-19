@@ -42,6 +42,10 @@
             android:name=".video_lessons.ActivityChapter"
             android:theme="@style/AppThemeActionBar" />
 
+        <activity
+            android:name=".video_lessons.ActivityVideoPlayer"
+            android:configChanges="orientation|screenSize" />
+
     </application>
 
 </manifest>

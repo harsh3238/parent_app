@@ -24,6 +24,7 @@ class ActivityChapter : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        title = "Videos"
         contentView = DataBindingUtil.setContentView(this, R.layout.topic_home)
         progressBar = ProgressDialog(this)
         progressBar.setCancelable(false)

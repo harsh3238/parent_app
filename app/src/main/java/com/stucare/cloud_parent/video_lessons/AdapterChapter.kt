@@ -34,14 +34,10 @@ class AdapterChapter(private val parentActivity: ActivityChapter, val topicsData
             boundView.textViewVideoName.text = data.getString("video_name")
             val videoId = data.getString("link")
             Picasso.get().load("https://i1.ytimg.com/vi/$videoId/1.jpg").into(boundView.imageThumbnail)
-            itemView.setOnClickListener {
-                /*val intent = Intent(parentActivity, ActivityVideoPlayer::class.java)
-                intent.putExtra("videoId", videoId)
-                intent.putExtra("videoName", applicationInstance.topicVideosData[position].videoName)
-                intent.putExtra("topicName", parentActivity.topicData.topic)
-                intent.putExtra("topicId", parentActivity.topicData.id)
-                intent.putExtra("subjectId", parentActivity.subjectData.subjectId)
-                parentActivity.startActivity(intent)*/
+            boundView.okay.setOnClickListener {
+                val intent = Intent(parentActivity, ActivityVideoPlayer::class.java)
+                intent.putExtra("data", topicsData.toString())
+                parentActivity.startActivity(intent)
             }
         }
     }
