@@ -46,6 +46,14 @@ interface NetworkClient {
 
 
     @FormUrlEncoded
+    @POST("api_v1/student/requests/get_video_lessons.php")
+    fun getVideoLessons(
+        @Field("chapter_id") chapterId: String,
+        @Field("active_session") accessToken: String
+    ): Call<String>
+
+
+    @FormUrlEncoded
     @POST("api_v1/student/requests/get_test_questions.php")
     fun getOptionalTestQuestions(@Field("test_id") testId: String,
                                  @Field("active_session") accessToken: String): Call<String>

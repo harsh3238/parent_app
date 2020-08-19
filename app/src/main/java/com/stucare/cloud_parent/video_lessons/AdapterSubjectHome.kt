@@ -39,10 +39,10 @@ class AdapterSubjectHome(private val parentActivity: SubjectHome, val topicsData
         holder.bindData(position)
         holder.itemView.isClickable = true
         holder.itemView.setOnClickListener {
-           /* val intent = Intent(parentActivity, TopicHome::class.java)
-            intent.putExtra(Constants.TopicData, topicsData[position - 1].toString())
-            intent.putExtra(Constants.SubjectData, parentActivity.subjectData.toString())
-            parentActivity.startActivity(intent)*/
+            val intent = Intent(parentActivity, ActivityChapter::class.java)
+            intent.putExtra("chapterId", topicsData.getJSONObject(position).getString("id"))
+            intent.putExtra("sessionToken", parentActivity.accessToken)
+            parentActivity.startActivity(intent)
         }
 
 
