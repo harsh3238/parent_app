@@ -107,10 +107,11 @@ interface NetworkClient {
     ): Call<String>
 
     @FormUrlEncoded
-    @POST("api_v2/schools/requests/get_objective_test_report.php")
+    @POST("api_v1/student/requests/get_objective_test_report.php")
     fun getObjectiveTestReport(
-        @Field("user_id") userId: String,
-        @Field("test_id") testId: String
+        @Field("stucare_id") stucareId: String,
+        @Field("test_id") testId: String,
+        @Field("active_session") accessToken: String
     ): Call<String>
 
     abstract fun getOptionalTestQuestions(testId: String?): Call<String>

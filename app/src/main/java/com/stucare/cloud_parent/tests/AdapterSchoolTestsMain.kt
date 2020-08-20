@@ -33,10 +33,12 @@ class AdapterSchoolTestsMain(private val parentActivity: FragmentActivity,
                 boundView.btnStart.visibility = View.GONE
                 if (data.getString("test_format") == "objective"){
                     itemView.setOnClickListener {
-                        /*val intent = Intent(parentActivity, ActivityTestReports::class.java)
+                        val intent = Intent(parentActivity, ActivityTestReports::class.java)
                         intent.putExtra("test_id", data.getInt("id").toString())
-                        intent.putExtra("user_id", mUserId)
-                        parentActivity.startActivity(intent)*/
+                        intent.putExtra("stucareId", mStucareId)
+                        intent.putExtra("accessToken", accessToken)
+
+                        parentActivity.startActivity(intent)
                     }
                 }
             } else {
