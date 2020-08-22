@@ -49,6 +49,7 @@ class AdapterSchoolTestsMain(private val parentActivity: FragmentActivity,
                 else Intent(parentActivity, ActivitySubjectiveTestRoom::class.java)
                 intent.putExtra("school_id", mSchoolId)
                 intent.putExtra("accessToken", accessToken)
+                intent.putExtra("stucareId", mStucareId)
 
                 if (data.getString("is_active").toInt() == 1 && data.getString("has_passed").toInt() == 0) {
                     boundView.btnInactive.visibility = View.GONE

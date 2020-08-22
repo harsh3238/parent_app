@@ -59,8 +59,9 @@ interface NetworkClient {
                                  @Field("active_session") accessToken: String): Call<String>
 
     @FormUrlEncoded
-    @POST
-    fun getSignedUrlForS3(@Url url: String, @Field("object_key") testId: String): Call<String>
+    @POST("api_v1/student/requests/get_signed_url.php")
+    fun getSignedUrlForS3(@Field("object_key") testId: String,
+                          @Field("active_session") accessToken: String): Call<String>
 
 
     @PUT
@@ -91,12 +92,13 @@ interface NetworkClient {
 
 
     @FormUrlEncoded
-    @POST("api_v2/schools/requests/save_subjective_test_submission.php")
+    @POST("api_v1/student/requests/save_subjective_test_submission.php")
     fun saveSubjectiveTests(
-        @Field("user_id") userId: String,
+        @Field("stucare_id") userId: String,
         @Field("test_id") testId: String,
         @Field("time_spent") timeSpent: String,
-        @Field("file_key") fileKey: String
+        @Field("file_key") fileKey: String,
+        @Field("active_session") accessToken: String
     ): Call<String>
 
     @FormUrlEncoded

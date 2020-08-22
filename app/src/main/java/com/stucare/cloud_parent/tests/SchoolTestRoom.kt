@@ -203,7 +203,7 @@ class SchoolTestRoom : AppCompatActivity() {
 
         val fileKEy =
             "flip/tests/test_${intent.getStringExtra("test_id")}/${mUserId}_${fileToUpload.name}"
-        val call = NetworkClient.create().getSignedUrlForS3("https://flipacademy.stucarecloud.com/app_apis/api_v2/schools/requests/get_signed_url.php", fileKEy)
+        val call = NetworkClient.create().getSignedUrlForS3( fileKEy, accessToken)
         call.enqueue(object : Callback<String> {
 
             override fun onResponse(call: Call<String>?, response: Response<String>?) {

@@ -371,7 +371,7 @@ class ActivitySubjectiveTestRoom : AppCompatActivity() {
 
         val fileKEy =
             "flip/tests/test_${intent.getStringExtra("test_id")}/${mUserId}_${fileToUpload.name}"
-        val call = NetworkClient.create().getSignedUrlForS3("https://flipacademy.stucarecloud.com/app_apis/api_v2/schools/requests/get_signed_url.php", fileKEy)
+        val call = NetworkClient.create().getSignedUrlForS3( fileKEy, intent.getStringExtra("accessToken"))
         call.enqueue(object : Callback<String> {
 
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
@@ -432,10 +432,11 @@ class ActivitySubjectiveTestRoom : AppCompatActivity() {
         progressBar.setCancelable(false)
 
         val call = NetworkClient.create().saveSubjectiveTests(
-            "(applicationContext as MyApplication).usersData.id",
+            intent.getStringExtra("stucareId"),
             intent.getStringExtra("test_id")!!,
             getTimeSpent(),
-            s3FileKey
+            s3FileKey,
+            intent.getStringExtra("accessToken")
         )
 
         call.enqueue(object : Callback<String> {
