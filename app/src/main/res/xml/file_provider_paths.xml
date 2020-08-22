@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <files-path
+        name="screenshots"
+        path="screenshots/" />
+
+    <cache-path
+        name="submissions"
+        path="submissions/" />
+
+    <external-files-path
+        name="name"
+        path="/pdf" />
+
+    <external-files-path
+        name="avatar"
+        path="/avatars" />
+</paths>

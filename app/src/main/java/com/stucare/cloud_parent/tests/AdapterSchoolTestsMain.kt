@@ -46,7 +46,7 @@ class AdapterSchoolTestsMain(private val parentActivity: FragmentActivity,
 
                 val intent = if (data.getString("test_format") == "objective")
                     Intent(parentActivity, SchoolTestRoom::class.java)
-                else Intent(parentActivity, SchoolTestRoom::class.java)//ActivitySubjectiveTestRoom
+                else Intent(parentActivity, ActivitySubjectiveTestRoom::class.java)
                 intent.putExtra("school_id", mSchoolId)
                 intent.putExtra("accessToken", accessToken)
 

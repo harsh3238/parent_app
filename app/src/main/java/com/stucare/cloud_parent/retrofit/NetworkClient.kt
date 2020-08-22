@@ -82,8 +82,9 @@ interface NetworkClient {
         ): Call<String>
 
     @FormUrlEncoded
-    @POST("api_v2/schools/requests/get_subjective_question_paper.php")
-    fun getSubjectiveTest(@Field("test_id") testId: String): Call<String>
+    @POST("api_v1/student/requests/get_subjective_question_paper.php")
+    fun getSubjectiveTest(@Field("test_id") testId: String,
+                          @Field("active_session") accessToken: String): Call<String>
 
     @GET
     fun downloadFile(@Url url: String): Call<ResponseBody>
