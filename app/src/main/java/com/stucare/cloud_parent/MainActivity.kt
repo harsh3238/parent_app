@@ -11,11 +11,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        Handler().postDelayed({
-            startActivity(
-                Intent(this, FlutterMainActivity::class.java)
-            )
-            finish()
-        }, 2000)
+        startActivity(
+            Intent(this, FlutterMainActivity::class.java)
+        )
+        finish()
     }
 }
