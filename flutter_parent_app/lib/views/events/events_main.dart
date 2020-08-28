@@ -112,7 +112,9 @@ class _EventsMainState extends State<EventsMain> with StateHelper {
       ),
       body: CustomScrollView(
         slivers: <Widget>[
-          Expanded(),
+          SliverToBoxAdapter(
+            child: _calendarCarouselNoHeader,
+          ),
           SliverToBoxAdapter(
             child: Padding(
               padding: EdgeInsets.all(10),
