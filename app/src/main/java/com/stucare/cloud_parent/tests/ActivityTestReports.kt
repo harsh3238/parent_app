@@ -6,6 +6,7 @@ import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import com.google.android.youtube.player.internal.i
 import com.stucare.cloud_parent.R
 import com.stucare.cloud_parent.databinding.ActivityTestReportBinding
 import com.stucare.cloud_parent.retrofit.NetworkClient
@@ -75,6 +76,7 @@ class ActivityTestReports : AppCompatActivity() {
                                         modelTestQuestion.optionC = clickedData.getString("option_c")
                                         modelTestQuestion.optionD = clickedData.getString("option_d")
                                         modelTestQuestion.answer = clickedData.getString("answer")
+                                        modelTestQuestion.marks = clickedData.optString("marks")
                                         modelTestQuestion.usersResponse = clickedData.getString("user_selected_answer")
                                         val frg = FrgTestReportDetails()
                                         val bundle = Bundle()
@@ -85,6 +87,8 @@ class ActivityTestReports : AppCompatActivity() {
                             mContentView.txtTotalQuestions.text = answersData?.getJSONObject(0)?.getString("total_questions")
                             mContentView.txtAttemptedQuestions.text = answersData?.getJSONObject(0)?.getString("attempted_questions")
                             mContentView.txtCorrectAnswers.text = answersData?.getJSONObject(0)?.getString("correct_questions")
+                            mContentView.tvMarksTotal.text = calculateMarksObtained()
+
 
                         }
 
@@ -99,7 +103,27 @@ class ActivityTestReports : AppCompatActivity() {
                         .show()
             }
 
-
         })
     }
+
+    private fun calculateMarksObtained(): String? {
+        var totalMarks = 0
+
+        try {
+            for (i in 0 until (answersData?.length() ?: 0)) {
+                val d = answersData?.getJSONObject(i)
+
+                var marks = d?.getString("marks")
+                var answer = d?.getString("answer")
+                var user_answer = d?.getString("user_selected_answer")
+                if(answer.equals(user_answer, ignoreCase = true)){
+                    totalMarks = totalMarks+ (marks?.toInt() ?: 0)
+                }
+            }
+        } catch (e: Exception) {
+        }
+
+        return totalMarks.toString()
+    }
+
 }

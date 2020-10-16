@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:android_intent/android_intent.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:click_campus_parent/config/g_constants.dart';
 import 'package:click_campus_parent/data/app_data.dart';
@@ -367,13 +368,24 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
                       return Builder(
                         builder: (BuildContext context) {
                           return Container(
-                              width: 500,
-                              height: 500,
-                              child: Image.network(i['file_url'],
-                                  fit: BoxFit.cover));
+                            width: 500,
+                            height: 500,
+                            child: CachedNetworkImage(
+                              imageUrl: i['file_url'],
+                              imageBuilder: (context, imageProvider) => Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                          /*child: Image.network(i['file_url'],
+                                  fit: BoxFit.cover));*/
                         },
-                      );
-                    }).toList(),
+                      );                    }).toList(),
                     pauseAutoPlayOnTouch: Duration(seconds: 2),
                   )
                 : Container(

@@ -9,7 +9,7 @@ import com.stucare.cloud_parent.R
 import com.stucare.cloud_parent.databinding.CustomTabViewBinding
 
 
-class AdapterSchoolTestRoom(fragmentManager: FragmentManager, val context: SchoolTestRoom, val mData: MutableList<ModelTestQuestion>) : androidx.legacy.app.FragmentStatePagerAdapter(fragmentManager) {
+class AdapterSchoolTestRoom(fragmentManager: FragmentManager, val context: ActivityObjectiveTestRoom, val mData: MutableList<ModelTestQuestion>) : androidx.legacy.app.FragmentStatePagerAdapter(fragmentManager) {
 
   override fun getItem(position: Int): Fragment {
     val bundle = Bundle()

@@ -175,7 +175,7 @@ class ProfileOnePageState extends State<ProfileOnePage> with StateHelper {
       await AppData().deleteAllUsers();
       await StateSelectImpersonation.saveImpersonationStatus(null, null);
       hideProgressDialog();
-      Navigator.pop(context);
+      //Navigator.pop(context);
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (BuildContext context) {
             return Scaffold(

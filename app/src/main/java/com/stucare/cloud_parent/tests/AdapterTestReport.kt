@@ -17,11 +17,16 @@ class AdapterTestReport(private val parentActivity: ActivityTestReports, val ans
     inner class mViewHolder(var boundView: TestReportItemBinding) : androidx.recyclerview.widget.RecyclerView.ViewHolder(boundView.root) {
         fun bindData(position: Int) {
             boundView.txtViewNo.text = (position + 1).toString()
+
             val d = answersData?.getJSONObject(position)
-            if(d?.getString("answer") == d?.getString("user_selected_answer")){
-                boundView.viewIndicator.setBackgroundColor(Color.GREEN)
+
+            if(d?.getString("user_selected_answer") == "null"){
+                boundView.viewIndicator.setBackgroundColor(parentActivity.resources.getColor(R.color.md_yellow_600))
+            }else if(d?.getString("answer").equals(d?.getString("user_selected_answer"), ignoreCase = true)){
+
+                boundView.viewIndicator.setBackgroundColor(parentActivity.resources.getColor(R.color.zm_green))
             }else{
-                boundView.viewIndicator.setBackgroundColor(Color.RED)
+                boundView.viewIndicator.setBackgroundColor(parentActivity.resources.getColor(R.color.zm_red))
             }
 
             itemView.setOnClickListener {

@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.stucare.cloud_parent.MainActivity
 import com.stucare.cloud_parent.R
 import com.stucare.cloud_parent.databinding.SchoolTestListItemBinding
 import org.json.JSONArray
@@ -45,7 +44,7 @@ class AdapterSchoolTestsMain(private val parentActivity: FragmentActivity,
                 boundView.attempted.visibility = View.GONE
 
                 val intent = if (data.getString("test_format") == "objective")
-                    Intent(parentActivity, SchoolTestRoom::class.java)
+                    Intent(parentActivity, ActivityObjectiveTestRoom::class.java)
                 else Intent(parentActivity, ActivitySubjectiveTestRoom::class.java)
                 intent.putExtra("school_id", mSchoolId)
                 intent.putExtra("accessToken", accessToken)
@@ -87,6 +86,7 @@ class AdapterSchoolTestsMain(private val parentActivity: FragmentActivity,
                                     intent.putExtra("test_id", data.getInt("id").toString())
                                     intent.putExtra("duration", testTimeLeft)
                                     intent.putExtra("monitor_student", data.getInt("monitor_student"))
+                                    intent.putExtra("monitor_test", data.optString("monitor_test"))
                                     intent.putExtra("user_id", mStucareId)
                                     parentActivity.startActivity(intent)
                                 } else {
@@ -107,6 +107,7 @@ class AdapterSchoolTestsMain(private val parentActivity: FragmentActivity,
                                     intent.putExtra("test_id", data.getInt("id").toString())
                                     intent.putExtra("duration", testTimeLeft)
                                     intent.putExtra("monitor_student", data.getInt("monitor_student"))
+                                    intent.putExtra("monitor_test", data.getString("monitor_test"))
                                     intent.putExtra("user_id", mStucareId)
                                     parentActivity.startActivity(intent)
                                 } else {
@@ -130,6 +131,7 @@ class AdapterSchoolTestsMain(private val parentActivity: FragmentActivity,
                                     intent.putExtra("test_id", data.getInt("id").toString())
                                     intent.putExtra("duration", data.getLong("duration"))
                                     intent.putExtra("monitor_student", data.getInt("monitor_student"))
+                                    intent.putExtra("monitor_test", data.getString("monitor_test"))
                                     intent.putExtra("user_id", mStucareId)
                                     parentActivity.startActivity(intent)
                                 } else {
@@ -145,6 +147,7 @@ class AdapterSchoolTestsMain(private val parentActivity: FragmentActivity,
                                     intent.putExtra("test_id", data.getInt("id").toString())
                                     intent.putExtra("duration", data.getLong("duration"))
                                     intent.putExtra("monitor_student", data.getInt("monitor_student"))
+                                    intent.putExtra("monitor_test", data.getString("monitor_test"))
                                     intent.putExtra("user_id", mStucareId)
                                     parentActivity.startActivity(intent)
                                 } else {
@@ -167,6 +170,7 @@ class AdapterSchoolTestsMain(private val parentActivity: FragmentActivity,
                                 intent.putExtra("test_id", data.getInt("id").toString())
                                 intent.putExtra("duration", data.getLong("duration"))
                                 intent.putExtra("monitor_student", data.getInt("monitor_student"))
+                                intent.putExtra("monitor_test", data.getString("monitor_test"))
                                 intent.putExtra("user_id", mStucareId)
                                 parentActivity.startActivity(intent)
                             } else {
@@ -182,11 +186,14 @@ class AdapterSchoolTestsMain(private val parentActivity: FragmentActivity,
                                 intent.putExtra("test_id", data.getInt("id").toString())
                                 intent.putExtra("duration", data.getLong("duration"))
                                 intent.putExtra("monitor_student", data.getInt("monitor_student"))
+                                intent.putExtra("monitor_test", data.getString("monitor_test"))
                                 intent.putExtra("user_id", mStucareId)
                                 parentActivity.startActivity(intent)
                             } else {
-                                Toast.makeText(parentActivity, "User not initialised, you may need to logout and login again", Toast.LENGTH_SHORT)
-                                        .show()
+                                Toast.makeText(parentActivity,
+                                    "User not initialised, you may need to logout and login again",
+                                    Toast.LENGTH_SHORT)
+                                    .show()
                             }
                         }
                     }

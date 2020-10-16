@@ -4,6 +4,7 @@
     package="com.stucare.cloud_parent">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name="io.flutter.app.FlutterApplication"
@@ -43,7 +44,7 @@
 
         <activity android:name=".classrooms.ActivityClassesTabs" />
         <activity android:name=".tests.OnlineTestsActivity" />
-        <activity android:name=".tests.SchoolTestRoom" />
+        <activity android:name=".tests.ActivityObjectiveTestRoom" />
         <activity
             android:name=".video_lessons.ActivityVideoLessons"
             android:theme="@style/AppThemeActionBar" />

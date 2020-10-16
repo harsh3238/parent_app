@@ -1,4 +1,4 @@
-/*
+package com.stucare.cloud_parent.classrooms/*
 package org.flipacademy.mvps.classrooms
 
 import android.os.Bundle

@@ -13,6 +13,7 @@ class OnlineTestsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.online_test_activity)
+
         schoolId = intent.getIntExtra("schoolId", -1)
         stucareId = intent.getIntExtra("stucareId", -1)
         accessToken = intent.getStringExtra("sessionToken")

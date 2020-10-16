@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import com.bumptech.glide.Glide
 import com.stucare.cloud_parent.R
 import com.stucare.cloud_parent.databinding.FragmentSchoolTestRoomBinding
 
@@ -28,12 +29,15 @@ class FragmentSchoolTestRoom : Fragment() {
     contentView = DataBindingUtil.inflate(inflater!!, R.layout.fragment_school_test_room, container, false)
     contentView.controller = this
 
-
     contentView.formulaTwo.text = mData?.question
     contentView.itemContentViewA.text = mData?.optionA
     contentView.itemContentViewB.text = mData?.optionB
     contentView.itemContentViewC.text = mData?.optionC
     contentView.itemContentViewD.text = mData?.optionD
+
+    try{
+      contentView.tvMarks.text = "Max. Marks : "+mData?.marks
+    }catch (e: Exception){}
 
     mSelectedOptionId = mData?.userSelectedAnswer!!
 
@@ -55,7 +59,7 @@ class FragmentSchoolTestRoom : Fragment() {
         mData?.userSelectedOption = v.tag.toString()
         refreshData()
       }
-      (activity as SchoolTestRoom).capturePictureSnapshot(it.questionId)
+      (activity as ActivityObjectiveTestRoom).capturePictureSnapshot(it.questionId)
     }
 
   }
@@ -110,7 +114,6 @@ class FragmentSchoolTestRoom : Fragment() {
         }
       }
     }
-
   }
 
 

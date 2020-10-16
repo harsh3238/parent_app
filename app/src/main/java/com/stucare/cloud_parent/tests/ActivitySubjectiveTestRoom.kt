@@ -6,6 +6,7 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Environment
 import android.provider.MediaStore
 import android.view.WindowManager
 import android.widget.ImageButton
@@ -28,9 +29,11 @@ import com.stucare.cloud_parent.PDFViewActivity
 import com.stucare.cloud_parent.R
 import com.stucare.cloud_parent.databinding.ActivitySubjectiveTestBinding
 import com.stucare.cloud_parent.retrofit.NetworkClient
-import okhttp3.MediaType
+import com.tom_roush.pdfbox.pdmodel.PDDocument
+import com.tom_roush.pdfbox.pdmodel.PDPage
+import com.tom_roush.pdfbox.pdmodel.PDPageContentStream
+import com.tom_roush.pdfbox.pdmodel.graphics.image.JPEGFactory
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import org.jetbrains.anko.doAsync
@@ -40,7 +43,9 @@ import retrofit2.Callback
 import retrofit2.Response
 import toast
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.io.InputStream
 import java.text.NumberFormat
 
 class ActivitySubjectiveTestRoom : AppCompatActivity() {
@@ -56,6 +61,7 @@ class ActivitySubjectiveTestRoom : AppCompatActivity() {
     private var userSelectedTime = 0L
     var remainingTime: Long = 0
     lateinit var countDownTimer: CountDownTimer
+    private lateinit var monitorTest: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.setFlags(
@@ -64,6 +70,16 @@ class ActivitySubjectiveTestRoom : AppCompatActivity() {
         )
         super.onCreate(savedInstanceState)
         mContentView = DataBindingUtil.setContentView(this, R.layout.activity_subjective_test)
+
+        monitorTest = intent.getStringExtra("monitor_test")
+
+        /*if(monitorTest!=null){
+            Toast.makeText(
+                this,
+                "monitor_test: " + monitorTest,
+                Toast.LENGTH_SHORT
+            ).show()
+        }*/
 
         userSelectedTime = intent.getLongExtra("duration", 0)
         mUserId = intent.getStringExtra("user_id") ?: ""
@@ -194,8 +210,7 @@ class ActivitySubjectiveTestRoom : AppCompatActivity() {
                 this@ActivitySubjectiveTestRoom,
                 "User not initialised, you may need to logout and login again",
                 Toast.LENGTH_SHORT
-            )
-                .show()
+            ).show()
             return
         }
 
@@ -203,6 +218,7 @@ class ActivitySubjectiveTestRoom : AppCompatActivity() {
             File(cacheDir.absolutePath + "/submissions/submissions_${intent.getStringExtra("test_id")}")
         val files = submissionsDir.listFiles()
         if (files != null && files.isNotEmpty()) {
+
             val d = CustomAlertDialog(this, R.style.PurpleTheme)
             d.setCancelable(false)
             d.setTitle("Submit Test")
@@ -221,8 +237,7 @@ class ActivitySubjectiveTestRoom : AppCompatActivity() {
                 this@ActivitySubjectiveTestRoom,
                 "No Submissions found",
                 Toast.LENGTH_SHORT
-            )
-                .show()
+            ).show()
         }
     }
 
@@ -235,17 +250,47 @@ class ActivitySubjectiveTestRoom : AppCompatActivity() {
             val files = submissionsDir.listFiles()
             if (files != null && files.isNotEmpty()) {
                 val list = mutableListOf<String>()
-                val dFile =
-                    File(cacheDir.absolutePath + "/submissions/submissions_${intent.getStringExtra("test_id")}_comp")
+                val dFile = File(
+                    cacheDir.absolutePath + "/submissions/submissions_${
+                        intent.getStringExtra(
+                            "test_id"
+                        )
+                    }_comp"
+                )
+
+                val document = PDDocument()
+                var contentStream: PDPageContentStream? = null
+
                 files.forEach {
-                    val compressedFile = SiliCompressor.with(this@ActivitySubjectiveTestRoom)
-                        .compress(it.absolutePath, dFile, true)
+                    val compressedFile = SiliCompressor.with(this@ActivitySubjectiveTestRoom).compress(
+                        it.absolutePath,
+                        dFile,
+                        true
+                    )
                     list.add(compressedFile)
+
+                    val page = PDPage()
+                    document.addPage(page)
+
+                    contentStream = PDPageContentStream(document, page)
+
+                    val fileInputStream: InputStream = FileInputStream(compressedFile)
+
+                    val ximage = JPEGFactory.createFromStream(document, fileInputStream)
+                    contentStream!!.drawImage(ximage, 10f, 10f)
+                    fileInputStream.close()
+                    contentStream?.close()
+
                     Thread.sleep(1000)
                 }
-                val zipFileLocation =
-                    File(cacheDir.absolutePath + "/submissions/submissions_${intent.getStringExtra("test_id")}.zip")
-                ZipManager().zip(list.toTypedArray(), zipFileLocation.absolutePath)
+
+                // Save the final pdf document to a file
+                val path = cacheDir.absolutePath + "/submissions/submissions_${intent.getStringExtra("test_id")}.pdf"
+                document.save(path)
+                document.close()
+                val zipFileLocation = File(path)
+                //val zipFileLocation = File(cacheDir.absolutePath + "/submissions/submissions_${intent.getStringExtra("test_id")}.zip")
+                //ZipManager().zip(list.toTypedArray(), zipFileLocation.absolutePath)
                 dFile.deleteRecursively()
                 submissionsDir.deleteRecursively()
                 runOnUiThread {
@@ -254,7 +299,8 @@ class ActivitySubjectiveTestRoom : AppCompatActivity() {
                 }
             } else {
                 runOnUiThread {
-                    toast("No answer found")
+                    toast("Failed to attach attachments")
+                    submitTests("")
                 }
             }
         }
@@ -313,8 +359,7 @@ class ActivitySubjectiveTestRoom : AppCompatActivity() {
                                             this@ActivitySubjectiveTestRoom,
                                             "Download failed",
                                             Toast.LENGTH_SHORT
-                                        )
-                                            .show()
+                                        ).show()
                                     }
 
                                     override fun onResponse(
@@ -369,9 +414,11 @@ class ActivitySubjectiveTestRoom : AppCompatActivity() {
         progressBar.setCancelable(false)
 
 
-        val fileKEy =
-            "flip/tests/test_${intent.getStringExtra("test_id")}/${mUserId}_${fileToUpload.name}"
-        val call = NetworkClient.create().getSignedUrlForS3( fileKEy, intent.getStringExtra("accessToken"))
+        val fileKEy = "flip/tests/test_${intent.getStringExtra("test_id")}/${mUserId}_${fileToUpload.name}"
+        val call = NetworkClient.create().getSignedUrlForS3(
+            fileKEy,
+            intent.getStringExtra("accessToken")
+        )
         call.enqueue(object : Callback<String> {
 
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
@@ -382,7 +429,7 @@ class ActivitySubjectiveTestRoom : AppCompatActivity() {
                             val signedUrl = jsonObject.getString("data")
                             val requestFile = fileToUpload.readBytes()
                                 .toRequestBody(
-                                    "application/zip".toMediaTypeOrNull(),
+                                    "application/pdf".toMediaTypeOrNull(),
                                     0
                                 )
                             val upload = NetworkClient.create().uploadS3(signedUrl, requestFile)
@@ -469,7 +516,6 @@ class ActivitySubjectiveTestRoom : AppCompatActivity() {
                 )
                     .show()
             }
-
 
         })
     }

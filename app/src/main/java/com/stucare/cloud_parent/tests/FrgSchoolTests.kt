@@ -79,9 +79,8 @@ class FrgSchoolTests : Fragment() {
                 response?.let {
                     if (response.isSuccessful) {
                         val jsonObject = JSONObject(response.body().toString())
-                        if (jsonObject.has("status") &&
-                            jsonObject.getString("status") == "success"
-                        ) {
+                        if (jsonObject!= null && jsonObject.has("status") &&
+                            jsonObject.getString("status") == "success") {
                             val jsonArray = jsonObject.getJSONArray("data")
                             contentView.recyclerView.adapter = AdapterSchoolTestsMain(
                                 activity!!,
@@ -90,8 +89,13 @@ class FrgSchoolTests : Fragment() {
                                 parentActivity.schoolId!!.toString(),
                                 parentActivity.accessToken!!
                             )
+                        }else{
+                            Toast.makeText(
+                                activity!!,
+                                "Invalid error from server, please try again",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
-
                     }
                     progressBar.dismiss()
                 }
@@ -103,8 +107,7 @@ class FrgSchoolTests : Fragment() {
                     activity!!,
                     "There has been error, please try again",
                     Toast.LENGTH_SHORT
-                )
-                    .show()
+                ).show()
             }
 
 

@@ -22,7 +22,7 @@ dependencies:
 
 
   shared_preferences: ^0.5.1+1
-  flutter_svg: ^0.17.4
+  flutter_svg: ^0.18.1
   keyboard_visibility:
     git:
       url: https://github.com/MohiuddinM/flutter_keyboard_visibility.git
@@ -56,6 +56,7 @@ dependencies:
   open_file: ^3.0.1
   flutter_linkify: ^3.1.0
   firebase_auth: ^0.16.1
+  cached_network_image: ^2.3.1
 
 dev_dependencies:
   flutter_test:

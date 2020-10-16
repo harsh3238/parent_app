@@ -4,6 +4,7 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import com.stucare.cloud_parent.classrooms.ActivityClassesTabs
 import com.stucare.cloud_parent.retrofit.NetworkClient
 import com.stucare.cloud_parent.tests.OnlineTestsActivity
@@ -28,9 +29,9 @@ class FlutterMainActivity : FlutterActivity() {
         mProgressDialog.setMessage("Please wait...")
 
         val preferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        NetworkClient.baseUrl = preferences.getString("flutter.normal_login_school_url", "")!!
+        NetworkClient.baseUrl = preferences.getString("flutter.normal_login_school_url", "https://demo.stucarecloud.com/")!!
 
-        MethodChannel(
+       MethodChannel(
             flutterEngine?.dartExecutor?.binaryMessenger,
             METHOD_CHANNEL_NAME
         ).setMethodCallHandler { call, result ->

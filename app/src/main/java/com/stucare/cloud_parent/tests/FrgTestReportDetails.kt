@@ -38,13 +38,17 @@ class FrgTestReportDetails : Fragment() {
             container,
             false
         )
-
-
+        
         contentView.formulaTwo.text = mData?.question
         contentView.itemContentViewA.text = mData?.optionA
         contentView.itemContentViewB.text = mData?.optionB
         contentView.itemContentViewC.text = mData?.optionC
         contentView.itemContentViewD.text = mData?.optionD
+
+        try{
+            contentView.tvMarks.text = "Max. Marks : "+mData?.marks
+        }catch (e: Exception){}
+
 
         mSelectedOptionId = mData?.userSelectedAnswer!!
 
@@ -66,7 +70,7 @@ class FrgTestReportDetails : Fragment() {
                 mData?.userSelectedOption = v.tag.toString()
                 refreshData()
             }
-            (activity as SchoolTestRoom).capturePictureSnapshot(it.questionId)
+            (activity as ActivityObjectiveTestRoom).capturePictureSnapshot(it.questionId)
         }
 
     }

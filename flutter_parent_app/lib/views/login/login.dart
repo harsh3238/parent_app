@@ -74,10 +74,10 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
         });
 
         //print(loginResponse.body);
-
         if (loginResponse.statusCode == 200) {
           Map loginResponseObject = json.decode(loginResponse.body);
           if (loginResponseObject.containsKey("status")) {
+            debugPrint(loginResponseObject.toString());
             if (loginResponseObject["status"] == "success") {
               if (loginResponseObject["otp"] == "firebase") {
                 _verifyPhoneNumber();
@@ -118,6 +118,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
 
     if (otpResponse.statusCode == 200) {
       Map loginResponseObject = json.decode(otpResponse.body);
+      debugPrint(loginResponseObject.toString());
       if (loginResponseObject.containsKey("status")) {
         if (loginResponseObject["status"] == "success") {
           int loginRecordId =

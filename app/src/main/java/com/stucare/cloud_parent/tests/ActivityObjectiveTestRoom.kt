@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -18,32 +17,40 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.google.android.material.tabs.TabLayout
+import com.iceteck.silicompressorr.SiliCompressor
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraOptions
 import com.otaliastudios.cameraview.FileCallback
 import com.otaliastudios.cameraview.PictureResult
 import com.otaliastudios.cameraview.controls.Preview
 import com.stucare.cloud_parent.R
-import com.stucare.cloud_parent.databinding.SchoolTestRoomMainBinding
+import com.stucare.cloud_parent.databinding.ActivityObjectiveTestRoomBinding
 import com.stucare.cloud_parent.retrofit.NetworkClient
-import okhttp3.MediaType
+import com.tom_roush.pdfbox.pdmodel.PDDocument
+import com.tom_roush.pdfbox.pdmodel.PDPage
+import com.tom_roush.pdfbox.pdmodel.PDPageContentStream
+import com.tom_roush.pdfbox.pdmodel.graphics.image.JPEGFactory
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.jetbrains.anko.doAsync
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import toast
 import java.io.File
+import java.io.FileInputStream
+import java.io.InputStream
 import java.net.URISyntaxException
 import java.text.NumberFormat
 import java.util.*
+import android.util.Log.d as d1
 
 
-class SchoolTestRoom : AppCompatActivity() {
+class ActivityObjectiveTestRoom : AppCompatActivity() {
 
-    lateinit var contentView: SchoolTestRoomMainBinding
+    lateinit var contentView: ActivityObjectiveTestRoomBinding
     private lateinit var progressDialog: ProgressDialog
     private var userSelectedTime = 0L
     var remainingTime: Long = 0
@@ -55,6 +62,8 @@ class SchoolTestRoom : AppCompatActivity() {
     private lateinit var mUserId: String
     private lateinit var mSchoolId: String
     private lateinit var accessToken: String
+    private lateinit var monitorTest: String
+    private var monitorStudent: Int = 0;
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,7 +72,18 @@ class SchoolTestRoom : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_SECURE
         )
         super.onCreate(savedInstanceState)
-        contentView = DataBindingUtil.setContentView(this, R.layout.school_test_room_main)
+        contentView = DataBindingUtil.setContentView(this, R.layout.activity_objective_test_room)
+
+        monitorTest = intent.getStringExtra("monitor_test")
+        monitorStudent = intent.getIntExtra("monitor_student", 0)
+
+        /*if (monitorTest != null) {
+            Toast.makeText(
+                this,
+                "monitor_test: " + monitorTest,
+                Toast.LENGTH_SHORT
+            ).show()
+        }*/
         if (intent.getIntExtra("monitor_student", 0) == 1) {
             contentView.camera.setLifecycleOwner(this)
             contentView.camera.addCameraListener(Listener())
@@ -86,8 +106,7 @@ class SchoolTestRoom : AppCompatActivity() {
                 this,
                 "User not initialised, you may need to logout and login again",
                 Toast.LENGTH_SHORT
-            )
-                .show()
+            ).show()
             finish()
         }
 
@@ -147,12 +166,14 @@ class SchoolTestRoom : AppCompatActivity() {
         progressDialog.show()
 
 
-        val call = NetworkClient.create().getOptionalTestQuestions(intent.getStringExtra("test_id"), accessToken)
+        val call = NetworkClient.create()
+            .getOptionalTestQuestions(intent.getStringExtra("test_id"), accessToken)
         call.enqueue(object : Callback<String> {
 
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
                 response?.let {
                     if (response.isSuccessful) {
+                        d1("response", response.body().toString());
                         val jsonObject = JSONObject(response.body().toString())
                         if (jsonObject.has("status") && jsonObject.getString("status") == "success") {
                             val jsonArray = jsonObject.getJSONArray("data")
@@ -173,6 +194,9 @@ class SchoolTestRoom : AppCompatActivity() {
                                 modelTestQuestion.answer =
                                     jsonArray.getJSONObject(i).getString("answer")
 
+                                modelTestQuestion.marks =
+                                    jsonArray.getJSONObject(i).optString("marks")
+
                                 mQuestionsList.add(modelTestQuestion)
                             }
                             inItPager(mQuestionsList)
@@ -186,11 +210,10 @@ class SchoolTestRoom : AppCompatActivity() {
             override fun onFailure(call: Call<String>?, t: Throwable?) {
                 progressDialog.dismiss()
                 Toast.makeText(
-                    this@SchoolTestRoom,
+                    this@ActivityObjectiveTestRoom,
                     "There has been error, please try again",
                     Toast.LENGTH_SHORT
-                )
-                    .show()
+                ).show()
             }
 
 
@@ -203,7 +226,7 @@ class SchoolTestRoom : AppCompatActivity() {
 
         val fileKEy =
             "flip/tests/test_${intent.getStringExtra("test_id")}/${mUserId}_${fileToUpload.name}"
-        val call = NetworkClient.create().getSignedUrlForS3( fileKEy, accessToken)
+        val call = NetworkClient.create().getSignedUrlForS3(fileKEy, accessToken)
         call.enqueue(object : Callback<String> {
 
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
@@ -214,7 +237,7 @@ class SchoolTestRoom : AppCompatActivity() {
                             val signedUrl = jsonObject.getString("data")
                             val requestFile = fileToUpload.readBytes()
                                 .toRequestBody(
-                                    "application/zip".toMediaTypeOrNull(),
+                                    "application/pdf".toMediaTypeOrNull(),
                                     0, fileToUpload.length().toInt()
                                 )
                             val upload = NetworkClient.create().uploadS3(signedUrl, requestFile)
@@ -222,11 +245,10 @@ class SchoolTestRoom : AppCompatActivity() {
                                 override fun onFailure(call: Call<String?>, t: Throwable) {
                                     progressDialog.dismiss()
                                     Toast.makeText(
-                                        this@SchoolTestRoom,
+                                        this@ActivityObjectiveTestRoom,
                                         "Not uploaded",
                                         Toast.LENGTH_SHORT
-                                    )
-                                        .show()
+                                    ).show()
                                 }
 
                                 override fun onResponse(
@@ -248,11 +270,10 @@ class SchoolTestRoom : AppCompatActivity() {
             override fun onFailure(call: Call<String>?, t: Throwable?) {
                 progressDialog.dismiss()
                 Toast.makeText(
-                    this@SchoolTestRoom,
+                    this@ActivityObjectiveTestRoom,
                     "There has been error, please try again",
                     Toast.LENGTH_SHORT
-                )
-                    .show()
+                ).show()
             }
 
 
@@ -283,11 +304,10 @@ class SchoolTestRoom : AppCompatActivity() {
                         val jsonObject = JSONObject(response.body().toString())
                         if (jsonObject.has("status") && jsonObject.getString("status") == "success") {
                             Toast.makeText(
-                                this@SchoolTestRoom,
+                                this@ActivityObjectiveTestRoom,
                                 "Test Submitted",
                                 Toast.LENGTH_SHORT
-                            )
-                                .show()
+                            ).show()
                             finish()
                         }
 
@@ -299,11 +319,10 @@ class SchoolTestRoom : AppCompatActivity() {
             override fun onFailure(call: Call<String>?, t: Throwable?) {
                 progressDialog.dismiss()
                 Toast.makeText(
-                    this@SchoolTestRoom,
+                    this@ActivityObjectiveTestRoom,
                     "There has been error, please try again",
                     Toast.LENGTH_SHORT
-                )
-                    .show()
+                ).show()
             }
 
 
@@ -349,7 +368,7 @@ class SchoolTestRoom : AppCompatActivity() {
                         )
                     image?.setColorFilter(
                         ContextCompat.getColor(
-                            this@SchoolTestRoom,
+                            this@ActivityObjectiveTestRoom,
                             R.color.zm_green
                         )
                     )
@@ -362,7 +381,7 @@ class SchoolTestRoom : AppCompatActivity() {
                         )
                     image?.setColorFilter(
                         ContextCompat.getColor(
-                            this@SchoolTestRoom,
+                            this@ActivityObjectiveTestRoom,
                             R.color.yellow
                         )
                     )
@@ -407,6 +426,13 @@ class SchoolTestRoom : AppCompatActivity() {
 
             override fun onFinish() {
                 contentView.countDownTimer.text = "Finished"
+                //submit auto test after time is finished
+                if (monitorTest != null && monitorTest == "1") {
+                    //zipImageFiles()
+                    createPdfFile()
+                } else {
+                    submitTests(" ")
+                }
                 /*supportFragmentManager.beginTransaction().add(R.id.frameLayout, FrgTestFinished())
                     .addToBackStack(null)
                     .commitAllowingStateLoss()*/
@@ -422,8 +448,9 @@ class SchoolTestRoom : AppCompatActivity() {
         d.setMessage("Are you sure you want to submit this test? You have attempted ${getAttemptedQuesCount()} questions.")
         d.positiveButton.setOnClickListener {
             d.dismiss()
-            if (intent.getIntExtra("monitor_student", 0) == 1) {
-                zipImageFiles()
+            if (monitorTest != null && monitorTest == "1") {
+                //zipImageFiles()
+                createPdfFile()
             } else {
                 submitTests(" ")
             }
@@ -435,6 +462,72 @@ class SchoolTestRoom : AppCompatActivity() {
         }
         d.show()
     }
+
+    private fun createPdfFile() {
+        progressDialog.show()
+        progressDialog.setCancelable(false)
+        doAsync {
+
+            val submissionsDir =
+                File(filesDir.absolutePath + "/test_${intent.getStringExtra("test_id")}")
+            val files = submissionsDir.listFiles()
+            if (files != null && files.isNotEmpty()) {
+                val list = mutableListOf<String>()
+                val dFile = File(
+                    filesDir.absolutePath + "/test_${
+                        intent.getStringExtra("test_id")
+                    }_comp"
+                )
+
+                val document = PDDocument()
+                var contentStream: PDPageContentStream? = null
+
+                files.forEach {
+                    val compressedFile =
+                        SiliCompressor.with(this@ActivityObjectiveTestRoom).compress(
+                            it.absolutePath,
+                            dFile,
+                            true
+                        )
+                    list.add(compressedFile)
+
+                    val page = PDPage()
+                    document.addPage(page)
+
+                    contentStream = PDPageContentStream(document, page)
+
+                    val fileInputStream: InputStream = FileInputStream(compressedFile)
+
+                    val ximage = JPEGFactory.createFromStream(document, fileInputStream)
+                    contentStream!!.drawImage(ximage, 10f, 10f)
+                    fileInputStream.close()
+                    contentStream?.close()
+
+                    Thread.sleep(1000)
+                }
+
+                // Save the final pdf document to a file
+                val path = cacheDir.absolutePath + "/test_${intent.getStringExtra("test_id")}.pdf"
+                document.save(path)
+                document.close()
+                val zipFileLocation = File(path)
+                //val zipFileLocation = File(cacheDir.absolutePath + "/submissions/submissions_${intent.getStringExtra("test_id")}.zip")
+                //ZipManager().zip(list.toTypedArray(), zipFileLocation.absolutePath)
+                dFile.deleteRecursively()
+                submissionsDir.deleteRecursively()
+                runOnUiThread {
+                    progressDialog.dismiss()
+                    getSignedUrls(zipFileLocation)
+                }
+            } else {
+                runOnUiThread {
+                    toast("Failed to attach screenshots")
+                    submitTests("")
+                }
+            }
+        }
+    }
+
 
     private fun zipImageFiles() {
         progressDialog.show()
@@ -592,7 +685,7 @@ class SchoolTestRoom : AppCompatActivity() {
                     File(imageCacheDir.absolutePath + "/q_${mLastAnsweredQuestionId}.jpg")
 
                 result.toFile(mSelectedFile, FileCallback {
-                    Log.d("ok", "SAVED")
+                    d1("ok", "SAVED")
                 })
             } catch (e: URISyntaxException) {
                 e.printStackTrace()

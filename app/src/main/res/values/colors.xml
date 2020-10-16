@@ -4,7 +4,6 @@
     <color name="colorPrimaryDark">#7E57C2</color>
     <color name="colorAccent">#03DAC5</color>
 
-    <color name="purple_light">#7E57C2</color>
     <color name="md_white_1000">#ffffff</color>
     <color name="trans_white_1000">#e6ffffff</color>
 
@@ -17,6 +16,7 @@
     <color name="text_default">#3a3a3a</color>
     <color name="text_light">#808080</color>
 
+    <color name="purple_light">#7E57C2</color>
     <color name="cyan_light">#00bcd4</color>
     <color name="black_trans">#cc000000</color>
 
