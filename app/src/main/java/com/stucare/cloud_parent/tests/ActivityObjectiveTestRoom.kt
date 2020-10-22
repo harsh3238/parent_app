@@ -7,11 +7,13 @@ import android.content.pm.PackageManager
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.view.LayoutInflater.*
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -30,6 +32,7 @@ import com.tom_roush.pdfbox.pdmodel.PDDocument
 import com.tom_roush.pdfbox.pdmodel.PDPage
 import com.tom_roush.pdfbox.pdmodel.PDPageContentStream
 import com.tom_roush.pdfbox.pdmodel.graphics.image.JPEGFactory
+import kotlinx.android.synthetic.main.layout_submission_dialog.view.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.jetbrains.anko.doAsync
@@ -63,27 +66,26 @@ class ActivityObjectiveTestRoom : AppCompatActivity() {
     private lateinit var mSchoolId: String
     private lateinit var accessToken: String
     private lateinit var monitorTest: String
-    private var monitorStudent: Int = 0;
-
+    private  var monitorStudent: Int = 0;
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_SECURE,
-            WindowManager.LayoutParams.FLAG_SECURE
-        )
+        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
         super.onCreate(savedInstanceState)
         contentView = DataBindingUtil.setContentView(this, R.layout.activity_objective_test_room)
 
         monitorTest = intent.getStringExtra("monitor_test")
         monitorStudent = intent.getIntExtra("monitor_student", 0)
 
-        /*if (monitorTest != null) {
+        /*if(monitorTest!=null){
             Toast.makeText(
                 this,
-                "monitor_test: " + monitorTest,
+                "monitor_test: "+monitorTest,
                 Toast.LENGTH_SHORT
             ).show()
         }*/
+
         if (intent.getIntExtra("monitor_student", 0) == 1) {
             contentView.camera.setLifecycleOwner(this)
             contentView.camera.addCameraListener(Listener())
@@ -113,7 +115,10 @@ class ActivityObjectiveTestRoom : AppCompatActivity() {
         contentView.viewPager.offscreenPageLimit = 4
 
         contentView.buttonSubmit.setOnClickListener {
-            submitRoutine()
+            if(getAttemptedQuesCount()>getQuestionCount()/2){
+                showSubmissionDialog()
+            }else
+                showIncompleteDialog()
         }
 
         getQueries()
@@ -166,19 +171,27 @@ class ActivityObjectiveTestRoom : AppCompatActivity() {
         progressDialog.show()
 
 
-        val call = NetworkClient.create()
-            .getOptionalTestQuestions(intent.getStringExtra("test_id"), accessToken)
+        val call = NetworkClient.create().getOptionalTestQuestions(intent.getStringExtra("test_id"), accessToken)
         call.enqueue(object : Callback<String> {
 
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
                 response?.let {
                     if (response.isSuccessful) {
+
+                        var responseString = response.body();
+                        if(responseString == "auth error"){
+                            progressDialog.dismiss()
+                            showSessionDialog()
+                            return
+                        }
+
                         d1("response", response.body().toString());
                         val jsonObject = JSONObject(response.body().toString())
                         if (jsonObject.has("status") && jsonObject.getString("status") == "success") {
                             val jsonArray = jsonObject.getJSONArray("data")
                             for (i in 0 until jsonArray.length()) {
                                 val modelTestQuestion = ModelTestQuestion(false)
+                                modelTestQuestion.questionNo = (i+1).toString()
                                 modelTestQuestion.questionId =
                                     jsonArray.getJSONObject(i).getString("id")
                                 modelTestQuestion.question =
@@ -213,7 +226,8 @@ class ActivityObjectiveTestRoom : AppCompatActivity() {
                     this@ActivityObjectiveTestRoom,
                     "There has been error, please try again",
                     Toast.LENGTH_SHORT
-                ).show()
+                )
+                    .show()
             }
 
 
@@ -226,7 +240,7 @@ class ActivityObjectiveTestRoom : AppCompatActivity() {
 
         val fileKEy =
             "flip/tests/test_${intent.getStringExtra("test_id")}/${mUserId}_${fileToUpload.name}"
-        val call = NetworkClient.create().getSignedUrlForS3(fileKEy, accessToken)
+        val call = NetworkClient.create().getSignedUrlForS3( fileKEy, accessToken)
         call.enqueue(object : Callback<String> {
 
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
@@ -248,7 +262,8 @@ class ActivityObjectiveTestRoom : AppCompatActivity() {
                                         this@ActivityObjectiveTestRoom,
                                         "Not uploaded",
                                         Toast.LENGTH_SHORT
-                                    ).show()
+                                    )
+                                        .show()
                                 }
 
                                 override fun onResponse(
@@ -286,7 +301,7 @@ class ActivityObjectiveTestRoom : AppCompatActivity() {
         val call = NetworkClient.create().saveTest(
             mUserId,
             intent.getStringExtra("test_id")!!,
-            getQUestionCount().toString(),
+            getQuestionCount().toString(),
             getCorrectAnswersCount().toString(),
             getAttemptedQuesCount().toString(),
             getUserSelectedAnswers(),
@@ -301,16 +316,25 @@ class ActivityObjectiveTestRoom : AppCompatActivity() {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
                 response?.let {
                     if (response.isSuccessful) {
+                        var responseString = response.body();
+                        if(responseString == "auth error"){
+                            progressDialog.dismiss()
+                            Toast.makeText(
+                                this@ActivityObjectiveTestRoom,
+                                "Authentication Error",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            return
+                        }
                         val jsonObject = JSONObject(response.body().toString())
                         if (jsonObject.has("status") && jsonObject.getString("status") == "success") {
                             Toast.makeText(
                                 this@ActivityObjectiveTestRoom,
-                                "Test Submitted",
+                                "Test Submitted Successfully",
                                 Toast.LENGTH_SHORT
                             ).show()
                             finish()
                         }
-
                     }
                     progressDialog.dismiss()
                 }
@@ -322,7 +346,8 @@ class ActivityObjectiveTestRoom : AppCompatActivity() {
                     this@ActivityObjectiveTestRoom,
                     "There has been error, please try again",
                     Toast.LENGTH_SHORT
-                ).show()
+                )
+                    .show()
             }
 
 
@@ -427,7 +452,7 @@ class ActivityObjectiveTestRoom : AppCompatActivity() {
             override fun onFinish() {
                 contentView.countDownTimer.text = "Finished"
                 //submit auto test after time is finished
-                if (monitorTest != null && monitorTest == "1") {
+                if (monitorTest!=null && monitorTest == "1") {
                     //zipImageFiles()
                     createPdfFile()
                 } else {
@@ -441,6 +466,25 @@ class ActivityObjectiveTestRoom : AppCompatActivity() {
 
     }
 
+    fun showIncompleteDialog() {
+        val d = CustomAlertDialog(this, R.style.PurpleTheme)
+        d.setCancelable(false)
+        d.setTitle("50% submission alert... !")
+        d.setMessage("Dear Students Kindly Attempt Atleast 50% Questions Before Submission.")
+        d.positiveButton.text = "Ok"
+        d.negativeButton.text = "Close"
+
+        d.positiveButton.setOnClickListener {
+            d.dismiss()
+        }
+
+        d.negativeButton.setOnClickListener {
+            d.dismiss()
+        }
+        d.show()
+    }
+
+
     fun submitRoutine() {
         val d = CustomAlertDialog(this, R.style.PurpleTheme)
         d.setCancelable(false)
@@ -448,7 +492,7 @@ class ActivityObjectiveTestRoom : AppCompatActivity() {
         d.setMessage("Are you sure you want to submit this test? You have attempted ${getAttemptedQuesCount()} questions.")
         d.positiveButton.setOnClickListener {
             d.dismiss()
-            if (monitorTest != null && monitorTest == "1") {
+            if (monitorTest!=null && monitorTest == "1") {
                 //zipImageFiles()
                 createPdfFile()
             } else {
@@ -468,27 +512,24 @@ class ActivityObjectiveTestRoom : AppCompatActivity() {
         progressDialog.setCancelable(false)
         doAsync {
 
-            val submissionsDir =
-                File(filesDir.absolutePath + "/test_${intent.getStringExtra("test_id")}")
+            val submissionsDir = File(filesDir.absolutePath + "/test_${intent.getStringExtra("test_id")}")
             val files = submissionsDir.listFiles()
             if (files != null && files.isNotEmpty()) {
                 val list = mutableListOf<String>()
                 val dFile = File(
                     filesDir.absolutePath + "/test_${
-                        intent.getStringExtra("test_id")
-                    }_comp"
+                        intent.getStringExtra("test_id")}_comp"
                 )
 
                 val document = PDDocument()
                 var contentStream: PDPageContentStream? = null
 
                 files.forEach {
-                    val compressedFile =
-                        SiliCompressor.with(this@ActivityObjectiveTestRoom).compress(
-                            it.absolutePath,
-                            dFile,
-                            true
-                        )
+                    val compressedFile = SiliCompressor.with(this@ActivityObjectiveTestRoom).compress(
+                        it.absolutePath,
+                        dFile,
+                        true
+                    )
                     list.add(compressedFile)
 
                     val page = PDPage()
@@ -526,6 +567,7 @@ class ActivityObjectiveTestRoom : AppCompatActivity() {
                 }
             }
         }
+
     }
 
 
@@ -540,8 +582,7 @@ class ActivityObjectiveTestRoom : AppCompatActivity() {
             files.forEach {
                 list.add(it.absolutePath)
             }
-            val zipFileLocation =
-                File(filesDir.absolutePath + "/test_${intent.getStringExtra("test_id")}.zip")
+            val zipFileLocation = File(filesDir.absolutePath + "/test_${intent.getStringExtra("test_id")}.zip")
             ZipManager().zip(list.toTypedArray(), zipFileLocation.absolutePath)
             progressDialog.dismiss()
             getSignedUrls(zipFileLocation)
@@ -571,6 +612,21 @@ class ActivityObjectiveTestRoom : AppCompatActivity() {
         d.show()
     }
 
+    fun getQuestionCount(): Int {
+        return mQuestionsList.size
+    }
+
+
+    fun getSkippedQuesCount(): Int {
+        var i = 0
+        mQuestionsList.forEach {
+            if (it.skipped == 1) {
+                i += 1
+            }
+        }
+        return i
+    }
+
     fun getAttemptedQuesCount(): Int {
         var i = 0
         mQuestionsList.forEach {
@@ -581,29 +637,16 @@ class ActivityObjectiveTestRoom : AppCompatActivity() {
         return i
     }
 
-    fun getSkipped(): Int {
-        var i = 0
-        mQuestionsList.forEach {
-            if (it.skipped == 1) {
-                i += 1
-            }
-        }
-        return i
-    }
-
     fun getUnAttemptedQuesCount(): Int {
         var i = 0
         mQuestionsList.forEach {
-            if (it.userSelectedAnswer == -1 && it.skipped == 0) {
+            if (it.userSelectedAnswer == -1) {
                 i += 1
             }
         }
         return i
     }
 
-    fun getQUestionCount(): Int {
-        return mQuestionsList.size
-    }
 
     fun getClass(): String {
         return intent.getStringExtra("class")
@@ -652,8 +695,20 @@ class ActivityObjectiveTestRoom : AppCompatActivity() {
         return i
     }
 
+    fun getTimeRemaining(): String {
+
+
+        val hours = ((remainingTime / (1000 * 60 * 60)) % 24).toInt()
+        val minutes = (remainingTime / 60000).toInt()
+        val seconds = (remainingTime % 60000 / 1000).toInt()
+        val format = NumberFormat.getNumberInstance()
+        format.minimumIntegerDigits = 2
+        return "${format.format(hours)}:${format.format(minutes)}:${format.format(seconds)}"
+    }
+
+
     fun getTimeSpent(): String {
-        val totalTime = userSelectedTime * 60000 + 1000
+        val totalTime = (userSelectedTime * 60000) + 1000
         val timeSpentMilli = totalTime - remainingTime
 
         val hours = ((timeSpentMilli / (1000 * 60 * 60)) % 24).toInt()
@@ -663,13 +718,42 @@ class ActivityObjectiveTestRoom : AppCompatActivity() {
         format.minimumIntegerDigits = 2
         return "${format.format(hours)}:${format.format(minutes)}:${format.format(seconds)}"
     }
-
     fun getTestDuration(): String {
         return intent.getLongExtra("duration", 0).toString()
 
     }
 
-    //region Permissions
+    fun showSubmissionDialog(){
+        val mDialogView = from(this).inflate(R.layout.layout_submission_dialog, null)
+        //AlertDialogBuilder
+        val mBuilder = AlertDialog.Builder(this).setView(mDialogView)
+
+        //show dialog
+        val  mAlertDialog = mBuilder.show()
+
+        mDialogView.tvTimeRemaining.text = getTimeRemaining();
+        mDialogView.tvAttempted.text = getAttemptedQuesCount().toString();
+        mDialogView.tvUnAttempted.text = getUnAttemptedQuesCount().toString();
+
+        mDialogView.dialogBtnYes.setOnClickListener {
+            //dismiss dialog
+            mAlertDialog.dismiss()
+            if (monitorTest!=null && monitorTest == "1") {
+                //zipImageFiles()
+                createPdfFile()
+            } else {
+                submitTests(" ")
+            }
+
+        }
+        //cancel button click of custom layout
+        mDialogView.dialogBtnNo.setOnClickListener {
+            //dismiss dialog
+            mAlertDialog.dismiss()
+        }
+    }
+
+
     inner class Listener : CameraListener() {
         override fun onCameraOpened(options: CameraOptions) {}
 
@@ -691,7 +775,27 @@ class ActivityObjectiveTestRoom : AppCompatActivity() {
                 e.printStackTrace()
             }
         }
-
     }
+
+    fun showSessionDialog() {
+        val d = CustomAlertDialog(this@ActivityObjectiveTestRoom, R.style.PurpleTheme)
+        d.setCancelable(false)
+        d.setTitle("Auth Failure... !")
+        d.setMessage("There is issue with authentication token, please try again.")
+        d.positiveButton.text = "Ok"
+        d.negativeButton.text = "Close"
+
+        d.positiveButton.setOnClickListener {
+            d.dismiss()
+            this?.finish()
+        }
+
+        d.negativeButton.setOnClickListener {
+            d.dismiss()
+            this?.finish()
+        }
+        d.show()
+    }
+
 
 }

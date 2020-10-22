@@ -7,6 +7,6 @@ evaluate(new File(
   settingsDir,
   'flutter_parent_app/.android/include_flutter.groovy'
 ))
-rootProject.name = "NewParentAppFlutterAdded"
+rootProject.name = "parent_app"
 
 include ':flutter_parent_app'

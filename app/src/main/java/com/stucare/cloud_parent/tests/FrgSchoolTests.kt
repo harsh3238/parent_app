@@ -78,6 +78,13 @@ class FrgSchoolTests : Fragment() {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
                 response?.let {
                     if (response.isSuccessful) {
+
+                        var responseString = response.body();
+                        if(responseString == "auth error"){
+                            progressBar.dismiss()
+                            showSessionDialog()
+                            return
+                        }
                         val jsonObject = JSONObject(response.body().toString())
                         if (jsonObject!= null && jsonObject.has("status") &&
                             jsonObject.getString("status") == "success") {
@@ -96,6 +103,7 @@ class FrgSchoolTests : Fragment() {
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
+
                     }
                     progressBar.dismiss()
                 }
@@ -113,4 +121,25 @@ class FrgSchoolTests : Fragment() {
 
         })
     }
+
+    fun showSessionDialog() {
+        val d = CustomAlertDialog(activity, R.style.PurpleTheme)
+        d.setCancelable(false)
+        d.setTitle("Auth Failure... !")
+        d.setMessage("There is issue with authentication token, please try again.")
+        d.positiveButton.text = "Ok"
+        d.negativeButton.text = "Close"
+
+        d.positiveButton.setOnClickListener {
+            d.dismiss()
+            activity?.finish()
+        }
+
+        d.negativeButton.setOnClickListener {
+            d.dismiss()
+            activity?.finish()
+        }
+        d.show()
+    }
+
 }

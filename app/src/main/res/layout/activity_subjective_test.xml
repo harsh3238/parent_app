@@ -7,18 +7,18 @@
         <variable
             name="controller"
             type="com.stucare.cloud_parent.tests.ActivitySubjectiveTestRoom" />
-
     </data>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <RelativeLayout
+            android:id="@+id/layout_header"
             android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            android:background="@color/colorPrimary"
+            android:layout_height="60dp"
+            android:background="@color/colorPrimaryDark"
             android:elevation="4dp">
 
             <TextView
@@ -27,9 +27,33 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="10dp"
+                android:text="00:00:00"
                 android:textColor="@color/md_white_1000"
                 android:textSize="18sp"
                 android:textStyle="bold" />
+
+            <com.otaliastudios.cameraview.CameraView
+                android:id="@+id/camera"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:keepScreenOn="true"
+                app:cameraAudio="off"
+                app:cameraAutoFocusMarker="@string/cameraview_default_autofocus_marker"
+                app:cameraEngine="camera2"
+                app:cameraExperimental="false"
+                app:cameraFacing="front"
+                app:cameraFlash="off"
+                app:cameraGestureLongTap="none"
+                app:cameraGesturePinch="none"
+                app:cameraGestureScrollHorizontal="none"
+                app:cameraGestureScrollVertical="none"
+                app:cameraGestureTap="autoFocus"
+                app:cameraGrid="off"
+                app:cameraMode="picture"
+                app:cameraPlaySounds="false"
+                app:cameraPreview="glSurface" />
 
 
             <Button
@@ -45,8 +69,10 @@
         </RelativeLayout>
 
         <LinearLayout
+            android:id="@+id/layout_controls"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/layout_header"
             android:background="@color/md_white_1000"
             android:orientation="vertical">
 
@@ -55,77 +81,56 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                app:cardCornerRadius="8dp">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="8dp">
-
-                    <TextView
-                        android:id="@+id/txtViewTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_toEndOf="@+id/imageView"
-                        android:text="Question Paper "
-                        android:textColor="@color/text_default"
-                        android:textStyle="bold" />
-
-
-                    <Button
-                        android:id="@+id/btnStart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:layout_below="@+id/txtViewSubText"
-                        android:layout_alignParentEnd="true"
-                        android:backgroundTint="@color/purple_light"
-                        android:text="view"
-                        android:textColor="@color/md_white_1000"
-                        android:textSize="10dp" />
-
-                </RelativeLayout>
-
-
-            </androidx.cardview.widget.CardView>
+                app:cardCornerRadius="8dp"></androidx.cardview.widget.CardView>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_margin="8dp"
-                    android:layout_toEndOf="@+id/imageView"
-                    android:text="Submissions: "
-                    android:textColor="@color/text_light"
-                    android:textStyle="bold" />
 
                 <Button
                     android:id="@+id/btnAddSubmission"
                     android:layout_width="120dp"
-                    android:layout_height="24dp"
+                    android:layout_height="30dp"
                     android:layout_alignParentEnd="true"
-                    android:background="@drawable/bk_holo_rounded"
-                    android:text="add submission"
                     android:layout_centerVertical="true"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/bk_holo_rounded"
+                    android:backgroundTint="@color/purple_light"
+                    android:text="add submission"
                     android:textColor="@color/text_light"
-                    android:textSize="10dp"
-                    android:layout_margin="10dp"/>
-
+                    android:textSize="10dp" />
             </RelativeLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_marginTop="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
-    </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/layout_controls"
+            android:layout_marginTop="10dp" />
+
+        <com.github.barteksc.pdfviewer.PDFView
+            android:id="@+id/pdfView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/layout_controls"
+            android:layout_marginTop="10dp"
+            android:layout_above="@+id/tvNote"/>
+
+        <TextView
+            android:id="@+id/tvNote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#D3D1D1"
+            android:layout_alignParentBottom="true"
+            android:text="Note: Click Add Submission button to add answers"
+            android:gravity="center"
+            android:padding="3dp"/>
+
+
+    </RelativeLayout>
 
 </layout>
 

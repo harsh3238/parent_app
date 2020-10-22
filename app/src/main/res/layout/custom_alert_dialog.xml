@@ -81,7 +81,7 @@
                         android:layout_gravity="center_horizontal"
                         android:background="@drawable/bk_round_black_8dp"
                         app:backgroundTint="@color/purple_light"
-                        android:text="OKAY"
+                        android:text="Ok"
                         android:textColor="@color/md_white_1000" />
                 </LinearLayout>
 
