@@ -422,11 +422,12 @@ class ActivitySubjectiveSubmission : AppCompatActivity() {
 
                         val jsonObject = JSONObject(response.body().toString())
                         if (jsonObject.has("status") && jsonObject.getString("status") == "success") {
-                            Toast.makeText(
+
+                            /*Toast.makeText(
                                 this@ActivitySubjectiveSubmission,
                                 "Test Submitted",
                                 Toast.LENGTH_SHORT
-                            ).show()
+                            ).show()*/
 
                             //to finish current activity and previous activity
                             val returnIntent = Intent()
