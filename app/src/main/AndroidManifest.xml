@@ -70,6 +70,10 @@
             android:theme="@style/AppThemeActionBar" />
 
         <activity
+            android:name="com.stucare.cloud_parent.tests.ActivitySubjectiveSubmission"
+            android:theme="@style/AppTheme" />
+
+        <activity
             android:name=".PDFViewActivity"
             android:theme="@style/AppThemeActionBar" />
 
