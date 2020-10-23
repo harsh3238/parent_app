@@ -107,8 +107,9 @@ class GConstants {
 
   static const _DISABLE_FLIP = "api_v1/student/requests/disbale_flip.php";
 
+  static const _GET_FITNESS_DECLARATION = "api_v1/student/requests/get_declaration.php";
 
-
+  static const _SAVE_FITNESS_DECLARATION = "api_v1/student/requests/save_declaration.php";
 
   static setSchoolRootUrl(String rootUrl) {
     SCHOOL_ROOT = rootUrl;
@@ -238,6 +239,9 @@ class GConstants {
 
   static getDisbaleFLipRoute() => SCHOOL_ROOT + _DISABLE_FLIP;
 
+  static getFitnessDeclarationRoute() => SCHOOL_ROOT + _GET_FITNESS_DECLARATION;
+
+  static saveFitnessDeclarationRoute() => SCHOOL_ROOT + _SAVE_FITNESS_DECLARATION;
 
 
 }

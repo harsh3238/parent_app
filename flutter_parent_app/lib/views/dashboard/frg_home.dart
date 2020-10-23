@@ -14,6 +14,7 @@ import 'package:click_campus_parent/views/downloads/downloads_main.dart';
 import 'package:click_campus_parent/views/events/events_main.dart';
 import 'package:click_campus_parent/views/exams/exams_main.dart';
 import 'package:click_campus_parent/views/fee/fee_main.dart';
+import 'package:click_campus_parent/views/fitness_report/fitness_report_screen.dart';
 import 'package:click_campus_parent/views/homework/homework_main.dart';
 import 'package:click_campus_parent/views/leave/leave_main.dart';
 import 'package:click_campus_parent/views/news/news_main.dart';
@@ -136,11 +137,16 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
       'active_session': sessionToken,
       'school_id': sId.toString()
     });
+    debugPrint("${loginResponse.request} : ${loginResponse.body}");
   }
 
   void _getActiveModules() async {
     showProgressDialog();
-    setFlipLoginInfo();
+    //setFlipLoginInfo();
+    String secretKey = await AppData().getSecretKey();
+    String accessKey = await AppData().getAccessKey();
+    debugPrint("SECRET_KEY:${secretKey} , ACCESS_KEY:${accessKey}");
+
     var sId = await GConstants.schoolId();
     String sessionToken = await AppData().getSessionToken();
 
@@ -279,7 +285,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
       'active_session': sessionToken,
     });
 
-    //print(flyersResponse.body);
+    debugPrint("${flyersResponse.request} : ${flyersResponse.body}");
 
     if (flyersResponse.statusCode == 200) {
       Map flyersResponseObject = json.decode(flyersResponse.body);
@@ -492,6 +498,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
 
   List<Widget> getGridItems() {
     List<DashItem> data;
+
     if (items[items.length - 1].isCollapseExpandButton) {
       items.removeLast();
     }
@@ -579,8 +586,12 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
 
   void openModuleMappedPage(String moduleName) async {
     switch (moduleName) {
+      case "fitness_declaration":
+        navigateToModule(FitnessDeclaration());
+        break;
       case "notifications":
-        navigateToModule(NotificationsMain());
+        navigateToModule(FitnessDeclaration());
+        //navigateToModule(NotificationsMain());
         break;
       case "homework":
         navigateToModule(Homework(_unseenHomework));

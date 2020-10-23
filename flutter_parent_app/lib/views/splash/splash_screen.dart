@@ -22,10 +22,10 @@ class SplashScreen extends StatelessWidget {
 
     var sId = await GConstants.schoolId();
 
-    var modulesResponse = await http.post(GConstants.getSchoolInfoRoute(),
+    var modulesResponse = await http.post("https://stjosephk.stucarecloud.com/api_v1/student/requests/get_school_info.php",
         body: {'school_id': sId.toString()});
 
-    //print("http:= " +modulesResponse.body);
+    debugPrint("${modulesResponse.request} : ${modulesResponse.body}");
 
     int newAppVersion;
 
@@ -34,6 +34,8 @@ class SplashScreen extends StatelessWidget {
       if (modulesResponseObject.containsKey("status")) {
         if (modulesResponseObject["status"] == "success") {
           Map<String, dynamic> modulesData = modulesResponseObject['data'];
+          AppData().setAccessKey(modulesData['access_key']);
+          AppData().setSecretKey(modulesData['secrety_key']);
           var v = modulesData['app_version'];
           newAppVersion = int.parse(v ?? '0');
           await DbSchoolInfo().insertSchoolInfo(modulesData);

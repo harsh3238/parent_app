@@ -3,16 +3,17 @@ import 'dart:io';
 import 'package:amazon_cognito_identity_dart/sig_v4.dart';
 import 'package:async/async.dart';
 import 'package:click_campus_parent/config/g_constants.dart';
+import 'package:click_campus_parent/data/app_data.dart';
 import 'package:click_campus_parent/utils/s3_policy.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 
 Future<bool> s3Upload(File file, String dirName, String fileKey) async {
-  const _accessKeyId = 'AKIAJQIQEKPFWN27GVHA';
-  const _secretKeyId = 'YKLbmcrU67NcoGMN8TU0dROyfJJsWeyxmqm6HZ5g';
+
+  String _accessKeyId = await AppData().getAccessKey();
+  String _secretKeyId = await AppData().getSecretKey();
   const _region = 'ap-south-1';
-  const _s3Endpoint =
-      'https://stucarecloud.s3.ap-south-1.amazonaws.com';
+  const _s3Endpoint = 'https://stucarecloud.s3.ap-south-1.amazonaws.com';
 
   final stream = http.ByteStream(DelegatingStream.typed(file.openRead()));
   final length = await file.length();
@@ -46,7 +47,6 @@ Future<bool> s3Upload(File file, String dirName, String fileKey) async {
       return true;
     }
   } catch (e) {
-    //print(e.toString());
     return false;
   }
 

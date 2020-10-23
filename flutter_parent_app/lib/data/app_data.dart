@@ -184,4 +184,39 @@ class AppData {
     }
     return _prefs.getString("hoework_yesturday");
   }
+
+
+  Future<String> getSelectedStudentClass() async {
+    await getPrefs();
+    return _prefs.getString("selected_student_class") ?? null;
+  }
+
+  Future<void> setSelectedStudentClass(String classId) async {
+    await getPrefs();
+    _prefs.setString("selected_student_class", classId);
+    return null;
+  }
+
+  Future<String> getAccessKey() async {
+    await getPrefs();
+    return _prefs.getString("access_key") ?? null;
+  }
+
+  Future<void> setAccessKey(String accessKey) async {
+    await getPrefs();
+    _prefs.setString("access_key", accessKey);
+    return null;
+  }
+
+  Future<String> getSecretKey() async {
+    await getPrefs();
+    return _prefs.getString("secret_key") ?? null;
+  }
+
+  Future<void> setSecretKey(String accessKey) async {
+    await getPrefs();
+    _prefs.setString("secret_key", accessKey);
+    return null;
+  }
+
 }

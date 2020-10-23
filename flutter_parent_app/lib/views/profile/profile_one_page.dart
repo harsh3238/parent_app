@@ -45,6 +45,12 @@ class ProfileOnePageState extends State<ProfileOnePage> with StateHelper {
     //print(profileResponse.body);
 
     if (profileResponse.statusCode == 200) {
+      String response = profileResponse.body;
+      if(response == "auth error"){
+        showSnackBar("Session Expired, Please login again...");
+        hideProgressDialog();
+        return;
+      }
       Map profileResponseObject = json.decode(profileResponse.body);
       if (profileResponseObject.containsKey("status")) {
         if (profileResponseObject["status"] == "success") {
