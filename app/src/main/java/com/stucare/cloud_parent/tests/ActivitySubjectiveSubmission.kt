@@ -508,7 +508,11 @@ class ActivitySubjectiveSubmission : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        countDownTimer.cancel()
+
+        if(this :: countDownTimer.isInitialized && countDownTimer!=null){
+            countDownTimer.cancel()
+        }
+
         super.onDestroy()
     }
 }
