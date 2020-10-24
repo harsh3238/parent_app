@@ -590,8 +590,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
         navigateToModule(FitnessDeclaration());
         break;
       case "notifications":
-        navigateToModule(FitnessDeclaration());
-        //navigateToModule(NotificationsMain());
+        navigateToModule(NotificationsMain());
         break;
       case "homework":
         navigateToModule(Homework(_unseenHomework));
