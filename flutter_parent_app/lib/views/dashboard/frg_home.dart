@@ -259,6 +259,10 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
       if (schoolInfoRsObject.containsKey("status")) {
         if (schoolInfoRsObject["status"] == "success") {
           Map<String, dynamic> modulesData = schoolInfoRsObject['data'];
+
+          modulesData.remove('access_key');
+          modulesData.remove('secrety_key');
+
           await DbSchoolInfo().insertSchoolInfo(modulesData);
           _getFlyers();
           return null;
