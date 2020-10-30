@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
 interface NetworkClient {
 
     @FormUrlEncoded
-    @POST("api_v1/student/requests/get_live_classes.php")
+    @POST("api_v2/student/requests/get_live_classes.php")
     fun getLiveClasses(
         @Field("school_id") userId: Int,
         @Field("stucare_id") stucareId: Int,
@@ -22,7 +22,7 @@ interface NetworkClient {
     ): Call<String>
 
     @FormUrlEncoded
-    @POST("api_v1/student/requests/get_online_tests.php")
+    @POST("api_v2/student/requests/get_online_tests.php")
     fun getSchoolTests(
         @Field("school_id") userId: Int,
         @Field("stucare_id") stucareId: Int,
@@ -30,7 +30,7 @@ interface NetworkClient {
     ): Call<String>
 
     @FormUrlEncoded
-    @POST("api_v1/student/requests/get_subject_for_student.php")
+    @POST("api_v2/student/requests/get_subject_for_student.php")
     fun getVideoLessonSubjects(
         @Field("stucare_id") stucareId: Int,
         @Field("active_session") accessToken: String
@@ -38,7 +38,7 @@ interface NetworkClient {
 
 
     @FormUrlEncoded
-    @POST("api_v1/student/requests/get_video_chapters.php")
+    @POST("api_v2/student/requests/get_video_chapters.php")
     fun getVideoChapters(
         @Field("subject_id") subjectId: String,
         @Field("active_session") accessToken: String
@@ -46,7 +46,7 @@ interface NetworkClient {
 
 
     @FormUrlEncoded
-    @POST("api_v1/student/requests/get_video_lessons.php")
+    @POST("api_v2/student/requests/get_video_lessons.php")
     fun getVideoLessons(
         @Field("chapter_id") chapterId: String,
         @Field("active_session") accessToken: String
@@ -54,12 +54,12 @@ interface NetworkClient {
 
 
     @FormUrlEncoded
-    @POST("api_v1/student/requests/get_test_questions.php")
+    @POST("api_v2/student/requests/get_test_questions.php")
     fun getOptionalTestQuestions(@Field("test_id") testId: String,
                                  @Field("active_session") accessToken: String): Call<String>
 
     @FormUrlEncoded
-    @POST("api_v1/student/requests/get_signed_url.php")
+    @POST("api_v2/student/requests/get_signed_url.php")
     fun getSignedUrlForS3(@Field("object_key") testId: String,
                           @Field("active_session") accessToken: String): Call<String>
 
@@ -68,7 +68,7 @@ interface NetworkClient {
     fun uploadS3(@Url url: String, @Body file: RequestBody): Call<String>
 
     @FormUrlEncoded
-    @POST("api_v1/student/requests/save_test_submission.php")
+    @POST("api_v2/student/requests/save_test_submission.php")
     fun saveTest(
         @Field("stucare_id") stucareId: String,
         @Field("test_id") testId: String,
@@ -83,7 +83,7 @@ interface NetworkClient {
         ): Call<String>
 
     @FormUrlEncoded
-    @POST("api_v1/student/requests/get_subjective_question_paper.php")
+    @POST("api_v2/student/requests/get_subjective_question_paper.php")
     fun getSubjectiveTest(@Field("test_id") testId: String,
                           @Field("active_session") accessToken: String): Call<String>
 
@@ -92,7 +92,7 @@ interface NetworkClient {
 
 
     @FormUrlEncoded
-    @POST("api_v1/student/requests/save_subjective_test_submission.php")
+    @POST("api_v2/student/requests/save_subjective_test_submission.php")
     fun saveSubjectiveTests(
         @Field("stucare_id") userId: String,
         @Field("test_id") testId: String,
@@ -102,7 +102,7 @@ interface NetworkClient {
     ): Call<String>
 
     @FormUrlEncoded
-    @POST("api_v1/student/requests/mark_class_attendance.php")
+    @POST("api_v2/student/requests/mark_class_attendance.php")
     fun markLiveClassAttendance(
         @Field("stucare_id") userId: String,
         @Field("class_id") classId: String,
@@ -110,7 +110,7 @@ interface NetworkClient {
     ): Call<String>
 
     @FormUrlEncoded
-    @POST("api_v1/student/requests/get_objective_test_report.php")
+    @POST("api_v2/student/requests/get_objective_test_report.php")
     fun getObjectiveTestReport(
         @Field("stucare_id") stucareId: String,
         @Field("test_id") testId: String,

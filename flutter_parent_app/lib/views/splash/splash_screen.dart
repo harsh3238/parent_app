@@ -34,12 +34,15 @@ class SplashScreen extends StatelessWidget {
       if (modulesResponseObject.containsKey("status")) {
         if (modulesResponseObject["status"] == "success") {
           Map<String, dynamic> modulesData = modulesResponseObject['data'];
-          AppData().setAccessKey(modulesData['access_key']);
-          AppData().setSecretKey(modulesData['secrety_key']);
 
-          modulesData.remove('access_key');
-          modulesData.remove('secrety_key');
+          if(modulesData.containsKey("access_key")){
+            AppData().setAccessKey(modulesData['access_key']);
+            AppData().setSecretKey(modulesData['secrety_key']);
 
+            modulesData.remove('access_key');
+            modulesData.remove('secrety_key');
+
+          }
           var v = modulesData['app_version'];
           newAppVersion = int.parse(v ?? '0');
           await DbSchoolInfo().insertSchoolInfo(modulesData);
