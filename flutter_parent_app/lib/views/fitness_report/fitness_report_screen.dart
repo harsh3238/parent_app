@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:android_intent/android_intent.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:click_campus_parent/config/g_constants.dart';
 import 'package:click_campus_parent/data/app_data.dart';
 import 'package:dio/dio.dart';
@@ -60,8 +58,8 @@ class FitnessDeclarationState extends State<FitnessDeclaration>
                     },
                     itemBuilder: (context, index) {
                       var optionArray = _declarationList[index]["option"];
+                      var userResponse = _declarationList[index]["user_response"];
                       //Map<String, dynamic> map = json.decode(optionArray);
-                      //var dateTime = DateTime.parse("${_declarationList[index]['date_of_class']} ${_declarationList[index]['start_time']}");
                       return GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: () {},
@@ -78,6 +76,9 @@ class FitnessDeclarationState extends State<FitnessDeclaration>
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
+                                    Container(
+                                      height: 5,
+                                    ),
                                     Text(
                                       "Declaration :",
                                       style: TextStyle(
@@ -92,40 +93,48 @@ class FitnessDeclarationState extends State<FitnessDeclaration>
                                         Visibility(
                                           child: FlatButton(
                                             onPressed: () {
-                                              _saveDeclaration(
-                                                  _declarationList[index]
-                                                      ['session_id'],
-                                                  _declarationList[index]['id'],
-                                                  "yes");
+
+                                              if(userResponse["is_fill"] == true){
+                                                showSnackBar("Already responded \"${userResponse["response"]}\" to this question");
+                                              }else{
+                                                _saveDeclaration(
+                                                    _declarationList[index]
+                                                    ['session_id'], _declarationList[index]['id'],
+                                                    optionArray["0"]);
+                                              }
                                             },
                                             child: Text(
-                                              "Yes",
+                                              optionArray["0"],
                                               style: TextStyle(
-                                                  color: Colors.white),
+                                                  color: Colors.white, ),
                                             ),
-                                            color: Colors.indigoAccent,
+                                            color: userResponse["is_fill"] == true?Colors.indigo.withOpacity(0.6):
+                                            Colors.indigo,
                                           ),
                                           visible: true,
                                         ),
-                                        Visibility(
-                                            child: Container(
-                                              width: 10,
-                                            ),
-                                            visible: true),
+                                        Container(
+                                          width: 10,
+                                        ),
                                         FlatButton(
                                           onPressed: () {
-                                            _saveDeclaration(
-                                                _declarationList[index]
-                                                    ['session_id'],
-                                                _declarationList[index]['id'],
-                                                "no");
+                                            if(userResponse["is_fill"] == true){
+                                              showSnackBar("Already responded \"${userResponse["response"]}\" to this question");
+                                            }else{
+                                              _saveDeclaration(
+                                                  _declarationList[index]['session_id'],
+                                                  _declarationList[index]['id'],
+                                                  optionArray["1"]);
+                                            }
+
                                           },
                                           child: Text(
-                                            "No",
+                                            optionArray["1"],
                                             style:
                                                 TextStyle(color: Colors.white),
                                           ),
-                                          color: Colors.indigoAccent,
+                                          color: userResponse["is_fill"] == true?Colors.indigo.withOpacity(0.6):
+                                          Colors.indigo,
                                         ),
                                       ],
                                     ),
@@ -152,29 +161,37 @@ class FitnessDeclarationState extends State<FitnessDeclaration>
     return true;
   }
 
-  void _saveDeclaration(
-      String sessionId, String declarationId, String response) async {
+  void _saveDeclaration(int sessionId, int declarationId, String response) async {
     showProgressDialog();
+
+    DateTime now = new DateTime.now();
+    DateTime date = new DateTime(now.year, now.month, now.day);
+
+    final customDateFormat = new DateFormat('yyyy-MM-dd');
+    var todayDate = customDateFormat.format(date);
+
     String sessionToken = await AppData().getSessionToken();
     int stucareId = await AppData().getUserLoginId();
 
     var modulesResponse =
-        await http.post(GConstants.saveFitnessDeclarationRoute(), body: {
-      'declaration_id': declarationId,
+    await http.post(GConstants.saveFitnessDeclarationRoute(), body: {
+      'declaration_id': declarationId.toString(),
       'response': response,
       'stucare_id': stucareId.toString(),
-      'session_id': sessionId,
+      'session_id': sessionId.toString(),
+      'date': todayDate,
       'active_session': sessionToken,
     });
 
-    //print(modulesResponse.body);
+    debugPrint("${modulesResponse.request} : ${modulesResponse.body}");
 
     if (modulesResponse.statusCode == 200) {
       Map modulesResponseObject = json.decode(modulesResponse.body);
-      if (modulesResponseObject.containsKey("status")) {
-        if (modulesResponseObject["status"] == "success") {
+      if (modulesResponseObject.containsKey("success")) {
+        if (modulesResponseObject["success"] == true) {
           hideProgressDialog();
-          setState(() {});
+          showSnackBar("Response Saved", color: Colors.indigo);
+          _getDeclaration();
           return null;
         } else {
           hideProgressDialog();
@@ -194,7 +211,6 @@ class FitnessDeclarationState extends State<FitnessDeclaration>
 
   void _getDeclaration() async {
     _firstRunRoutineRan = true;
-    showProgressDialog();
     String sessionToken = await AppData().getSessionToken();
 
     DateTime now = new DateTime.now();
@@ -205,26 +221,23 @@ class FitnessDeclarationState extends State<FitnessDeclaration>
 
 
     var modulesResponse = await http.post(
-        "https://bds.stucarecloud.com/api_v1/student/requests/get_declaration.php",
+        GConstants.getFitnessDeclarationRoute(),
         body: {
-          'class_id': "3",
           'session_id': "3",
-          'date_to': mDate,
-          'active_session': "b8ebde7e-a069-4b2f-934f-f7f720c55d68",
+          'date': mDate,
+          'active_session': sessionToken,
         });
 
     debugPrint("${modulesResponse.request} : ${modulesResponse.body}");
 
     if (modulesResponse.statusCode == 200) {
       Map modulesResponseObject = json.decode(modulesResponse.body);
-      if (modulesResponseObject.containsKey("status")) {
-        if (modulesResponseObject["status"] == "success") {
-          hideProgressDialog();
+      if (modulesResponseObject.containsKey("success")) {
+        if (modulesResponseObject["success"] == true) {
           _declarationList = modulesResponseObject['data'];
           setState(() {});
           return;
         } else {
-          hideProgressDialog();
           showSnackBar(modulesResponseObject["message"]);
           return;
         }
@@ -236,6 +249,5 @@ class FitnessDeclarationState extends State<FitnessDeclaration>
     } else {
       showServerError();
     }
-    hideProgressDialog();
   }
 }

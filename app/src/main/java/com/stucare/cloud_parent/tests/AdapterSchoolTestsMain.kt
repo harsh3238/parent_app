@@ -107,7 +107,7 @@ class AdapterSchoolTestsMain(private val parentActivity: FragmentActivity,
                                     intent.putExtra("test_id", data.getInt("id").toString())
                                     intent.putExtra("duration", testTimeLeft)
                                     intent.putExtra("monitor_student", data.getInt("monitor_student"))
-                                    intent.putExtra("monitor_test", data.getString("monitor_test"))
+                                    intent.putExtra("monitor_test", data.optString("monitor_test"))
                                     intent.putExtra("user_id", mStucareId)
                                     parentActivity.startActivity(intent)
                                 } else {
@@ -131,7 +131,7 @@ class AdapterSchoolTestsMain(private val parentActivity: FragmentActivity,
                                     intent.putExtra("test_id", data.getInt("id").toString())
                                     intent.putExtra("duration", data.getLong("duration"))
                                     intent.putExtra("monitor_student", data.getInt("monitor_student"))
-                                    intent.putExtra("monitor_test", data.getString("monitor_test"))
+                                    intent.putExtra("monitor_test", data.optString("monitor_test"))
                                     intent.putExtra("user_id", mStucareId)
                                     parentActivity.startActivity(intent)
                                 } else {
@@ -147,7 +147,7 @@ class AdapterSchoolTestsMain(private val parentActivity: FragmentActivity,
                                     intent.putExtra("test_id", data.getInt("id").toString())
                                     intent.putExtra("duration", data.getLong("duration"))
                                     intent.putExtra("monitor_student", data.getInt("monitor_student"))
-                                    intent.putExtra("monitor_test", data.getString("monitor_test"))
+                                    intent.putExtra("monitor_test", data.optString("monitor_test"))
                                     intent.putExtra("user_id", mStucareId)
                                     parentActivity.startActivity(intent)
                                 } else {
@@ -170,7 +170,7 @@ class AdapterSchoolTestsMain(private val parentActivity: FragmentActivity,
                                 intent.putExtra("test_id", data.getInt("id").toString())
                                 intent.putExtra("duration", data.getLong("duration"))
                                 intent.putExtra("monitor_student", data.getInt("monitor_student"))
-                                intent.putExtra("monitor_test", data.getString("monitor_test"))
+                                intent.putExtra("monitor_test", data.optString("monitor_test"))
                                 intent.putExtra("user_id", mStucareId)
                                 parentActivity.startActivity(intent)
                             } else {
@@ -186,7 +186,7 @@ class AdapterSchoolTestsMain(private val parentActivity: FragmentActivity,
                                 intent.putExtra("test_id", data.getInt("id").toString())
                                 intent.putExtra("duration", data.getLong("duration"))
                                 intent.putExtra("monitor_student", data.getInt("monitor_student"))
-                                intent.putExtra("monitor_test", data.getString("monitor_test"))
+                                intent.putExtra("monitor_test", data.optString("monitor_test"))
                                 intent.putExtra("user_id", mStucareId)
                                 parentActivity.startActivity(intent)
                             } else {
