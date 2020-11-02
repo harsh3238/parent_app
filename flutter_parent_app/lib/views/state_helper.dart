@@ -1,6 +1,7 @@
 import 'package:click_campus_parent/data/models/the_session.dart';
 import 'package:click_campus_parent/data/session_db_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class StateHelper {
   BuildContext _context;
@@ -63,6 +64,20 @@ class StateHelper {
     }
   }
 
+  //function to show toast message on screen
+  void showShortToast(BuildContext context, String message){
+    Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_SHORT);
+  }
+
+  //function to show long time toast message on screen
+  void showLongToast(BuildContext context, String message){
+    Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_LONG);
+  }
+
 
   void showSnackBar(String text, {Color color = Colors.red}) {
     _scaffoldState.currentState
@@ -73,3 +88,5 @@ class StateHelper {
     showSnackBar("Server error occured", color: Colors.red.shade800);
   }
 }
+
+

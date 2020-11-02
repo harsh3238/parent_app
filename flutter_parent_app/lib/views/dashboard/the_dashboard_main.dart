@@ -59,6 +59,9 @@ class DashboardMainState extends State<DashboardMain>
     //print(loginResponse.body);
 
     if (loginResponse.statusCode == 200) {
+      if(loginResponse.body == "auth error"){
+        showShortToast(context, "Session Expired, Please login again...");
+      }
       Map loginResponseObject = json.decode(loginResponse.body);
       if (loginResponseObject.containsKey("status")) {
         if (loginResponseObject["status"] == "success") {

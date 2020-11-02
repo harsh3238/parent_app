@@ -7,12 +7,26 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
 
+    lintOptions {
+        disable 'InvalidPackage'
+        checkReleaseBuilds false
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("$rootDir/cloud_parent.jks")
+            storePassword 'stucare'
+            keyPassword 'stucare'
+            keyAlias 'key'
+        }
+    }
+
     defaultConfig {
         applicationId "com.stucare.cloud_parent"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 40
-        versionName "1.0"
+        versionCode 13
+        versionName "1.0.13"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
@@ -24,6 +38,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {

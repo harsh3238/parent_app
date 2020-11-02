@@ -81,8 +81,8 @@ class GConstants {
   static const _LIVE_CLASSES = API_VERSION+ "/student/requests/get_live_classes.php";
   static const _DOWNLOADS = API_VERSION+ "/student/requests/get_downloads.php";
   static const _DISABLE_FLIP = API_VERSION+ "/student/requests/disbale_flip.php";
-  static const _GET_FITNESS_DECLARATION = API_VERSION+ "/getDeclaration.php";
-  static const _SAVE_FITNESS_DECLARATION = API_VERSION+ "/saveDeclaration.php";
+  static const _GET_FITNESS_DECLARATION = API_VERSION+ "/getDeclaration";
+  static const _SAVE_FITNESS_DECLARATION = API_VERSION+ "/saveDeclaration";
 
   static setSchoolRootUrl(String rootUrl) {
     SCHOOL_ROOT = rootUrl;

@@ -234,6 +234,10 @@ class FitnessDeclarationState extends State<FitnessDeclaration>
       Map modulesResponseObject = json.decode(modulesResponse.body);
       if (modulesResponseObject.containsKey("success")) {
         if (modulesResponseObject["success"] == true) {
+          if(modulesResponseObject['data'] == ""){
+            showSnackBar(modulesResponseObject['message'], color: Colors.indigo);
+            return;
+          }
           _declarationList = modulesResponseObject['data'];
           setState(() {});
           return;
