@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:click_campus_parent/config/g_constants.dart';
 import 'package:click_campus_parent/data/app_data.dart';
@@ -42,7 +43,7 @@ class ProfileOnePageState extends State<ProfileOnePage> with StateHelper {
       'active_session': sessionToken,
     });
 
-    //print(profileResponse.body);
+    log("${profileResponse.request} : ${profileResponse.body}");
 
     if (profileResponse.statusCode == 200) {
       String response = profileResponse.body;

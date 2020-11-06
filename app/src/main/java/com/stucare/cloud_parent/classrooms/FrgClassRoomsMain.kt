@@ -6,12 +6,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.stucare.cloud_parent.R
 import com.stucare.cloud_parent.databinding.ClassRoomMainBinding
 import com.stucare.cloud_parent.retrofit.NetworkClient
+import com.stucare.cloud_parent.tests.CustomAlertDialog
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -59,9 +61,22 @@ class FrgClassRoomsMain : Fragment() {
         call.enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
                 if (response != null && response.isSuccessful) {
-                    val responeObject = JSONObject(response.body().toString().trim())
-                    if (responeObject.has("status") && responeObject.getString("status") == "success") {
-                        val dataObject = responeObject.getJSONArray("data")
+                    var responseString = response.body();
+                    if(responseString == "auth error"){
+                        progressDialog.dismiss()
+                        showAuthDialog()
+                        return
+                    }
+                    val responseObject = JSONObject(response.body().toString().trim())
+                    if (responseObject.has("status") && responseObject.getString("status") == "success") {
+                        val dataObject = responseObject.getJSONArray("data")
+                        if(dataObject.length()==0){
+                            Toast.makeText(
+                                activity,
+                                "No Live Class Available",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                         contentView.recyclerView.adapter =
                             AdapterClassRoom(activity as ActivityClassesTabs, dataObject) {
                                 markAttendance(it)
@@ -69,7 +84,6 @@ class FrgClassRoomsMain : Fragment() {
                     }
                 }
                 progressDialog.dismiss()
-
             }
 
             override fun onFailure(call: Call<String>?, t: Throwable?) {
@@ -89,4 +103,25 @@ class FrgClassRoomsMain : Fragment() {
           }
         })
     }
+
+    fun showAuthDialog() {
+        val d = CustomAlertDialog(requireContext(), R.style.PurpleTheme)
+        d.setCancelable(false)
+        d.setTitle("Auth Failure... !")
+        d.setMessage("There is issue with authentication token, please try again.")
+        d.positiveButton.text = "Ok"
+        d.negativeButton.text = "Close"
+
+        d.positiveButton.setOnClickListener {
+            d.dismiss()
+            this?.activity?.finish();
+        }
+
+        d.negativeButton.setOnClickListener {
+            d.dismiss()
+            this?.activity?.finish();
+        }
+        d.show()
+    }
+
 }

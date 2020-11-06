@@ -1,14 +1,12 @@
 
 
-import android.content.ClipData.newPlainText
-import android.content.ClipboardManager
-import android.content.Context
+import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.content.res.ColorStateList
+import android.net.Uri
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
@@ -21,8 +19,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class AdapterClassRoom(val parentActivity: ActivityClassesTabs, val data: JSONArray,
-                       val goToClassClicked: (classId: String) -> Unit) : RecyclerView.Adapter<AdapterClassRoom.mViewHolder>() {
+class AdapterClassRoom(
+    val parentActivity: ActivityClassesTabs, val data: JSONArray,
+    val goToClassClicked: (classId: String) -> Unit
+) : RecyclerView.Adapter<AdapterClassRoom.mViewHolder>() {
     var tFormat = SimpleDateFormat("HH:mm:ss")
     var tShowFormat = SimpleDateFormat("hh:mm a")
 
@@ -90,41 +90,73 @@ class AdapterClassRoom(val parentActivity: ActivityClassesTabs, val data: JSONAr
 
 
             boundView.btnGoToClass.setOnClickListener {
-                val meetingService: MeetingService = ZoomSDK.getInstance().meetingService
-                if (meetingService != null) {
-                    val opts = JoinMeetingOptions()
+                if(data.getJSONObject(position).getString("live_type")=="gmeet"){
 
-                    opts.no_driving_mode = true
-                    opts.no_invite = true
-                    opts.no_meeting_end_message = false
-                    opts.no_titlebar = false
-                    opts.no_bottom_toolbar = false
-                    opts.no_dial_in_via_phone = true
-                    opts.no_dial_out_to_phone = true
-                    opts.no_disconnect_audio = true
-                    opts.no_share = true
-                    opts.invite_options =
-                        InviteOptions.INVITE_VIA_EMAIL + InviteOptions.INVITE_VIA_SMS
-                    opts.no_audio = false
-                    opts.no_video = true
-                    opts.meeting_views_options =
-                        MeetingViewsOptions.NO_BUTTON_SHARE + MeetingViewsOptions.NO_TEXT_MEETING_ID + MeetingViewsOptions.NO_TEXT_PASSWORD
-                    opts.no_meeting_error_message = true
-
-                    val params = JoinMeetingParams()
-
-                    params.displayName = parentActivity.studentName
-                    params.meetingNo = data.getJSONObject(position).getString("live_link")
-                    params.password = data.getJSONObject(position).getString("live_password")
-
-                    val response =
-                        meetingService.joinMeetingWithParams(parentActivity, params, opts)
                     try {
                         goToClassClicked(data.getJSONObject(position).getString("id"))
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
+
+                    Log.d("LIVE_CLASS", "GMEET")
+                    val mapIntent: Intent = Uri.parse(
+                        data.getJSONObject(position).getString("live_link")
+                    ).let { liveClass ->
+                        Intent(Intent.ACTION_VIEW, liveClass)
+                    }
+                    try {
+                        parentActivity.startActivity(mapIntent);
+                    } catch (e: ActivityNotFoundException) {
+                        Toast.makeText(
+                            parentActivity,
+                            "No app found to start GMeet live class",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+
+
+                }else if(data.getJSONObject(position).getString("live_type")=="youtube"){
+                    Log.d("LIVE_CLASS", "YOUTUBE")
+
+                }else if(data.getJSONObject(position).getString("live_type")=="zoom"){
+                    Log.d("LIVE_CLASS", "ZOOM")
+                    val meetingService: MeetingService = ZoomSDK.getInstance().meetingService
+                    if (meetingService != null) {
+                        val opts = JoinMeetingOptions()
+
+                        opts.no_driving_mode = true
+                        opts.no_invite = true
+                        opts.no_meeting_end_message = false
+                        opts.no_titlebar = false
+                        opts.no_bottom_toolbar = false
+                        opts.no_dial_in_via_phone = true
+                        opts.no_dial_out_to_phone = true
+                        opts.no_disconnect_audio = true
+                        opts.no_share = true
+                        opts.invite_options =
+                            InviteOptions.INVITE_VIA_EMAIL + InviteOptions.INVITE_VIA_SMS
+                        opts.no_audio = false
+                        opts.no_video = true
+                        opts.meeting_views_options =
+                            MeetingViewsOptions.NO_BUTTON_SHARE + MeetingViewsOptions.NO_TEXT_MEETING_ID + MeetingViewsOptions.NO_TEXT_PASSWORD
+                        opts.no_meeting_error_message = true
+
+                        val params = JoinMeetingParams()
+
+                        params.displayName = parentActivity.studentName
+                        params.meetingNo = data.getJSONObject(position).getString("live_link")
+                        params.password = data.getJSONObject(position).getString("live_password")
+
+                        val response =
+                            meetingService.joinMeetingWithParams(parentActivity, params, opts)
+                        try {
+                            goToClassClicked(data.getJSONObject(position).getString("id"))
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
                 }
+
             }
 
             itemView.setOnClickListener {

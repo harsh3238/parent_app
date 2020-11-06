@@ -70,7 +70,7 @@ class ActivityClassesTabs : AppCompatActivity(), InitAuthSDKCallback {
         } else {
             ZoomSDK.getInstance().meetingSettingsHelper.enable720p(false)
             ZoomSDK.getInstance().meetingSettingsHelper.enableShowMyMeetingElapseTime(true)
-            Toast.makeText(this, "Initialize Zoom SDK successfully.", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Live Class Initialized.", Toast.LENGTH_LONG).show()
         }
     }
 
