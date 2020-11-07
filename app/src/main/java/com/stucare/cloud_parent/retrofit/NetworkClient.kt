@@ -104,6 +104,9 @@ interface NetworkClient {
     @FormUrlEncoded
     @POST("api_v2/student/requests/mark_class_attendance.php")
     fun markLiveClassAttendance(
+        @Field("section_id") sectionId: String,
+        @Field("subject_id") subjectId: String,
+        @Field("meeting_id") meetingId: String,
         @Field("stucare_id") userId: String,
         @Field("class_id") classId: String,
         @Field("active_session") accessToken: String

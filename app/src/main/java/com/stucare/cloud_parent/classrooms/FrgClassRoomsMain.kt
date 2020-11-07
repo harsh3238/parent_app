@@ -3,6 +3,7 @@ package com.stucare.cloud_parent.classrooms
 import AdapterClassRoom
 import android.app.ProgressDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -92,9 +93,16 @@ class FrgClassRoomsMain : Fragment() {
         })
     }
 
-    fun markAttendance(classId: String) {
+    fun markAttendance(meeting: JSONObject) {
+        Log.d("LIVECLASS", meeting.toString())
         val parentActivity = activity as ActivityClassesTabs
-        val call = NetworkClient.create().markLiveClassAttendance(parentActivity.stucareId.toString(), classId, parentActivity.accessToken!!)
+        val call = NetworkClient.create().markLiveClassAttendance(
+            meeting.getString("section_id"),
+            meeting.getString("subject_id"),
+            meeting.getString("id"),
+            parentActivity.stucareId.toString(),
+            meeting.getString("class_id"),
+            parentActivity.accessToken!!)
         call.enqueue(object : Callback<String> {
           override fun onResponse(call: Call<String>?, response: Response<String>?) {
           }

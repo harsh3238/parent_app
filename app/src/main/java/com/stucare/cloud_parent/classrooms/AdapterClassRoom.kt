@@ -1,5 +1,3 @@
-
-
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
@@ -14,6 +12,7 @@ import com.stucare.cloud_parent.R
 import com.stucare.cloud_parent.classrooms.ActivityClassesTabs
 import com.stucare.cloud_parent.databinding.ClassRoomPastClassItemBinding
 import org.json.JSONArray
+import org.json.JSONObject
 import us.zoom.sdk.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -21,7 +20,7 @@ import java.util.*
 
 class AdapterClassRoom(
     val parentActivity: ActivityClassesTabs, val data: JSONArray,
-    val goToClassClicked: (classId: String) -> Unit
+    val goToClassClicked: (meeting: JSONObject) -> Unit
 ) : RecyclerView.Adapter<AdapterClassRoom.mViewHolder>() {
     var tFormat = SimpleDateFormat("HH:mm:ss")
     var tShowFormat = SimpleDateFormat("hh:mm a")
@@ -90,10 +89,10 @@ class AdapterClassRoom(
 
 
             boundView.btnGoToClass.setOnClickListener {
-                if(data.getJSONObject(position).getString("live_type")=="gmeet"){
+                if (data.getJSONObject(position).getString("live_type") == "gmeet") {
 
                     try {
-                        goToClassClicked(data.getJSONObject(position).getString("id"))
+                        goToClassClicked(data.getJSONObject(position))
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -115,10 +114,10 @@ class AdapterClassRoom(
                     }
 
 
-                }else if(data.getJSONObject(position).getString("live_type")=="youtube"){
+                } else if (data.getJSONObject(position).getString("live_type") == "youtube") {
                     Log.d("LIVE_CLASS", "YOUTUBE")
 
-                }else if(data.getJSONObject(position).getString("live_type")=="zoom"){
+                } else if (data.getJSONObject(position).getString("live_type") == "zoom") {
                     Log.d("LIVE_CLASS", "ZOOM")
                     val meetingService: MeetingService = ZoomSDK.getInstance().meetingService
                     if (meetingService != null) {
@@ -150,7 +149,7 @@ class AdapterClassRoom(
                         val response =
                             meetingService.joinMeetingWithParams(parentActivity, params, opts)
                         try {
-                            goToClassClicked(data.getJSONObject(position).getString("id"))
+                            goToClassClicked(data.getJSONObject(position))
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
