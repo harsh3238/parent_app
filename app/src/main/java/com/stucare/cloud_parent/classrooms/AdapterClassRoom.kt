@@ -97,10 +97,13 @@ class AdapterClassRoom(
                         e.printStackTrace()
                     }
 
+                    var liveLink = "https://"+data.getJSONObject(position).getString("live_link")
+                    if(liveLink.startsWith("http")){
+                        liveLink = data.getJSONObject(position).getString("live_link")
+                    }
+
                     Log.d("LIVE_CLASS", "GMEET")
-                    val mapIntent: Intent = Uri.parse(
-                        data.getJSONObject(position).getString("live_link")
-                    ).let { liveClass ->
+                    val mapIntent: Intent = Uri.parse(liveLink).let { liveClass ->
                         Intent(Intent.ACTION_VIEW, liveClass)
                     }
                     try {
