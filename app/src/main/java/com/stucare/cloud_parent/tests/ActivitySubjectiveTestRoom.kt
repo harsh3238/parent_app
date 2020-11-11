@@ -1,57 +1,31 @@
 package com.stucare.cloud_parent.tests
 
-import android.Manifest
-import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.provider.MediaStore
 import android.view.View
 import android.view.WindowManager
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.iceteck.silicompressorr.SiliCompressor
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionDeniedResponse
-import com.karumi.dexter.listener.PermissionGrantedResponse
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.single.PermissionListener
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraOptions
 import com.otaliastudios.cameraview.PictureResult
 import com.squareup.picasso.Picasso
 import com.stucare.cloud_parent.AppCommonRvAdapter
 import com.stucare.cloud_parent.DialogPhotoViewer
-import com.stucare.cloud_parent.PDFViewActivity
 import com.stucare.cloud_parent.R
 import com.stucare.cloud_parent.databinding.ActivitySubjectiveTestBinding
 import com.stucare.cloud_parent.retrofit.NetworkClient
-import com.tom_roush.pdfbox.pdmodel.PDDocument
-import com.tom_roush.pdfbox.pdmodel.PDPage
-import com.tom_roush.pdfbox.pdmodel.PDPageContentStream
-import com.tom_roush.pdfbox.pdmodel.graphics.image.JPEGFactory
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
-import org.jetbrains.anko.doAsync
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import toast
 import java.io.File
-import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.io.InputStream
 import java.text.NumberFormat
 
 class ActivitySubjectiveTestRoom : AppCompatActivity() {
@@ -119,8 +93,16 @@ class ActivitySubjectiveTestRoom : AppCompatActivity() {
     }
 
 
+    private fun loadImageQuestionPaper(imageUrl: String){
+        if(imageUrl.startsWith("http")){
+            Picasso.get().load(imageUrl).into(mContentView.ivQuestionPaper)
+        }else{
+            val f = File(imageUrl)
+            Picasso.get().load(f).fit().centerInside().into(mContentView.ivQuestionPaper)
+        }
+    }
 
-    private fun loadQuestionPaper(filePath: String) {
+    private fun loadPDFQuestionPaper(filePath: String) {
 
         mContentView.pdfView.fromFile(File(filePath))
             .defaultPage(0)
@@ -149,14 +131,25 @@ class ActivitySubjectiveTestRoom : AppCompatActivity() {
                         ) {
                             val jsonArray = jsonObject.getJSONObject("data")
                             if (jsonArray.getString("media_type") == "image") {
-                                val d = DialogPhotoViewer(
+                                val fileUrl = jsonArray.getString("file_url")
+
+                                mContentView.ivQuestionPaper.visibility = View.VISIBLE;
+                                mContentView.pdfView.visibility = View.GONE;
+
+                                loadImageQuestionPaper(fileUrl)
+
+                                /*val d = DialogPhotoViewer(
                                     this@ActivitySubjectiveTestRoom,
                                     R.style.Theme_AppCompat_NoActionBar,
                                     jsonArray.getString("file_url")
                                 )
-                                d.show()
+                                d.show()*/
                                 progressBar.dismiss()
                             } else if (jsonArray.getString("media_type") == "pdf") {
+
+                                mContentView.ivQuestionPaper.visibility = View.GONE;
+                                mContentView.pdfView.visibility = View.VISIBLE;
+
                                 val fileUrl = jsonArray.getString("file_url")
                                 val fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1, fileUrl.length)
                                 val imageCacheDir = File(cacheDir.absolutePath + "/" + fileName)
@@ -170,7 +163,7 @@ class ActivitySubjectiveTestRoom : AppCompatActivity() {
                                     intent.putExtra("hash", "")
                                     startActivity(intent) */
 
-                                    loadQuestionPaper(imageCacheDir.absolutePath)
+                                    loadPDFQuestionPaper(imageCacheDir.absolutePath)
                                     progressBar.dismiss()
                                     return@let
                                 }
@@ -211,12 +204,19 @@ class ActivitySubjectiveTestRoom : AppCompatActivity() {
                                             intent.putExtra("file", imageCacheDir.absolutePath)
                                             intent.putExtra("hash", "")
                                             startActivity(intent)*/
-                                            loadQuestionPaper(imageCacheDir.absolutePath)
+                                            loadPDFQuestionPaper(imageCacheDir.absolutePath)
                                             progressBar.dismiss()
                                         }
                                     }
                                 })
                             }
+                        }else{
+                            Toast.makeText(
+                                this@ActivitySubjectiveTestRoom,
+                                "Unable to  load Question Paper, Please contact school...",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            progressBar.dismiss()
                         }
 
                     } else {
@@ -229,10 +229,9 @@ class ActivitySubjectiveTestRoom : AppCompatActivity() {
                 progressBar.dismiss()
                 Toast.makeText(
                     this@ActivitySubjectiveTestRoom,
-                    "There has been error, please try again",
+                    "There has been error, Please try again...",
                     Toast.LENGTH_SHORT
-                )
-                    .show()
+                ).show()
             }
 
 
