@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:click_campus_parent/config/g_constants.dart';
 import 'package:click_campus_parent/data/app_data.dart';
@@ -25,7 +26,7 @@ class SplashScreen extends StatelessWidget {
     var modulesResponse = await http.post(GConstants.getSchoolInfoRoute(),
         body: {'school_id': sId.toString()});
 
-    //debugPrint("${modulesResponse.request} : ${modulesResponse.body}");
+    log("${modulesResponse.request} : ${modulesResponse.body}");
 
     int newAppVersion;
 

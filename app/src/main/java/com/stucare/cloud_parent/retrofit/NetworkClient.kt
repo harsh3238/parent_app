@@ -123,7 +123,7 @@ interface NetworkClient {
     abstract fun getOptionalTestQuestions(testId: String?): Call<String>
 
     companion object {
-        var baseUrl: String = "https://demo.stucarecloud.com/"
+        var baseUrl: String = "https://demo.stucarecloud.in/"
 
         fun create(): NetworkClient {
             return getRetrofit().create(NetworkClient::class.java)

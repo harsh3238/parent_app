@@ -9,7 +9,7 @@ class GConstants {
     {
       'school_id': 1,
       'school_name': 'Demo Public School',
-      'url': 'https://demo.stucarecloud.com/'
+      'url': 'https://demo.stucarecloud.in/'
     }
   ];
   static const _SCHOOL_ID = 1;
@@ -22,10 +22,10 @@ class GConstants {
 
   static const SCHOOL_NAME = "Demo Public School";
 
-  static String SCHOOL_ROOT = "https://demo.stucarecloud.com/";
-  static String SCHOOL_ROOT_AUTH = "demo.stucarecloud.com";
+  static String SCHOOL_ROOT = "https://demo.stucarecloud.in/";
+  static String SCHOOL_ROOT_AUTH = "demo.stucarecloud.in";
 
-  static const _SCHOOL_INFO_ROOT = "https://schools.stucarecloud.com/";
+  static const _SCHOOL_INFO_ROOT = "https://schools.stucarecloud.in/";
   static const _SCHOOL_INFO_SCHOOL_DATE_ROUTE = API_VERSION+"/requests/school_info.php";
 
   static const _SUPER_USER_ROUTE = API_VERSION+"/requests/login_super_user.php";

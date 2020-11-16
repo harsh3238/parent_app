@@ -29,7 +29,7 @@ class FlutterMainActivity : FlutterActivity() {
         mProgressDialog.setMessage("Please wait...")
 
         val preferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        NetworkClient.baseUrl = preferences.getString("flutter.normal_login_school_url", "https://demo.stucarecloud.com/")!!
+        NetworkClient.baseUrl = preferences.getString("flutter.normal_login_school_url", "https://demo.stucarecloud.in/")!!
 
        MethodChannel(
             flutterEngine?.dartExecutor?.binaryMessenger,

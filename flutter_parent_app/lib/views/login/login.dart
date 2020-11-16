@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:click_campus_parent/config/g_constants.dart';
 import 'package:click_campus_parent/data/app_data.dart';
@@ -55,7 +56,8 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
 
     var schoolDataResponse = await http.post(GConstants.schoolDataRoute(),
         body: {'school_id': _schoolIdTextController.text});
-    //print(schoolDataResponse.body);
+
+    debugPrint("${schoolDataResponse.request} : ${schoolDataResponse.body}");
 
     if (schoolDataResponse.statusCode == 200) {
       ///Getting School Data
@@ -73,7 +75,8 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
           'school_id': sId.toString()
         });
 
-        //print(loginResponse.body);
+        log("${loginResponse.request} : ${loginResponse.body}");
+
         if (loginResponse.statusCode == 200) {
           Map loginResponseObject = json.decode(loginResponse.body);
           if (loginResponseObject.containsKey("status")) {
