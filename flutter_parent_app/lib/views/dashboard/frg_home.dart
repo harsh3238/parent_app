@@ -372,7 +372,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
           children: <Widget>[
             _dashSliders.length > 0
                 ? CarouselSlider(
-                    height: 250.0,
+                    height: MediaQuery.of(context).size.height/3,
                     autoPlay: true,
                     viewportFraction: 1.0,
                     autoPlayInterval: Duration(seconds: 2),
@@ -380,8 +380,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
                       return Builder(
                         builder: (BuildContext context) {
                           return Container(
-                            width: 500,
-                            height: 500,
+                            //height: 500,
                             child: CachedNetworkImage(
                               imageUrl: i['file_url'],
                               imageBuilder: (context, imageProvider) => Container(
@@ -397,7 +396,8 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
                           /*child: Image.network(i['file_url'],
                                   fit: BoxFit.cover));*/
                         },
-                      );                    }).toList(),
+                      );
+                    }).toList(),
                     pauseAutoPlayOnTouch: Duration(seconds: 2),
                   )
                 : Container(
