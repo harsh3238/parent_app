@@ -219,4 +219,11 @@ class AppData {
     return null;
   }
 
+  Future<void> clearSharedPrefs() async {
+    await getPrefs();
+    await _prefs.clear();
+    return null;
+  }
+
+
 }

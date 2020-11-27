@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:android_intent/android_intent.dart';
@@ -156,7 +157,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
       'active_session': sessionToken,
     });
 
-    //print(modulesResponse.body);
+    log("${modulesResponse.request} : ${modulesResponse.body}");
 
     if (modulesResponse.statusCode == 200) {
       Map modulesResponseObject = json.decode(modulesResponse.body);
@@ -191,7 +192,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
       'active_session': sessionToken,
     });
 
-    //print(dashSlidersResponse.body);
+    log("${dashSlidersResponse.request} : ${dashSlidersResponse.body}");
 
     if (dashSlidersResponse.statusCode == 200) {
       Map dashSlidersResponseObject = json.decode(dashSlidersResponse.body);
@@ -223,7 +224,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
       'active_session': sessionToken,
     });
 
-    //print(dashSlidersResponse.body);
+    log("${dashSlidersResponse.request} : ${dashSlidersResponse.body}");
 
     if (dashSlidersResponse.statusCode == 200) {
       Map dashSlidersResponseObject = json.decode(dashSlidersResponse.body);
@@ -252,7 +253,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
     var schoolInfoRs = await http.post(GConstants.getSchoolInfoRoute(),
         body: {'school_id': sId.toString()});
 
-    //print(schoolInfoRs.body);
+    log("${schoolInfoRs.request} : ${schoolInfoRs.body}");
 
     if (schoolInfoRs.statusCode == 200) {
       Map schoolInfoRsObject = json.decode(schoolInfoRs.body);

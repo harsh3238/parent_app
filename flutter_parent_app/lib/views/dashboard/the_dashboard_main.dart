@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:click_campus_parent/config/g_constants.dart';
@@ -56,11 +57,11 @@ class DashboardMainState extends State<DashboardMain>
       'school_id': sId.toString()
     });
 
-    //print(loginResponse.body);
+    debugPrint("${loginResponse.request} : ${loginResponse.body}");
 
     if (loginResponse.statusCode == 200) {
       if(loginResponse.body == "auth error"){
-        showShortToast(context, "Session Expired, Please login again...");
+        showSessionDialog("Session Expired");
       }
       Map loginResponseObject = json.decode(loginResponse.body);
       if (loginResponseObject.containsKey("status")) {
@@ -69,31 +70,7 @@ class DashboardMainState extends State<DashboardMain>
           return null;
         } else {
           hideProgressDialog();
-          await AppData().deleteAllUsers();
-          await StateSelectImpersonation.saveImpersonationStatus(null, null);
-          showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text("Error occurred"),
-                  content: Text(loginResponseObject["message"]),
-                  actions: <Widget>[
-                    FlatButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (BuildContext context) {
-                          return Scaffold(
-                            body: SplashScreen(),
-                          );
-                        }));
-                      },
-                      child: Text("Okay"),
-                    )
-                  ],
-                );
-              });
+          showSessionDialog(loginResponseObject["message"]);
           return null;
         }
       } else {
@@ -112,7 +89,7 @@ class DashboardMainState extends State<DashboardMain>
       'active_session': sessionToken,
     });
 
-    //print(modulesResponse.body);
+    debugPrint("${modulesResponse.request} : ${modulesResponse.body}");
 
     if (modulesResponse.statusCode == 200) {
       Map modulesResponseObject = json.decode(modulesResponse.body);
@@ -146,7 +123,7 @@ class DashboardMainState extends State<DashboardMain>
       'active_session': sessionToken,
     });
 
-    debugPrint("${siblingsResponse.body} : ${siblingsResponse.body}");
+    debugPrint("${siblingsResponse.request} : ${siblingsResponse.body}");
 
     if (siblingsResponse.statusCode == 200) {
       Map siblingsResponseObject = json.decode(siblingsResponse.body);
@@ -220,6 +197,7 @@ class DashboardMainState extends State<DashboardMain>
     return widgets;
   }
 
+
   void _setFirebaseId(String firebaseToken) async {
     int userLoginId = await AppData().getUserLoginId();
     String sessionToken = await AppData().getSessionToken();
@@ -266,6 +244,7 @@ class DashboardMainState extends State<DashboardMain>
       //print("Settings registered: $settings");
     });
   }
+
 
   Future<void> _showNotification(String title, String body) async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
@@ -425,6 +404,46 @@ class DashboardMainState extends State<DashboardMain>
       bottomNavigationBar: botNavBar,
     );
   }
+
+  void showSessionDialog(String msg) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Authentication Failed"),
+            content: Text(msg+", Please login again to continue using app"),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  _logOutUser();
+                },
+                child: Text("Login"),
+              )
+            ],
+          );
+        });
+
+  }
+
+  void _logOutUser() async {
+    showProgressDialog();
+    Future.delayed(Duration(milliseconds: 1500), () async {
+      await AppData().deleteAllUsers();
+      await AppData().clearSharedPrefs();
+      await StateSelectImpersonation.saveImpersonationStatus(null, null);
+      hideProgressDialog();
+      //Navigator.pop(context);
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (BuildContext context) {
+            return Scaffold(
+              body: SplashScreen(),
+            );
+          }));
+    });
+  }
+
 }
 
 class FullAdmissionRootView extends InheritedWidget {
