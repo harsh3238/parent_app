@@ -61,8 +61,11 @@ class DashboardMainState extends State<DashboardMain>
 
     if (loginResponse.statusCode == 200) {
       if(loginResponse.body == "auth error"){
+        hideProgressDialog();
         showSessionDialog("Session Expired");
+        return;
       }
+
       Map loginResponseObject = json.decode(loginResponse.body);
       if (loginResponseObject.containsKey("status")) {
         if (loginResponseObject["status"] == "success") {
@@ -432,7 +435,7 @@ class DashboardMainState extends State<DashboardMain>
     Future.delayed(Duration(milliseconds: 1500), () async {
       await AppData().deleteAllUsers();
       await AppData().clearSharedPrefs();
-      await StateSelectImpersonation.saveImpersonationStatus(null, null);
+      //await StateSelectImpersonation.saveImpersonationStatus(null, null);
       hideProgressDialog();
       //Navigator.pop(context);
       Navigator.pushReplacement(context,
@@ -443,7 +446,6 @@ class DashboardMainState extends State<DashboardMain>
           }));
     });
   }
-
 }
 
 class FullAdmissionRootView extends InheritedWidget {

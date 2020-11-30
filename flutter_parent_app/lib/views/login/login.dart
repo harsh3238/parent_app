@@ -7,6 +7,7 @@ import 'package:click_campus_parent/data/app_data.dart';
 import 'package:click_campus_parent/data/db_school_info.dart';
 import 'package:click_campus_parent/views/dashboard/the_dashboard_main.dart';
 import 'package:click_campus_parent/views/login/activity_impersonation.dart';
+import 'package:click_campus_parent/views/splash/splash_screen.dart';
 import 'package:click_campus_parent/views/state_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
@@ -57,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
     var schoolDataResponse = await http.post(GConstants.schoolDataRoute(),
         body: {'school_id': _schoolIdTextController.text});
 
-    debugPrint("${schoolDataResponse.request} : ${schoolDataResponse.body}");
+    log("${schoolDataResponse.request} : ${schoolDataResponse.body}");
 
     if (schoolDataResponse.statusCode == 200) {
       ///Getting School Data
@@ -85,6 +86,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
               if (loginResponseObject["otp"] == "firebase") {
                 _verifyPhoneNumber();
               } else {
+               // _verifyPhoneNumber();
                 hideProgressDialog();
                 setState(() {
                   _showOtpUi = true;
@@ -249,9 +251,10 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
 
     final PhoneVerificationFailed verificationFailed =
         (AuthException authException) {
+      debugPrint("Auth Exception:"+authException.message);
       hideProgressDialog();
       _scaffoldState.currentState?.showSnackBar(SnackBar(
-        content: Text("Firebase auth error"),
+        content: Text("Firebase auth error: "+authException.message),
       ));
     };
 
@@ -775,4 +778,5 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
       });
     }
   }
+
 }

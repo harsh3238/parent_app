@@ -18,12 +18,14 @@ import 'package:click_campus_parent/views/fee/fee_main.dart';
 import 'package:click_campus_parent/views/fitness_report/fitness_report_screen.dart';
 import 'package:click_campus_parent/views/homework/homework_main.dart';
 import 'package:click_campus_parent/views/leave/leave_main.dart';
+import 'package:click_campus_parent/views/login/select_impersonation.dart';
 import 'package:click_campus_parent/views/news/news_main.dart';
 import 'package:click_campus_parent/views/notifications/notification_main.dart';
 import 'package:click_campus_parent/views/online_classes/online_classes_tab_main.dart';
 import 'package:click_campus_parent/views/photo_gallery/photo_gallery_main.dart';
 import 'package:click_campus_parent/views/polls/polls.dart';
 import 'package:click_campus_parent/views/references/references_main_list.dart';
+import 'package:click_campus_parent/views/splash/splash_screen.dart';
 import 'package:click_campus_parent/views/state_helper.dart';
 import 'package:click_campus_parent/views/syllabus/syllabus_main.dart';
 import 'package:click_campus_parent/views/teachers/teachers_main.dart';
@@ -146,7 +148,6 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
     //setFlipLoginInfo();
     String secretKey = await AppData().getSecretKey();
     String accessKey = await AppData().getAccessKey();
-    debugPrint("SECRET_KEY:${secretKey} , ACCESS_KEY:${accessKey}");
 
     var sId = await GConstants.schoolId();
     String sessionToken = await AppData().getSessionToken();
@@ -160,7 +161,16 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
     log("${modulesResponse.request} : ${modulesResponse.body}");
 
     if (modulesResponse.statusCode == 200) {
+
       Map modulesResponseObject = json.decode(modulesResponse.body);
+
+      String response = modulesResponse.body;
+      if(response == "auth error"){
+        hideProgressDialog();
+        return;
+      }
+
+
       if (modulesResponseObject.containsKey("status")) {
         if (modulesResponseObject["status"] == "success") {
           List<dynamic> modulesData = modulesResponseObject['data'];
@@ -812,4 +822,6 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
 
     //print(homeworkResponse.body);
   }
+
+
 }
