@@ -219,6 +219,39 @@ class AppData {
     return null;
   }
 
+  Future<String> getBucketName() async {
+    await getPrefs();
+    return _prefs.getString("aws_bucket_name") ?? null;
+  }
+
+  Future<void> setBucketName(String bucketName) async {
+    await getPrefs();
+    _prefs.setString("aws_bucket_name", bucketName);
+    return null;
+  }
+
+  Future<String> getBucketRegion() async {
+    await getPrefs();
+    return _prefs.getString("aws_bucket_region") ?? null;
+  }
+
+  Future<void> setBucketRegion(String region) async {
+    await getPrefs();
+    _prefs.setString("aws_bucket_region", region);
+    return null;
+  }
+
+  Future<String> getBucketUrl() async {
+    await getPrefs();
+    return _prefs.getString("aws_bucket_url") ?? null;
+  }
+
+  Future<void> setBucketUrl(String url) async {
+    await getPrefs();
+    _prefs.setString("aws_bucket_url", url);
+    return null;
+  }
+
   Future<void> clearSharedPrefs() async {
     await getPrefs();
     await _prefs.clear();

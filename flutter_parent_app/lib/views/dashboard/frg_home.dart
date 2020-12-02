@@ -274,6 +274,9 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
           if(modulesData.containsKey("access_key")){
             modulesData.remove('access_key');
             modulesData.remove('secrety_key');
+            modulesData.remove('aws_bucket_name');
+            modulesData.remove('aws_bucket_region');
+            modulesData.remove('aws_bucket_url');
           }
 
           await DbSchoolInfo().insertSchoolInfo(modulesData);
@@ -775,7 +778,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
 
   void _setUnseenHomework(Map<String, dynamic> data) async {
     int count = 0;
-    if (data.containsKey("todays")) {
+    if (data!=null && data.containsKey("todays") && data['todays']!=null) {
       var tData = data['todays'] as Map<String, dynamic>;
       var tTime = DateTime.parse(tData['timestamp_created']);
       var local = await AppData().getHomeworkSeen("todays");

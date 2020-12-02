@@ -11,8 +11,7 @@ class Policy {
   int maxFileSize;
 
   Policy(this.key, this.bucket, this.datetime, this.expiration, this.credential,
-      this.maxFileSize,
-      {this.region = 'ap-south-1'});
+      this.maxFileSize, this.region);
 
   factory Policy.fromS3PresignedPost(
     String key,
@@ -31,8 +30,7 @@ class Policy {
         .join('T');
     final cred =
         '$accessKeyId/${SigV4.buildCredentialScope(datetime, region, 's3')}';
-    final p = Policy(key, bucket, datetime, expiration, cred, maxFileSize,
-        region: region);
+    final p = Policy(key, bucket, datetime, expiration, cred, maxFileSize, region);
     return p;
   }
 

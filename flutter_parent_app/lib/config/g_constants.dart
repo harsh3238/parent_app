@@ -42,7 +42,7 @@ class GConstants {
   static const _ADD_REFERENCE_ROUTE = API_VERSION+ "/student/requests/add_reference.php";
   static const _GET_CLASSES_ROUTE = API_VERSION+ "/student/requests/get_all_classes.php";
   static const _GET_SYLLABUS_ROUTE = API_VERSION+ "/student/requests/get_syllabus_v2.php";
-  static const _GET_SCHOOL_INFO_ROUTE = API_VERSION+ "/student/requests/get_school_info.php";
+  static const _GET_SCHOOL_INFO_ROUTE = API_VERSION+ "/student/requests/get_school_info1.php";
   static const _GET_DASH_SLIDER_ROUTE = API_VERSION+ "/student/requests/get_dash_sliders.php";
   static const _GET_SESSIONS_ROUTE = API_VERSION+ "/admin/requests/get_all_sessions.php";
   static const _MSG_THREAD_ROUTE = API_VERSION+ "/student/requests/get_message_threads.php";

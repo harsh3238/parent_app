@@ -313,7 +313,6 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
           await saveLoginReport(int.parse(loginResponseObject['login_id']));
           if (loginRecordId != 0) {
             loginResponseObject["login_record_id"] = loginRecordId;
-
             loginResponseObject.remove("status");
             loginResponseObject.remove("message");
 
@@ -321,6 +320,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
             await AppData().setNormalSchoolRootUrlAndId(
                 GConstants.SCHOOL_ROOT, _schoolIdTextController.text);
             hideProgressDialog();
+            Navigator.of(context).pop();
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (BuildContext context) {
                   return Scaffold(

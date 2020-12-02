@@ -39,9 +39,15 @@ class SplashScreen extends StatelessWidget {
           if(modulesData.containsKey("access_key")){
             AppData().setAccessKey(modulesData['access_key']);
             AppData().setSecretKey(modulesData['secrety_key']);
+            AppData().setBucketName(modulesData['aws_bucket_name']);
+            AppData().setBucketRegion(modulesData['aws_bucket_region']);
+            AppData().setBucketUrl(modulesData['aws_bucket_url']);
 
             modulesData.remove('access_key');
             modulesData.remove('secrety_key');
+            modulesData.remove('aws_bucket_name');
+            modulesData.remove('aws_bucket_region');
+            modulesData.remove('aws_bucket_url');
 
           }
           var v = modulesData['app_version'];
