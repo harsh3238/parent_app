@@ -86,7 +86,6 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
               if (loginResponseObject["otp"] == "firebase") {
                 _verifyPhoneNumber();
               } else {
-               // _verifyPhoneNumber();
                 hideProgressDialog();
                 setState(() {
                   _showOtpUi = true;

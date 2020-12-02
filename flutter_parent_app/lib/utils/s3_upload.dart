@@ -13,7 +13,7 @@ Future<bool> s3Upload(File file, String dirName, String fileKey) async {
   String _accessKeyId = await AppData().getAccessKey();
   String _secretKeyId = await AppData().getSecretKey();
   const _region = 'ap-south-1';
-  const _s3Endpoint = 'https://stucarecloud.s3.ap-south-1.amazonaws.com';
+  const _s3Endpoint = 'https://stucarecloud-data.s3.ap-south-1.amazonaws.com';
 
   final stream = http.ByteStream(DelegatingStream.typed(file.openRead()));
   final length = await file.length();
@@ -26,8 +26,8 @@ Future<bool> s3Upload(File file, String dirName, String fileKey) async {
   String schoolBucketName = GConstants.getBucketDirName();
 
   final policy = Policy.fromS3PresignedPost(
-      '$schoolBucketName/$dirName/$fileKey', 'stucarecloud', _accessKeyId, 15, length,
-      region: _region);
+      '$schoolBucketName/$dirName/$fileKey', 'stucarecloud-data', _accessKeyId,
+      15, length, region: _region);
   final key =
   SigV4.calculateSigningKey(_secretKeyId, policy.datetime, _region, 's3');
   final signature = SigV4.calculateSignature(key, policy.encode());
