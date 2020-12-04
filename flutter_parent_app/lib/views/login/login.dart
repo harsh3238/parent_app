@@ -12,6 +12,7 @@ import 'package:click_campus_parent/views/state_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -52,6 +53,12 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
   int _start = 30;
   String _resendOtpLabel;
 
+  bool _isUsingFirebaseOTP = false;
+  bool _isManualFirebaseOTP = false;
+  bool authCompleted = false;
+  FirebaseAuth _firebaseAuth;
+  String _smsVerificationCode;
+
   Future<void> _loginRequest() async {
     showProgressDialog();
 
@@ -84,10 +91,16 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
             debugPrint(loginResponseObject.toString());
             if (loginResponseObject["status"] == "success") {
               if (loginResponseObject["otp"] == "firebase") {
+                debugPrint("Sending OTP via Firebase");
+                setState(() {
+                  _isUsingFirebaseOTP = true;
+                });
                 _verifyPhoneNumber();
               } else {
+                debugPrint("Sending OTP via SMS API");
                 hideProgressDialog();
                 setState(() {
+                  _isUsingFirebaseOTP = false;
                   _showOtpUi = true;
                 });
                 startResendOtp();
@@ -232,10 +245,6 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
                 ImpersonationMain(_schoolIdTextController.text)));
   }
 
-  bool authCompleted = false;
-  String _verificationId;
-  FirebaseAuth _firebaseAuth;
-
 
   void _verifyPhoneNumber() async {
     authCompleted = false;
@@ -259,7 +268,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
 
     final PhoneCodeSent codeSent =
         (String verificationId, [int forceResendingToken]) async {
-      _verificationId = verificationId;
+          _smsVerificationCode = verificationId;
       //sendOtp.value = true;
       hideProgressDialog();
       setState(() {
@@ -272,7 +281,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
 
     final PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout =
         (String verificationId) {
-      _verificationId = verificationId;
+          _smsVerificationCode = verificationId;
     };
 
     await _firebaseAuth.verifyPhoneNumber(
@@ -296,7 +305,36 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
     }
   }
 
+  _firebaseSignIn() async {
+    showProgressDialog();
+    try {
 
+      final AuthCredential credential = PhoneAuthProvider.getCredential(
+        verificationId: _smsVerificationCode,
+        smsCode: _otpTextController.text,
+      );
+      final AuthResult user = await _firebaseAuth.signInWithCredential(credential);
+      final FirebaseUser currentUser = await _firebaseAuth.currentUser();
+      assert(user.user.uid == currentUser.uid);
+      hideProgressDialog();
+      _afterFirebaseAuthRoutine();
+    } catch (e) {
+      hideProgressDialog();
+      handleError(e);
+    }
+  }
+
+  handleError(PlatformException error) {
+    print(error);
+    switch (error.code) {
+      case 'ERROR_INVALID_VERIFICATION_CODE':
+        showSnackBar("Invalid Verification Code");
+        break;
+      default:
+        showSnackBar("Something Went Wrong, Try Again...");
+        break;
+    }
+  }
   void _afterFirebaseAuthRoutine() async {
     showProgressDialog();
 
@@ -320,7 +358,9 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
             await AppData().setNormalSchoolRootUrlAndId(
                 GConstants.SCHOOL_ROOT, _schoolIdTextController.text);
             hideProgressDialog();
-            Navigator.of(context).pop();
+            if(!_isManualFirebaseOTP){
+              Navigator.of(context).pop();
+            }
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (BuildContext context) {
                   return Scaffold(
@@ -441,6 +481,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
                                           child: Form(
                                               key: _formKey,
                                               child: TextFormField(
+                                                maxLength: 10,
                                                   enabled: !_showOtpUi,
                                                   decoration: InputDecoration(
                                                       labelText:
@@ -539,15 +580,28 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
                                                   if (_showOtpUi) {
                                                     if (_formKeyOtp.currentState
                                                         .validate()) {
-                                                      if(_verificationId != null){
+
+                                                      if(_isUsingFirebaseOTP){
+                                                        setState(() {
+                                                          _isManualFirebaseOTP = true;
+                                                        });
+                                                        _firebaseSignIn();
+                                                      }else{
+                                                        setState(() {
+                                                          _isManualFirebaseOTP = false;
+                                                        });
+                                                        _otpVerifyRequest();
+                                                      }
+
+                                                      /*if(_smsVerificationCode != null){
                                                         final AuthCredential credential = PhoneAuthProvider.getCredential(
-                                                          verificationId: _verificationId,
+                                                          verificationId: _smsVerificationCode,
                                                           smsCode: _mobileNumberTextController.text,
                                                         );
                                                         _signInWithPhoneNumber(credential);
                                                       }else{
                                                         _otpVerifyRequest();
-                                                      }
+                                                      }*/
                                                     }
                                                   } else {
                                                     if (_formKey.currentState
@@ -744,7 +798,9 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
 
   @override
   void dispose() {
-    _timer.cancel();
+    if(_timer!=null){
+      _timer.cancel();
+    }
     super.dispose();
   }
 

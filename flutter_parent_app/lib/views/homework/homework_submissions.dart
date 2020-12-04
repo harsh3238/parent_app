@@ -203,8 +203,9 @@ class StateHomeworkSubmission extends State<HomeworkSubmission>
     }
 
     String schoolBucketName = GConstants.getBucketDirName();
-    map['url'] =
-        "https://stucarecloud.s3.ap-south-1.amazonaws.com/$schoolBucketName/$fileDirectory/$fileNameNew";
+    String _awsURL = await AppData().getBucketUrl();
+    map['url'] = "$_awsURL/$schoolBucketName/$fileDirectory/$fileNameNew";
+
     _filePathsToUpload.add(map);
     return true;
   }

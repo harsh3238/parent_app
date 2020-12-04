@@ -505,9 +505,11 @@ class ApplyLeaveDialogState extends State<ApplyLeaveDialog> with StateHelper {
     } else if (mimeType.contains("pdf")) {
       map['media_type'] = "pdf";
     }
+
     String schoolBucketName = GConstants.getBucketDirName();
-    map['url'] =
-    "https://stucarecloud.s3.ap-south-1.amazonaws.com/$schoolBucketName/$fileDirectory/$fileNameNew";
+    String _awsURL = await AppData().getBucketUrl();
+    map['url'] = "$_awsURL/$schoolBucketName/$fileDirectory/$fileNameNew";
+
     _filePathsToUpload.add(map);
 
     return true;

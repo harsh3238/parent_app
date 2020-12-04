@@ -272,8 +272,16 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
           Map<String, dynamic> modulesData = schoolInfoRsObject['data'];
 
           if(modulesData.containsKey("access_key")){
+            AppData().setAccessKey(modulesData['access_key']);
+            AppData().setSecretKey(modulesData['secrety_key']);
             modulesData.remove('access_key');
             modulesData.remove('secrety_key');
+          }
+
+          if(modulesData.containsKey("aws_bucket_name")){
+            AppData().setBucketName(modulesData['aws_bucket_name']);
+            AppData().setBucketRegion(modulesData['aws_bucket_region']);
+            AppData().setBucketUrl(modulesData['aws_bucket_url']);
             modulesData.remove('aws_bucket_name');
             modulesData.remove('aws_bucket_region');
             modulesData.remove('aws_bucket_url');
