@@ -126,6 +126,17 @@ class AppData {
     return null;
   }
 
+  Future<void> setBaseUrl(String url) async {
+    await getPrefs();
+    _prefs.setString("base_url", url);
+    return null;
+  }
+
+  Future<String> getBaseUrl() async {
+    await getPrefs();
+    return _prefs.getString("base_url") ?? "";
+  }
+
   Future<String> getNormalSchoolId() async {
     await getPrefs();
     return _prefs.getString("normal_login_school_id") ?? null;

@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:click_campus_parent/config/g_constants.dart';
 import 'package:click_campus_parent/data/app_data.dart';
 import 'package:click_campus_parent/data/db_school_info.dart';
 import 'package:click_campus_parent/views/dashboard/the_dashboard_main.dart';
 import 'package:click_campus_parent/views/login/activity_impersonation.dart';
-import 'package:click_campus_parent/views/splash/splash_screen.dart';
 import 'package:click_campus_parent/views/state_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
@@ -65,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
     var schoolDataResponse = await http.post(GConstants.schoolDataRoute(),
         body: {'school_id': _schoolIdTextController.text});
 
-    log("${schoolDataResponse.request} : ${schoolDataResponse.body}");
+    debugPrint("${schoolDataResponse.request} : ${schoolDataResponse.body}");
 
     if (schoolDataResponse.statusCode == 200) {
       ///Getting School Data
@@ -73,6 +71,8 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
       if (responseObject.containsKey("id")) {
         String tempSchoolUrl = responseObject["api_route_base"];
         GConstants.setSchoolRootUrl(tempSchoolUrl);
+
+        await AppData().setBaseUrl(tempSchoolUrl);
 
         ///Now that we have received the school's root url we can
         ///continue logging in user, so make another request
@@ -83,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
           'school_id': sId.toString()
         });
 
-        log("${loginResponse.request} : ${loginResponse.body}");
+        debugPrint("${loginResponse.request} : ${loginResponse.body}");
 
         if (loginResponse.statusCode == 200) {
           Map loginResponseObject = json.decode(loginResponse.body);
@@ -245,7 +245,6 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
                 ImpersonationMain(_schoolIdTextController.text)));
   }
 
-
   void _verifyPhoneNumber() async {
     authCompleted = false;
     final PhoneVerificationCompleted verificationCompleted =
@@ -259,16 +258,16 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
 
     final PhoneVerificationFailed verificationFailed =
         (AuthException authException) {
-      debugPrint("Auth Exception:"+authException.message);
+      debugPrint("Auth Exception:" + authException.message);
       hideProgressDialog();
       _scaffoldState.currentState?.showSnackBar(SnackBar(
-        content: Text("Firebase auth error: "+authException.message),
+        content: Text("Firebase auth error: " + authException.message),
       ));
     };
 
     final PhoneCodeSent codeSent =
         (String verificationId, [int forceResendingToken]) async {
-          _smsVerificationCode = verificationId;
+      _smsVerificationCode = verificationId;
       //sendOtp.value = true;
       hideProgressDialog();
       setState(() {
@@ -281,7 +280,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
 
     final PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout =
         (String verificationId) {
-          _smsVerificationCode = verificationId;
+      _smsVerificationCode = verificationId;
     };
 
     await _firebaseAuth.verifyPhoneNumber(
@@ -296,7 +295,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
   void _signInWithPhoneNumber(AuthCredential crendials) async {
     showProgressDialog();
     try {
-     _afterFirebaseAuthRoutine();
+      _afterFirebaseAuthRoutine();
     } catch (e) {
       hideProgressDialog();
       _scaffoldState?.currentState?.showSnackBar(SnackBar(
@@ -308,12 +307,12 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
   _firebaseSignIn() async {
     showProgressDialog();
     try {
-
       final AuthCredential credential = PhoneAuthProvider.getCredential(
         verificationId: _smsVerificationCode,
         smsCode: _otpTextController.text,
       );
-      final AuthResult user = await _firebaseAuth.signInWithCredential(credential);
+      final AuthResult user =
+          await _firebaseAuth.signInWithCredential(credential);
       final FirebaseUser currentUser = await _firebaseAuth.currentUser();
       assert(user.user.uid == currentUser.uid);
       hideProgressDialog();
@@ -335,10 +334,12 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
         break;
     }
   }
+
   void _afterFirebaseAuthRoutine() async {
     showProgressDialog();
 
-    var otpResponse = await http.post(GConstants.afterFirebaseAuthRoute(), body: {
+    var otpResponse =
+        await http.post(GConstants.afterFirebaseAuthRoute(), body: {
       'mobile_no': _mobileNumberTextController.text,
     });
     //print(otpResponse.body);
@@ -348,7 +349,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
       if (loginResponseObject.containsKey("status")) {
         if (loginResponseObject["status"] == "success") {
           int loginRecordId =
-          await saveLoginReport(int.parse(loginResponseObject['login_id']));
+              await saveLoginReport(int.parse(loginResponseObject['login_id']));
           if (loginRecordId != 0) {
             loginResponseObject["login_record_id"] = loginRecordId;
             loginResponseObject.remove("status");
@@ -358,15 +359,15 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
             await AppData().setNormalSchoolRootUrlAndId(
                 GConstants.SCHOOL_ROOT, _schoolIdTextController.text);
             hideProgressDialog();
-            if(!_isManualFirebaseOTP){
+            if (!_isManualFirebaseOTP) {
               Navigator.of(context).pop();
             }
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (BuildContext context) {
-                  return Scaffold(
-                    body: DashboardMain(false),
-                  );
-                }));
+              return Scaffold(
+                body: DashboardMain(false),
+              );
+            }));
           } else {
             showSnackBar(loginResponseObject["message"]);
           }
@@ -382,7 +383,6 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
     }
     hideProgressDialog();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -481,7 +481,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
                                           child: Form(
                                               key: _formKey,
                                               child: TextFormField(
-                                                maxLength: 10,
+                                                  maxLength: 10,
                                                   enabled: !_showOtpUi,
                                                   decoration: InputDecoration(
                                                       labelText:
@@ -535,7 +535,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
                                                         hintText: "Enter OTP",
                                                         contentPadding:
                                                             EdgeInsets.fromLTRB(
-                                                                0, 16, 0, 2),
+                                                                0, 5, 0, 0),
                                                         focusedBorder:
                                                             UnderlineInputBorder(
                                                                 borderSide: BorderSide(
@@ -560,15 +560,16 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
                                                         EdgeInsets.all(0),
                                                     style: TextStyle(color: Colors.grey),
                                                     validator: (txt) {
-                                                      if(txt.isEmpty){
+                                                      if (txt.isEmpty) {
                                                         return "  Invalid OTP";
                                                       }
                                                       return null;
                                                     },
                                                     controller: _otpTextController)),
-                                            padding: EdgeInsets.fromLTRB(0, 20, 0, 20)))
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 15
+                                            )))
                                     : Container(height: 40),
-                                Container(height: 20),
+                                //Container(height: 20),
                                 SizedBox(
                                     width: 290,
                                     child: Align(
@@ -580,15 +581,16 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
                                                   if (_showOtpUi) {
                                                     if (_formKeyOtp.currentState
                                                         .validate()) {
-
-                                                      if(_isUsingFirebaseOTP){
+                                                      if (_isUsingFirebaseOTP) {
                                                         setState(() {
-                                                          _isManualFirebaseOTP = true;
+                                                          _isManualFirebaseOTP =
+                                                              true;
                                                         });
                                                         _firebaseSignIn();
-                                                      }else{
+                                                      } else {
                                                         setState(() {
-                                                          _isManualFirebaseOTP = false;
+                                                          _isManualFirebaseOTP =
+                                                              false;
                                                         });
                                                         _otpVerifyRequest();
                                                       }
@@ -719,7 +721,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
                                     ),
                                     onPressed: () async {
                                       String url =
-                                          await DbSchoolInfo().getWebUr();
+                                          await DbSchoolInfo().getWebUrl();
                                       _launchURL(url);
                                     }),
                                 Container(
@@ -798,7 +800,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
 
   @override
   void dispose() {
-    if(_timer!=null){
+    if (_timer != null) {
       _timer.cancel();
     }
     super.dispose();
@@ -833,5 +835,4 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
       });
     }
   }
-
 }

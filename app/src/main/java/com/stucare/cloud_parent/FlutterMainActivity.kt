@@ -4,6 +4,8 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.util.Log.d
 import android.widget.Toast
 import com.stucare.cloud_parent.classrooms.ActivityClassesTabs
 import com.stucare.cloud_parent.retrofit.NetworkClient
@@ -37,12 +39,14 @@ class FlutterMainActivity : FlutterActivity() {
         ).setMethodCallHandler { call, result ->
             mMethodResult = result
             when (call.method) {
+
                 "startLiveClassActivity" -> {
                     val i = Intent(this, ActivityClassesTabs::class.java)
                     i.putExtra("stucareId", call.argument<Int>("stucareid"))
                     i.putExtra("sessionToken", call.argument<String>("sessionToken"))
                     i.putExtra("schoolId", call.argument<Int>("schoolId"))
                     i.putExtra("studentName", call.argument<String>("studentName"))
+                    i.putExtra("baseUrl", call.argument<String>("baseUrl"))
                     startActivity(i)
                 }
                 "startOnlineTestsActivity" -> {
@@ -50,6 +54,7 @@ class FlutterMainActivity : FlutterActivity() {
                     i.putExtra("stucareId", call.argument<Int>("stucareid"))
                     i.putExtra("sessionToken", call.argument<String>("sessionToken"))
                     i.putExtra("schoolId", call.argument<Int>("schoolId"))
+                    i.putExtra("baseUrl", call.argument<String>("baseUrl"))
                     startActivity(i)
                 }
                 "startVideoLessonsActivity" -> {
@@ -57,6 +62,7 @@ class FlutterMainActivity : FlutterActivity() {
                     i.putExtra("stucareId", call.argument<Int>("stucareid"))
                     i.putExtra("sessionToken", call.argument<String>("sessionToken"))
                     i.putExtra("schoolId", call.argument<Int>("schoolId"))
+                    i.putExtra("baseUrl", call.argument<String>("baseUrl"))
                     startActivity(i)
                 }
             }

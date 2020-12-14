@@ -1,17 +1,20 @@
 package com.stucare.cloud_parent.classrooms
 
 import AdapterClassRoom
+import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.stucare.cloud_parent.R
 import com.stucare.cloud_parent.databinding.ClassRoomMainBinding
 import com.stucare.cloud_parent.retrofit.NetworkClient
+import com.stucare.cloud_parent.tests.CustomAlertDialog
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -59,15 +62,33 @@ class FrgUpcomingClasses : Fragment() {
             "1"
         )
         call.enqueue(object : Callback<String> {
+            @SuppressLint("InvalidAnalyticsName")
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
                 if (response != null && response.isSuccessful) {
-                    val responeObject = JSONObject(response.body().toString().trim())
-                    if (responeObject.has("status") && responeObject.getString("status") == "success") {
-                        val dataObject = responeObject.getJSONArray("data")
-                        contentView.recyclerView.adapter =
-                            AdapterClassRoom(activity as ActivityClassesTabs, dataObject) {
 
-                            }
+                    try {
+                        var responseString = response.body();
+                        if(responseString == "auth error"){
+                            progressDialog.dismiss()
+                            showAuthDialog()
+                            return
+                        }
+
+                        val responeObject = JSONObject(response.body().toString().trim())
+                        if (responeObject.has("status") && responeObject.getString("status") == "success") {
+                            val dataObject = responeObject.getJSONArray("data")
+                            contentView.recyclerView.adapter =
+                                AdapterClassRoom(activity as ActivityClassesTabs, dataObject) {
+
+                                }
+                        }
+                    } catch (e: Exception) {
+                        val params = Bundle()
+                        params.putString("response", ""+response.body())
+                        params.putString("error", ""+e.stackTrace.toString())
+                        params.putString("message", ""+e.localizedMessage)
+                        (activity as ActivityClassesTabs).firebaseAnalytics.logEvent("upcoming class api", params)
+                        Toast.makeText(activity, "Error: "+e.localizedMessage, Toast.LENGTH_SHORT).show()
                     }
                 }
                 progressDialog.dismiss()
@@ -79,4 +100,25 @@ class FrgUpcomingClasses : Fragment() {
             }
         })
     }
+
+    fun showAuthDialog() {
+        val d = CustomAlertDialog(requireContext(), R.style.PurpleTheme)
+        d.setCancelable(false)
+        d.setTitle("Auth Failure... !")
+        d.setMessage("There is issue with authentication token, please login again.")
+        d.positiveButton.text = "Ok"
+        d.negativeButton.text = "Close"
+
+        d.positiveButton.setOnClickListener {
+            d.dismiss()
+            this?.activity?.finish();
+        }
+
+        d.negativeButton.setOnClickListener {
+            d.dismiss()
+            this?.activity?.finish();
+        }
+        d.show()
+    }
+
 }

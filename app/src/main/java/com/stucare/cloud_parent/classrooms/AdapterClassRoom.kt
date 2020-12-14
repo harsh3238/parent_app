@@ -89,6 +89,16 @@ class AdapterClassRoom(
 
 
             boundView.btnGoToClass.setOnClickListener {
+
+                goToClassClicked(data.getJSONObject(position))
+
+                /*var liveType  = data.getJSONObject(position).optString("live_type")
+                if(liveType==null || liveType==""){
+                    Toast.makeText(parentActivity, "Unknown Class Type", Toast.LENGTH_LONG
+                    ).show()
+                    return@setOnClickListener
+                }
+
                 if (data.getJSONObject(position).getString("live_type") == "gmeet") {
 
                     try {
@@ -122,42 +132,50 @@ class AdapterClassRoom(
 
                 } else if (data.getJSONObject(position).getString("live_type") == "zoom") {
                     Log.d("LIVE_CLASS", "ZOOM")
-                    val meetingService: MeetingService = ZoomSDK.getInstance().meetingService
-                    if (meetingService != null) {
-                        val opts = JoinMeetingOptions()
+                    try {
+                        val meetingService: MeetingService = ZoomSDK.getInstance().meetingService
+                        if (meetingService != null) {
+                            val opts = JoinMeetingOptions()
 
-                        opts.no_driving_mode = true
-                        opts.no_invite = true
-                        opts.no_meeting_end_message = false
-                        opts.no_titlebar = false
-                        opts.no_bottom_toolbar = false
-                        opts.no_dial_in_via_phone = true
-                        opts.no_dial_out_to_phone = true
-                        opts.no_disconnect_audio = true
-                        opts.no_share = true
-                        opts.invite_options =
-                            InviteOptions.INVITE_VIA_EMAIL + InviteOptions.INVITE_VIA_SMS
-                        opts.no_audio = false
-                        opts.no_video = true
-                        opts.meeting_views_options =
-                            MeetingViewsOptions.NO_BUTTON_SHARE + MeetingViewsOptions.NO_TEXT_MEETING_ID + MeetingViewsOptions.NO_TEXT_PASSWORD
-                        opts.no_meeting_error_message = true
+                            opts.no_driving_mode = true
+                            opts.no_invite = true
+                            opts.no_meeting_end_message = false
+                            opts.no_titlebar = false
+                            opts.no_bottom_toolbar = false
+                            opts.no_dial_in_via_phone = true
+                            opts.no_dial_out_to_phone = true
+                            opts.no_disconnect_audio = true
+                            opts.no_share = true
+                            opts.invite_options =
+                                InviteOptions.INVITE_VIA_EMAIL + InviteOptions.INVITE_VIA_SMS
+                            opts.no_audio = false
+                            opts.no_video = true
+                            opts.meeting_views_options =
+                                MeetingViewsOptions.NO_BUTTON_SHARE + MeetingViewsOptions.NO_TEXT_MEETING_ID + MeetingViewsOptions.NO_TEXT_PASSWORD
+                            opts.no_meeting_error_message = true
 
-                        val params = JoinMeetingParams()
+                            val params = JoinMeetingParams()
 
-                        params.displayName = parentActivity.studentName
-                        params.meetingNo = data.getJSONObject(position).getString("live_link")
-                        params.password = data.getJSONObject(position).getString("live_password")
+                            params.displayName = parentActivity.studentName
+                            params.meetingNo = data.getJSONObject(position).getString("live_link")
+                            params.password = data.getJSONObject(position).getString("live_password")
 
-                        val response =
-                            meetingService.joinMeetingWithParams(parentActivity, params, opts)
-                        try {
-                            goToClassClicked(data.getJSONObject(position))
-                        } catch (e: Exception) {
-                            e.printStackTrace()
+                            val response =
+                                meetingService.joinMeetingWithParams(parentActivity, params, opts)
+                            try {
+                                goToClassClicked(data.getJSONObject(position))
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
                         }
+                    }catch (e: Exception){
+                        Toast.makeText(
+                            parentActivity,
+                            "Error: "+e.localizedMessage,
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
-                }
+                }*/
 
             }
 

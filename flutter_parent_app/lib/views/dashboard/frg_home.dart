@@ -132,6 +132,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
   }
 
   void _disableFLip() async {
+
     int userStucareId = await AppData().getSelectedStudent();
     String sessionToken = await AppData().getSessionToken();
     var sId = await GConstants.schoolId();
@@ -144,6 +145,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
   }
 
   void _getActiveModules() async {
+
     showProgressDialog();
     //setFlipLoginInfo();
     String secretKey = await AppData().getSecretKey();
@@ -151,6 +153,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
 
     var sId = await GConstants.schoolId();
     String sessionToken = await AppData().getSessionToken();
+    debugPrint("STORED_TOKEN:"+sessionToken);
 
     var modulesResponse =
         await http.post(GConstants.getActiveModulesRoute(), body: {
@@ -169,7 +172,6 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
         hideProgressDialog();
         return;
       }
-
 
       if (modulesResponseObject.containsKey("status")) {
         if (modulesResponseObject["status"] == "success") {
@@ -195,6 +197,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
   }
 
   void _getSliders() async {
+
     String sessionToken = await AppData().getSessionToken();
 
     var dashSlidersResponse =
@@ -227,6 +230,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
   }
 
   void _getFlashNews() async {
+
     String sessionToken = await AppData().getSessionToken();
 
     var dashSlidersResponse =
@@ -258,12 +262,13 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
   }
 
   void _getSchoolInfo() async {
+
     var sId = await GConstants.schoolId();
 
     var schoolInfoRs = await http.post(GConstants.getSchoolInfoRoute(),
         body: {'school_id': sId.toString()});
 
-    log("${schoolInfoRs.request} : ${schoolInfoRs.body}");
+    debugPrint("${schoolInfoRs.request} : ${schoolInfoRs.body}");
 
     if (schoolInfoRs.statusCode == 200) {
       Map schoolInfoRsObject = json.decode(schoolInfoRs.body);
@@ -301,6 +306,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
   }
 
   void _getFlyers() async {
+
     var ok = FullAdmissionRootView.of(context);
 
     int userStucareId = await AppData().getSelectedStudent();
@@ -664,7 +670,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
         navigateToModule(dummyPage());
         break;
       case "website":
-        String url = await DbSchoolInfo().getWebUr();
+        String url = await DbSchoolInfo().getWebUrl();
         _launchURL(url);
         break;
       case "study_zone":
@@ -703,11 +709,14 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
           int userStucareId = await AppData().getSelectedStudent();
           String sessionToken = await AppData().getSessionToken();
           String studentName = await AppData().getSelectedStudentName();
+          String baseUrl = await AppData().getBaseUrl();
+
           var arguments = {
             "stucareid": userStucareId,
             "sessionToken": sessionToken,
             "schoolId": sId,
             "studentName": studentName,
+            "baseUrl": baseUrl
           };
           platform.invokeMethod("startLiveClassActivity", arguments).then((rs) {});
         }
@@ -717,10 +726,12 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
         int sId = await GConstants.schoolId();
         int userStucareId = await AppData().getSelectedStudent();
         String sessionToken = await AppData().getSessionToken();
+        String baseUrl = await AppData().getBaseUrl();
         var arguments = {
           "stucareid": userStucareId,
           "sessionToken": sessionToken,
-          "schoolId": sId
+          "schoolId": sId,
+          "baseUrl": baseUrl
         };
         platform.invokeMethod("startOnlineTestsActivity", arguments).then((rs) {});
         break;
@@ -728,10 +739,12 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
         int sId = await GConstants.schoolId();
         int userStucareId = await AppData().getSelectedStudent();
         String sessionToken = await AppData().getSessionToken();
+        String baseUrl = await AppData().getBaseUrl();
         var arguments = {
           "stucareid": userStucareId,
           "sessionToken": sessionToken,
-          "schoolId": sId
+          "schoolId": sId,
+          "baseUrl": baseUrl
         };
         platform.invokeMethod("startVideoLessonsActivity", arguments).then((rs) {});
         break;

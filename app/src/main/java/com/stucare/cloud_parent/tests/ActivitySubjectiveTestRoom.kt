@@ -366,7 +366,7 @@ class ActivitySubjectiveTestRoom : AppCompatActivity() {
         val d = CustomAlertDialog(this@ActivitySubjectiveTestRoom, R.style.PurpleTheme)
         d.setCancelable(false)
         d.setTitle("Auth Failure... !")
-        d.setMessage("There is issue with authentication token, please try again.")
+        d.setMessage("There is issue with authentication token, please login again.")
         d.positiveButton.text = "Ok"
         d.negativeButton.text = "Close"
 
