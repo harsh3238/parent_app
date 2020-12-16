@@ -48,11 +48,11 @@ class FrgUpcomingClasses : Fragment() {
 
         contentView.recyclerView.layoutManager = LinearLayoutManager(activity)
 
-        getLiveVideos()
+        getLiveClasses()
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun getLiveVideos() {
+    private fun getLiveClasses() {
         progressDialog.show()
         val parentActivity = activity as ActivityClassesTabs
         val call = NetworkClient.create().getLiveClasses(
@@ -70,6 +70,10 @@ class FrgUpcomingClasses : Fragment() {
                         var responseString = response.body();
                         if(responseString == "auth error"){
                             progressDialog.dismiss()
+                            val params = Bundle()
+                            params.putString("response", ""+response.body())
+                            params.putString("type", "auth error")
+                            (activity as ActivityClassesTabs).firebaseAnalytics.logEvent("live_class_api", params)
                             showAuthDialog()
                             return
                         }
@@ -86,8 +90,9 @@ class FrgUpcomingClasses : Fragment() {
                         val params = Bundle()
                         params.putString("response", ""+response.body())
                         params.putString("error", ""+e.stackTrace.toString())
+                        params.putString("type", "crash")
                         params.putString("message", ""+e.localizedMessage)
-                        (activity as ActivityClassesTabs).firebaseAnalytics.logEvent("upcoming class api", params)
+                        (activity as ActivityClassesTabs).firebaseAnalytics.logEvent("live_class_api", params)
                         Toast.makeText(activity, "Error: "+e.localizedMessage, Toast.LENGTH_SHORT).show()
                     }
                 }

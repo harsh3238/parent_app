@@ -73,7 +73,6 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
         GConstants.setSchoolRootUrl(tempSchoolUrl);
 
         await AppData().setBaseUrl(tempSchoolUrl);
-
         ///Now that we have received the school's root url we can
         ///continue logging in user, so make another request
         ///now to the school directly

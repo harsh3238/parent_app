@@ -24,4 +24,23 @@
     <style name="blackControls">
         <item name="colorAccent">@android:color/black</item>
     </style>
+
+    <style name="collapsed_app_bar" parent="@android:style/TextAppearance">
+        <item name="android:textSize">30sp</item>
+        <item name="android:textColor">#fff</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.Title.Collapsed" parent="android:TextAppearance">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">22sp</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.Title.Expanded" parent="android:TextAppearance">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">26sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">sans-serif</item>
+
+    </style>
+
 </resources>

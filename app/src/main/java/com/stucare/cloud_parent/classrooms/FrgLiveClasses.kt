@@ -27,7 +27,7 @@ import retrofit2.Response
 import us.zoom.sdk.*
 
 
-class FrgClassRoomsMain : Fragment() {
+class FrgLiveClasses : Fragment() {
 
     private lateinit var progressDialog: ProgressDialog
     lateinit var contentView: ClassRoomMainBinding
@@ -74,6 +74,10 @@ class FrgClassRoomsMain : Fragment() {
                         var responseString = response.body();
                         if(responseString == "auth error"){
                             progressDialog.dismiss()
+                            val params = Bundle()
+                            params.putString("response", ""+response.body())
+                            params.putString("type", "auth error")
+                            (activity as ActivityClassesTabs).firebaseAnalytics.logEvent("live_class_api", params)
                             showAuthDialog()
                             return
                         }
@@ -96,8 +100,9 @@ class FrgClassRoomsMain : Fragment() {
                         val params = Bundle()
                         params.putString("response", ""+response.body())
                         params.putString("error", ""+e.stackTrace.toString())
+                        params.putString("type", "crash")
                         params.putString("message", ""+e.localizedMessage)
-                        (activity as ActivityClassesTabs).firebaseAnalytics.logEvent("live class api", params)
+                        (activity as ActivityClassesTabs).firebaseAnalytics.logEvent("live_class_api", params)
                         Toast.makeText(activity,
                             "Error: "+e.localizedMessage,
                             Toast.LENGTH_LONG

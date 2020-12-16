@@ -56,7 +56,7 @@ class ActivityClassesTabs : AppCompatActivity(), InitAuthSDKCallback {
 
         override fun getItem(i: Int): Fragment {
             if (i == 0) {
-                return FrgClassRoomsMain()
+                return FrgLiveClasses()
             }
             return FrgUpcomingClasses()
         }

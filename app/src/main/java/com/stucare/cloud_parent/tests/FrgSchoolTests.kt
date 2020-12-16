@@ -13,8 +13,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.stucare.cloud_parent.R
-import com.stucare.cloud_parent.classrooms.ActivityClassesTabs
-import com.stucare.cloud_parent.databinding.ActivitySchoolTestsBinding
+import com.stucare.cloud_parent.databinding.FragmentSchoolTestsBinding
 import com.stucare.cloud_parent.retrofit.NetworkClient
 import org.json.JSONObject
 import retrofit2.Call
@@ -25,7 +24,7 @@ import retrofit2.Response
 class FrgSchoolTests : Fragment() {
 
     private lateinit var progressBar: ProgressDialog
-    lateinit var contentView: ActivitySchoolTestsBinding
+    lateinit var contentView: FragmentSchoolTestsBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,7 +32,7 @@ class FrgSchoolTests : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         contentView =
-            DataBindingUtil.inflate(inflater, R.layout.activity_school_tests, container, false)
+            DataBindingUtil.inflate(inflater, R.layout.fragment_school_tests, container, false)
         contentView.recyclerView.layoutManager = LinearLayoutManager(activity)
 
         progressBar = ProgressDialog(activity)
@@ -89,6 +88,15 @@ class FrgSchoolTests : Fragment() {
                         if (jsonObject!= null && jsonObject.has("status") &&
                             jsonObject.getString("status") == "success") {
                             val jsonArray = jsonObject.getJSONArray("data")
+
+                            if(jsonArray!=null && jsonArray.length()==0){
+                                Toast.makeText(
+                                    activity!!,
+                                    "No Test Found",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
                             contentView.recyclerView.adapter = AdapterSchoolTestsMain(
                                 activity!!,
                                 jsonArray,

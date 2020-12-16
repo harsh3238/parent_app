@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/md_white_1000">
+
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:fitsSystemWindows="true">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/toolbar_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                app:contentScrim="?attr/colorPrimary"
+                app:collapsedTitleTextAppearance="@style/TextAppearance.MyApp.Title.Collapsed"
+                app:expandedTitleTextAppearance="@style/TextAppearance.MyApp.Title.Expanded"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+                app:expandedTitleGravity="start|bottom"
+                app:collapsedTitleGravity="center"
+                app:expandedTitleMarginStart="15dp"
+                app:expandedTitleMarginBottom="20dp">
+
+                <ImageView
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:alpha="0.7"
+                    android:background="@drawable/bg_online_test"
+                    app:layout_collapseMode="parallax"
+                    android:fitsSystemWindows="true"/>
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                    app:title="Online Examination"
+                    app:titleTextColor="@color/md_white_1000">
+
+                </androidx.appcompat.widget.Toolbar>
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

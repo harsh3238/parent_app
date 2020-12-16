@@ -709,7 +709,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
           int userStucareId = await AppData().getSelectedStudent();
           String sessionToken = await AppData().getSessionToken();
           String studentName = await AppData().getSelectedStudentName();
-          String baseUrl = await AppData().getBaseUrl();
+          String baseUrl = await AppData().getNormalSchoolUrl();
 
           var arguments = {
             "stucareid": userStucareId,
@@ -726,7 +726,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
         int sId = await GConstants.schoolId();
         int userStucareId = await AppData().getSelectedStudent();
         String sessionToken = await AppData().getSessionToken();
-        String baseUrl = await AppData().getBaseUrl();
+        String baseUrl = await AppData().getNormalSchoolUrl();
         var arguments = {
           "stucareid": userStucareId,
           "sessionToken": sessionToken,
@@ -739,7 +739,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
         int sId = await GConstants.schoolId();
         int userStucareId = await AppData().getSelectedStudent();
         String sessionToken = await AppData().getSessionToken();
-        String baseUrl = await AppData().getBaseUrl();
+        String baseUrl = await AppData().getNormalSchoolUrl();
         var arguments = {
           "stucareid": userStucareId,
           "sessionToken": sessionToken,
