@@ -38,16 +38,17 @@ class FrgTestReportDetails : Fragment() {
             container,
             false
         )
-        
-        contentView.formulaTwo.text = mData?.question
-        contentView.itemContentViewA.text = mData?.optionA
-        contentView.itemContentViewB.text = mData?.optionB
-        contentView.itemContentViewC.text = mData?.optionC
-        contentView.itemContentViewD.text = mData?.optionD
 
-        try{
-            contentView.tvMarks.text = "Max. Marks : "+mData?.marks
-        }catch (e: Exception){}
+        try {
+            contentView.formulaTwo.setDisplayText(mData?.question)
+            contentView.itemContentViewA.setDisplayText(mData?.optionA)
+            contentView.itemContentViewB.setDisplayText(mData?.optionB)
+            contentView.itemContentViewC.setDisplayText(mData?.optionC)
+            contentView.itemContentViewD.setDisplayText(mData?.optionD)
+
+            contentView.tvMarks.text = "Max. Marks : " + mData?.marks
+        } catch (e: Exception) {
+        }
 
 
         mSelectedOptionId = mData?.userSelectedAnswer!!
@@ -83,7 +84,7 @@ class FrgTestReportDetails : Fragment() {
             1f,
             activity.resources.displayMetrics
         ).toInt()
-        d.setStroke(f, ContextCompat.getColor(activity, R.color.cyan_light))
+        d.setStroke(f, ContextCompat.getColor(activity, R.color.purple_light))
 
         for (i in 0..3) {
             when (i) {
@@ -94,7 +95,7 @@ class FrgTestReportDetails : Fragment() {
                         contentView.optionAlphabetIconA.setColorFilter(
                             ContextCompat.getColor(
                                 activity,
-                                R.color.cyan_light
+                                R.color.purple_light
                             )
                         )
                     } else {
@@ -115,7 +116,7 @@ class FrgTestReportDetails : Fragment() {
                         contentView.optionAlphabetIconB.setColorFilter(
                             ContextCompat.getColor(
                                 activity,
-                                R.color.cyan_light
+                                R.color.purple_light
                             )
                         )
                     } else {
@@ -135,7 +136,7 @@ class FrgTestReportDetails : Fragment() {
                         contentView.optionAlphabetIconC.setColorFilter(
                             ContextCompat.getColor(
                                 activity,
-                                R.color.cyan_light
+                                R.color.purple_light
                             )
                         )
                     } else {
@@ -155,7 +156,7 @@ class FrgTestReportDetails : Fragment() {
                         contentView.optionAlphabetIconD.setColorFilter(
                             ContextCompat.getColor(
                                 activity,
-                                R.color.cyan_light
+                                R.color.purple_light
                             )
                         )
                     } else {
@@ -188,12 +189,12 @@ class FrgTestReportDetails : Fragment() {
                         if (it.usersResponse.equals("a", true)) {
                             val d: GradientDrawable =
                                 activity.resources.getDrawable(R.drawable.bk_holo_rounded) as GradientDrawable
-                            d.setStroke(f, ContextCompat.getColor(activity, R.color.cyan_light))
+                            d.setStroke(f, ContextCompat.getColor(activity, R.color.purple_light))
                             contentView.backgroundViewA.background = d
                             contentView.optionAlphabetIconA.setColorFilter(
                                 ContextCompat.getColor(
                                     activity,
-                                    R.color.cyan_light
+                                    R.color.purple_light
                                 )
                             )
                         }
@@ -217,12 +218,12 @@ class FrgTestReportDetails : Fragment() {
                         if (it.usersResponse.equals("b", true)) {
                             val d: GradientDrawable =
                                 activity.resources.getDrawable(R.drawable.bk_holo_rounded) as GradientDrawable
-                            d.setStroke(f, ContextCompat.getColor(activity, R.color.cyan_light))
+                            d.setStroke(f, ContextCompat.getColor(activity, R.color.purple_light))
                             contentView.backgroundViewB.background = d
                             contentView.optionAlphabetIconB.setColorFilter(
                                 ContextCompat.getColor(
                                     activity,
-                                    R.color.cyan_light
+                                    R.color.purple_light
                                 )
                             )
                         }
@@ -244,12 +245,12 @@ class FrgTestReportDetails : Fragment() {
                         if (it.usersResponse.equals("c", true)) {
                             val d: GradientDrawable =
                                 activity.resources.getDrawable(R.drawable.bk_holo_rounded) as GradientDrawable
-                            d.setStroke(f, ContextCompat.getColor(activity, R.color.cyan_light))
+                            d.setStroke(f, ContextCompat.getColor(activity, R.color.purple_light))
                             contentView.backgroundViewC.background = d
                             contentView.optionAlphabetIconC.setColorFilter(
                                 ContextCompat.getColor(
                                     activity,
-                                    R.color.cyan_light
+                                    R.color.purple_light
                                 )
                             )
                         }
@@ -271,12 +272,12 @@ class FrgTestReportDetails : Fragment() {
                         if (it.usersResponse.equals("d", true)) {
                             val d: GradientDrawable =
                                 activity.resources.getDrawable(R.drawable.bk_holo_rounded) as GradientDrawable
-                            d.setStroke(f, ContextCompat.getColor(activity, R.color.cyan_light))
+                            d.setStroke(f, ContextCompat.getColor(activity, R.color.purple_light))
                             contentView.backgroundViewD.background = d
                             contentView.optionAlphabetIconD.setColorFilter(
                                 ContextCompat.getColor(
                                     activity,
-                                    R.color.cyan_light
+                                    R.color.purple_light
                                 )
                             )
                         }

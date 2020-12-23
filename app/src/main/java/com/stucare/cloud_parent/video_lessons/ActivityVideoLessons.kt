@@ -1,6 +1,7 @@
 package com.stucare.cloud_parent.video_lessons
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.stucare.cloud_parent.R
 import com.stucare.cloud_parent.retrofit.NetworkClient
@@ -19,8 +20,15 @@ class ActivityVideoLessons : AppCompatActivity() {
         stucareId = intent.getIntExtra("stucareId", -1)
         accessToken = intent.getStringExtra("sessionToken")
         schoolUrl = intent.getStringExtra("baseUrl")
-        NetworkClient.baseUrl = schoolUrl!!
-
+        if(schoolUrl==null){
+            Toast.makeText(
+                this@ActivityVideoLessons,
+                "Unknown error occurred, Please logout and login again..",
+                Toast.LENGTH_LONG
+            ).show()
+        }else{
+            NetworkClient.baseUrl = schoolUrl!!
+        }
         setContentView(R.layout.activity_video_lessons)
 
     }

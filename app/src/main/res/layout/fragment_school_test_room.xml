@@ -53,6 +53,17 @@
                             android:textStyle="bold"
                             android:layout_alignParentLeft="true"/>
 
+                        <ImageView
+                            android:id="@+id/ivRefresh"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/icon_refresh"
+                            android:backgroundTint="@color/colorPrimary"
+                            android:layout_toRightOf="@+id/tvQuestion"
+                            android:layout_centerVertical="true"
+                            android:padding="8dp"
+                            android:onClick="@{controller::onClickRefresh}"/>
+
 
                         <TextView
                             android:id="@+id/tvMarks"
@@ -67,16 +78,16 @@
 
                     </RelativeLayout>
 
-
-                    <me.ashish.mymathview.MathView
+                    <katex.hourglass.in.mathlib.MathView
                         android:id="@+id/formulaTwo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginEnd="5dp"
-                        app:engine="MathJax" />
-
+                        app:setTextSize="12sp"
+                        app:setClickable="true"
+                        android:layout_gravity="center" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -87,7 +98,6 @@
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:layout_alignParentLeft="true"/>
-
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -137,13 +147,16 @@
 
                                 </FrameLayout>
 
-                                <me.ashish.mymathview.MathView
+                                <katex.hourglass.in.mathlib.MathView
                                     android:id="@+id/itemContentViewA"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_margin="5dp"
                                     android:layout_toEndOf="@+id/optionLabelViewA"
-                                    app:engine="MathJax" />
+                                    app:setTextSize="12sp"
+                                    app:setClickable="true"
+                                    android:layout_gravity="center" />
+
 
 
                             </RelativeLayout>
@@ -191,14 +204,15 @@
 
                                 </FrameLayout>
 
-                                <me.ashish.mymathview.MathView
+                                <katex.hourglass.in.mathlib.MathView
                                     android:id="@+id/itemContentViewB"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_margin="5dp"
                                     android:layout_toEndOf="@+id/optionLabelViewB"
-                                    app:engine="MathJax" />
-
+                                    app:setTextSize="12sp"
+                                    app:setClickable="true"
+                                    android:layout_gravity="center" />
 
                             </RelativeLayout>
                         </androidx.cardview.widget.CardView>
@@ -245,13 +259,15 @@
 
                                 </FrameLayout>
 
-                                <me.ashish.mymathview.MathView
+                                <katex.hourglass.in.mathlib.MathView
                                     android:id="@+id/itemContentViewC"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_margin="5dp"
                                     android:layout_toEndOf="@+id/optionLabelViewC"
-                                    app:engine="MathJax" />
+                                    app:setTextSize="12sp"
+                                    app:setClickable="true"
+                                    android:layout_gravity="center" />
 
 
                             </RelativeLayout>
@@ -299,13 +315,15 @@
 
                                 </FrameLayout>
 
-                                <me.ashish.mymathview.MathView
+                                <katex.hourglass.in.mathlib.MathView
                                     android:id="@+id/itemContentViewD"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_margin="5dp"
                                     android:layout_toEndOf="@+id/optionLabelViewD"
-                                    app:engine="MathJax" />
+                                    app:setTextSize="12sp"
+                                    app:setClickable="true"
+                                    android:layout_gravity="center" />
 
 
                             </RelativeLayout>

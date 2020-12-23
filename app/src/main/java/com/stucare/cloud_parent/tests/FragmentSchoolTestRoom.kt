@@ -3,15 +3,18 @@ package com.stucare.cloud_parent.tests
 import android.app.Fragment
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.bumptech.glide.Glide
 import com.stucare.cloud_parent.R
 import com.stucare.cloud_parent.databinding.FragmentSchoolTestRoomBinding
+import kotlinx.android.synthetic.main.fragment_school_test_room.view.*
 
 
 class FragmentSchoolTestRoom : Fragment() {
@@ -29,13 +32,13 @@ class FragmentSchoolTestRoom : Fragment() {
     contentView = DataBindingUtil.inflate(inflater!!, R.layout.fragment_school_test_room, container, false)
     contentView.controller = this
 
-    contentView.formulaTwo.text = mData?.question
-    contentView.itemContentViewA.text = mData?.optionA
-    contentView.itemContentViewB.text = mData?.optionB
-    contentView.itemContentViewC.text = mData?.optionC
-    contentView.itemContentViewD.text = mData?.optionD
-
     try{
+      contentView.formulaTwo.setDisplayText(mData?.question)
+      contentView.itemContentViewA.setDisplayText(mData?.optionA)
+      contentView.itemContentViewB.setDisplayText(mData?.optionB)
+      contentView.itemContentViewC.setDisplayText(mData?.optionC)
+      contentView.itemContentViewD.setDisplayText(mData?.optionD)
+
       contentView.tvMarks.text = "Max. Marks : "+mData?.marks
     }catch (e: Exception){}
 
@@ -49,6 +52,25 @@ class FragmentSchoolTestRoom : Fragment() {
       }
     }
     return contentView.root
+  }
+
+  fun onClickRefresh(v: View?) {
+    mData?.let {
+      if (!it.isReport) {
+        Toast.makeText(activity, "Refreshing Question...", Toast.LENGTH_SHORT).show()
+        try{
+          contentView.formulaTwo.setDisplayText(mData?.question)
+          contentView.itemContentViewA.setDisplayText(mData?.optionA)
+          contentView.itemContentViewB.setDisplayText(mData?.optionB)
+          contentView.itemContentViewC.setDisplayText(mData?.optionC)
+          contentView.itemContentViewD.setDisplayText(mData?.optionD)
+
+          contentView.tvMarks.text = "Max. Marks : "+mData?.marks
+        }catch (e: Exception){}
+
+      }
+    }
+
   }
 
   fun onClickOption(v: View?) {
@@ -67,7 +89,7 @@ class FragmentSchoolTestRoom : Fragment() {
   private fun refreshData() {
     val d: GradientDrawable = activity.resources.getDrawable(R.drawable.bk_holo_rounded) as GradientDrawable
     val f: Int = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1f, activity.resources.displayMetrics).toInt()
-    d.setStroke(f, ContextCompat.getColor(activity, R.color.cyan_light))
+    d.setStroke(f, ContextCompat.getColor(activity, R.color.purple_light))
 
     for (i in 0..3) {
       when (i) {
@@ -75,7 +97,7 @@ class FragmentSchoolTestRoom : Fragment() {
           if (mSelectedOptionId == contentView.optionClickerA.id) {
             contentView.backgroundViewA.background = d
 
-            contentView.optionAlphabetIconA.setColorFilter(ContextCompat.getColor(activity, R.color.cyan_light))
+            contentView.optionAlphabetIconA.setColorFilter(ContextCompat.getColor(activity, R.color.purple_light))
           } else {
             contentView.backgroundViewA.background = null
             contentView.optionAlphabetIconA.setColorFilter(ContextCompat.getColor(activity, R.color.text_light))
@@ -86,7 +108,7 @@ class FragmentSchoolTestRoom : Fragment() {
           if (mSelectedOptionId == contentView.optionClickerB.id) {
             contentView.backgroundViewB.background = d
 
-            contentView.optionAlphabetIconB.setColorFilter(ContextCompat.getColor(activity, R.color.cyan_light))
+            contentView.optionAlphabetIconB.setColorFilter(ContextCompat.getColor(activity, R.color.purple_light))
           } else {
             contentView.backgroundViewB.background = null
             contentView.optionAlphabetIconB.setColorFilter(ContextCompat.getColor(activity, R.color.text_light))
@@ -96,7 +118,7 @@ class FragmentSchoolTestRoom : Fragment() {
           if (mSelectedOptionId == contentView.optionClickerC.id) {
             contentView.backgroundViewC.background = d
 
-            contentView.optionAlphabetIconC.setColorFilter(ContextCompat.getColor(activity, R.color.cyan_light))
+            contentView.optionAlphabetIconC.setColorFilter(ContextCompat.getColor(activity, R.color.purple_light))
           } else {
             contentView.backgroundViewC.background = null
             contentView.optionAlphabetIconC.setColorFilter(ContextCompat.getColor(activity, R.color.text_light))
@@ -106,7 +128,7 @@ class FragmentSchoolTestRoom : Fragment() {
           if (mSelectedOptionId == contentView.optionClickerD.id) {
             contentView.backgroundViewD.background = d
 
-            contentView.optionAlphabetIconD.setColorFilter(ContextCompat.getColor(activity, R.color.cyan_light))
+            contentView.optionAlphabetIconD.setColorFilter(ContextCompat.getColor(activity, R.color.purple_light))
           } else {
             contentView.backgroundViewD.background = null
             contentView.optionAlphabetIconD.setColorFilter(ContextCompat.getColor(activity, R.color.text_light))
@@ -126,9 +148,9 @@ class FragmentSchoolTestRoom : Fragment() {
           0 -> {
             if (it.usersResponse.equals("a", true)) {
               val d: GradientDrawable = activity.resources.getDrawable(R.drawable.bk_holo_rounded) as GradientDrawable
-              d.setStroke(f, ContextCompat.getColor(activity, R.color.cyan_light))
+              d.setStroke(f, ContextCompat.getColor(activity, R.color.purple_light))
               contentView.backgroundViewA.background = d
-              contentView.optionAlphabetIconA.setColorFilter(ContextCompat.getColor(activity, R.color.cyan_light))
+              contentView.optionAlphabetIconA.setColorFilter(ContextCompat.getColor(activity, R.color.purple_light))
             }
 
             if (it.answer.equals("a", true)) {
@@ -143,9 +165,9 @@ class FragmentSchoolTestRoom : Fragment() {
           1 -> {
             if (it.usersResponse.equals("b", true)) {
               val d: GradientDrawable = activity.resources.getDrawable(R.drawable.bk_holo_rounded) as GradientDrawable
-              d.setStroke(f, ContextCompat.getColor(activity, R.color.cyan_light))
+              d.setStroke(f, ContextCompat.getColor(activity, R.color.purple_light))
               contentView.backgroundViewB.background = d
-              contentView.optionAlphabetIconB.setColorFilter(ContextCompat.getColor(activity, R.color.cyan_light))
+              contentView.optionAlphabetIconB.setColorFilter(ContextCompat.getColor(activity, R.color.purple_light))
             }
 
             if (it.answer.equals("b", true)) {
@@ -158,9 +180,9 @@ class FragmentSchoolTestRoom : Fragment() {
           2 -> {
             if (it.usersResponse.equals("c", true)) {
               val d: GradientDrawable = activity.resources.getDrawable(R.drawable.bk_holo_rounded) as GradientDrawable
-              d.setStroke(f, ContextCompat.getColor(activity, R.color.cyan_light))
+              d.setStroke(f, ContextCompat.getColor(activity, R.color.purple_light))
               contentView.backgroundViewC.background = d
-              contentView.optionAlphabetIconC.setColorFilter(ContextCompat.getColor(activity, R.color.cyan_light))
+              contentView.optionAlphabetIconC.setColorFilter(ContextCompat.getColor(activity, R.color.purple_light))
             }
 
             if (it.answer.equals("c", true)) {
@@ -173,9 +195,9 @@ class FragmentSchoolTestRoom : Fragment() {
           3 -> {
             if (it.usersResponse.equals("d", true)) {
               val d: GradientDrawable = activity.resources.getDrawable(R.drawable.bk_holo_rounded) as GradientDrawable
-              d.setStroke(f, ContextCompat.getColor(activity, R.color.cyan_light))
+              d.setStroke(f, ContextCompat.getColor(activity, R.color.purple_light))
               contentView.backgroundViewD.background = d
-              contentView.optionAlphabetIconD.setColorFilter(ContextCompat.getColor(activity, R.color.cyan_light))
+              contentView.optionAlphabetIconD.setColorFilter(ContextCompat.getColor(activity, R.color.purple_light))
             }
 
             if (it.answer.equals("d", true)) {

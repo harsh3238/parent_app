@@ -42,7 +42,16 @@ class ActivityClassesTabs : AppCompatActivity(), InitAuthSDKCallback {
         accessToken = intent.getStringExtra("sessionToken")
         studentName = intent.getStringExtra("studentName")
         schoolUrl = intent.getStringExtra("baseUrl")
-        NetworkClient.baseUrl = schoolUrl!!
+
+        if(schoolUrl==null){
+            Toast.makeText(
+                this@ActivityClassesTabs,
+                "Unknown error occurred, Please logout and login again..",
+                Toast.LENGTH_LONG
+            ).show()
+        }else{
+            NetworkClient.baseUrl = schoolUrl!!
+        }
 
         Log.d("SENT_TOKEN", ""+accessToken);
 
