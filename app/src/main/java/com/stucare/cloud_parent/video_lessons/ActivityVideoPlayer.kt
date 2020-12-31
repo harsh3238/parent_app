@@ -115,7 +115,7 @@ class ActivityVideoPlayer : YouTubeBaseActivity() {
 
 
         contentView.btmRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
-        contentView.btmRecyclerView.adapter = AdapterVideoPlayerPlaylist(this, videoList)
+        //contentView.btmRecyclerView.adapter = AdapterVideoPlayerPlaylist(this, videoList)
 
     }
 
@@ -149,6 +149,7 @@ class ActivityVideoPlayer : YouTubeBaseActivity() {
             override fun onInitializationSuccess(provider: YouTubePlayer.Provider, youTubePlayer: YouTubePlayer, b: Boolean) {
                 youTubePlayer.loadVideo(videoId)
                 youtubePlayer = youTubePlayer
+                youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
                 youTubePlayer.setShowFullscreenButton(false)
                 youtubePlayer.setPlaybackEventListener(playbackEventListener)
 

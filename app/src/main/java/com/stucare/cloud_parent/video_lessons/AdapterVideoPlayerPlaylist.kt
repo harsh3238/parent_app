@@ -12,7 +12,8 @@ import org.json.JSONArray
  */
 
 class AdapterVideoPlayerPlaylist(
-    private val parentActivity: ActivityVideoPlayer,
+    //private val parentActivity: ActivityVideoPlayer,
+    private val parentActivity: ActivityCustomVideoPlayer,
     val data: JSONArray
 ) : androidx.recyclerview.widget.RecyclerView.Adapter<AdapterVideoPlayerPlaylist.MyViewHolder>() {
 
@@ -29,7 +30,8 @@ class AdapterVideoPlayerPlaylist(
             Picasso.get().load("https://i1.ytimg.com/vi/$videoId/1.jpg")
                 .into(boundView.videoThumbnail)
             itemView.setOnClickListener {
-                parentActivity.youtubePlayer.cueVideo(videoId)
+                //parentActivity.youtubePlayer.cueVideo(videoId)
+                parentActivity.ytPlayer.cueVideo(videoId, 0F)
                 parentActivity.contentView.textViewVideoName.text = data.getString("video_name")
                 parentActivity.videoId = videoId
             }

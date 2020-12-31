@@ -35,8 +35,10 @@ class AdapterChapter(private val parentActivity: ActivityChapter, val topicsData
             val videoId = data.getString("link")
             Picasso.get().load("https://i1.ytimg.com/vi/$videoId/1.jpg").into(boundView.imageThumbnail)
             boundView.okay.setOnClickListener {
-                val intent = Intent(parentActivity, ActivityVideoPlayer::class.java)
+                //val intent = Intent(parentActivity, ActivityVideoPlayer::class.java)
+                val intent = Intent(parentActivity, ActivityCustomVideoPlayer::class.java)
                 intent.putExtra("data", topicsData.toString())
+                intent.putExtra("position", position)
                 parentActivity.startActivity(intent)
             }
         }

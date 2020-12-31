@@ -2,7 +2,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-
         <variable
             name="controller"
             type="com.stucare.cloud_parent.video_lessons.FrgVideoLessons" />

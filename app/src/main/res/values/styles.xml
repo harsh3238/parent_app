@@ -43,4 +43,11 @@
 
     </style>
 
+    <style name="VideoPlayerTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/text_default</item>
+        <item name="colorPrimaryDark">@color/black_trans</item>
+        <item name="colorAccent">@color/purple_light</item>
+    </style>
+
 </resources>

@@ -67,6 +67,11 @@
             android:configChanges="orientation|screenSize" />
 
         <activity
+            android:name=".video_lessons.ActivityCustomVideoPlayer"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/VideoPlayerTheme" />
+
+        <activity
             android:name=".tests.ActivityTestReports"
             android:theme="@style/AppThemeActionBar" />
 
