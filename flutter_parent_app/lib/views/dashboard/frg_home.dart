@@ -18,14 +18,13 @@ import 'package:click_campus_parent/views/fee/fee_main.dart';
 import 'package:click_campus_parent/views/fitness_report/fitness_report_screen.dart';
 import 'package:click_campus_parent/views/homework/homework_main.dart';
 import 'package:click_campus_parent/views/leave/leave_main.dart';
-import 'package:click_campus_parent/views/login/select_impersonation.dart';
 import 'package:click_campus_parent/views/news/news_main.dart';
 import 'package:click_campus_parent/views/notifications/notification_main.dart';
 import 'package:click_campus_parent/views/online_classes/online_classes_tab_main.dart';
 import 'package:click_campus_parent/views/photo_gallery/photo_gallery_main.dart';
 import 'package:click_campus_parent/views/polls/polls.dart';
 import 'package:click_campus_parent/views/references/references_main_list.dart';
-import 'package:click_campus_parent/views/splash/splash_screen.dart';
+import 'package:click_campus_parent/views/remark/student_remark_main.dart';
 import 'package:click_campus_parent/views/state_helper.dart';
 import 'package:click_campus_parent/views/syllabus/syllabus_main.dart';
 import 'package:click_campus_parent/views/teachers/teachers_main.dart';
@@ -132,11 +131,11 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
   }
 
   void _disableFLip() async {
-
     int userStucareId = await AppData().getSelectedStudent();
     String sessionToken = await AppData().getSessionToken();
     var sId = await GConstants.schoolId();
-    var loginResponse = await http.post(GConstants.getDisbaleFLipRoute(), body: {
+    var loginResponse =
+        await http.post(GConstants.getDisbaleFLipRoute(), body: {
       'stucare_id': userStucareId.toString(),
       'active_session': sessionToken,
       'school_id': sId.toString()
@@ -145,7 +144,6 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
   }
 
   void _getActiveModules() async {
-
     showProgressDialog();
     //setFlipLoginInfo();
     String secretKey = await AppData().getSecretKey();
@@ -153,7 +151,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
 
     var sId = await GConstants.schoolId();
     String sessionToken = await AppData().getSessionToken();
-    debugPrint("STORED_TOKEN:"+sessionToken);
+    debugPrint("STORED_TOKEN:" + sessionToken);
 
     var modulesResponse =
         await http.post(GConstants.getActiveModulesRoute(), body: {
@@ -164,11 +162,10 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
     log("${modulesResponse.request} : ${modulesResponse.body}");
 
     if (modulesResponse.statusCode == 200) {
-
       Map modulesResponseObject = json.decode(modulesResponse.body);
 
       String response = modulesResponse.body;
-      if(response == "auth error"){
+      if (response == "auth error") {
         hideProgressDialog();
         return;
       }
@@ -197,7 +194,6 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
   }
 
   void _getSliders() async {
-
     String sessionToken = await AppData().getSessionToken();
 
     var dashSlidersResponse =
@@ -230,7 +226,6 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
   }
 
   void _getFlashNews() async {
-
     String sessionToken = await AppData().getSessionToken();
 
     var dashSlidersResponse =
@@ -262,7 +257,6 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
   }
 
   void _getSchoolInfo() async {
-
     var sId = await GConstants.schoolId();
 
     var schoolInfoRs = await http.post(GConstants.getSchoolInfoRoute(),
@@ -276,14 +270,14 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
         if (schoolInfoRsObject["status"] == "success") {
           Map<String, dynamic> modulesData = schoolInfoRsObject['data'];
 
-          if(modulesData.containsKey("access_key")){
+          if (modulesData.containsKey("access_key")) {
             AppData().setAccessKey(modulesData['access_key']);
             AppData().setSecretKey(modulesData['secrety_key']);
             modulesData.remove('access_key');
             modulesData.remove('secrety_key');
           }
 
-          if(modulesData.containsKey("aws_bucket_name")){
+          if (modulesData.containsKey("aws_bucket_name")) {
             AppData().setBucketName(modulesData['aws_bucket_name']);
             AppData().setBucketRegion(modulesData['aws_bucket_region']);
             AppData().setBucketUrl(modulesData['aws_bucket_url']);
@@ -306,7 +300,6 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
   }
 
   void _getFlyers() async {
-
     var ok = FullAdmissionRootView.of(context);
 
     int userStucareId = await AppData().getSelectedStudent();
@@ -400,7 +393,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
           children: <Widget>[
             _dashSliders.length > 0
                 ? CarouselSlider(
-                    height: MediaQuery.of(context).size.height/3,
+                    height: MediaQuery.of(context).size.height / 3,
                     autoPlay: true,
                     viewportFraction: 1.0,
                     autoPlayInterval: Duration(seconds: 2),
@@ -411,7 +404,8 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
                             //height: 500,
                             child: CachedNetworkImage(
                               imageUrl: i['file_url'],
-                              imageBuilder: (context, imageProvider) => Container(
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
                                     image: imageProvider,
@@ -623,6 +617,9 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
       case "fitness_declaration":
         navigateToModule(FitnessDeclaration());
         break;
+      case "remark":
+        navigateToModule(StudentRemarkMain());
+        break;
       case "notifications":
         navigateToModule(NotificationsMain());
         break;
@@ -701,10 +698,9 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
         navigateToModule(dummyPage());
         break;
       case "live_class":
-
-        if (Platform.isIOS){
+        if (Platform.isIOS) {
           navigateToModule(OnlineClassTabMain());
-        }else{
+        } else {
           int sId = await GConstants.schoolId();
           int userStucareId = await AppData().getSelectedStudent();
           String sessionToken = await AppData().getSessionToken();
@@ -718,7 +714,9 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
             "studentName": studentName,
             "baseUrl": baseUrl
           };
-          platform.invokeMethod("startLiveClassActivity", arguments).then((rs) {});
+          platform
+              .invokeMethod("startLiveClassActivity", arguments)
+              .then((rs) {});
         }
 
         break;
@@ -733,7 +731,9 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
           "schoolId": sId,
           "baseUrl": baseUrl
         };
-        platform.invokeMethod("startOnlineTestsActivity", arguments).then((rs) {});
+        platform
+            .invokeMethod("startOnlineTestsActivity", arguments)
+            .then((rs) {});
         break;
       case "video_lessons":
         int sId = await GConstants.schoolId();
@@ -746,7 +746,9 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
           "schoolId": sId,
           "baseUrl": baseUrl
         };
-        platform.invokeMethod("startVideoLessonsActivity", arguments).then((rs) {});
+        platform
+            .invokeMethod("startVideoLessonsActivity", arguments)
+            .then((rs) {});
         break;
       case "downloads":
         navigateToModule(DownloadsMain());
@@ -799,7 +801,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
 
   void _setUnseenHomework(Map<String, dynamic> data) async {
     int count = 0;
-    if (data!=null && data.containsKey("todays") && data['todays']!=null) {
+    if (data != null && data.containsKey("todays") && data['todays'] != null) {
       var tData = data['todays'] as Map<String, dynamic>;
       var tTime = DateTime.parse(tData['timestamp_created']);
       var local = await AppData().getHomeworkSeen("todays");
@@ -846,6 +848,4 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
 
     //print(homeworkResponse.body);
   }
-
-
 }

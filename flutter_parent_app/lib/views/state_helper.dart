@@ -58,10 +58,14 @@ class StateHelper {
   }
 
   void hideProgressDialog() {
-    if (_isProgressDialogShowing) {
-      Navigator.pop(_context);
-      _isProgressDialogShowing = false;
+    try{
+      if (_isProgressDialogShowing) {
+        Navigator.pop(_context);
+      }
+    }catch(_){
+
     }
+
   }
 
   //function to show toast message on screen

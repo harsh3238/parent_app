@@ -83,6 +83,8 @@ flutter:
     - assets/abc.svg
     - assets/dash_icons/
     - assets/color_back.jpg
+    - assets/ic_teacher.jpg
+    - assets/fees.jpg
     - assets/ic_megaphone.png
     - assets/profile.png
     - assets/class_icons/

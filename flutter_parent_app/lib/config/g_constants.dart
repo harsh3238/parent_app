@@ -83,6 +83,11 @@ class GConstants {
   static const _DISABLE_FLIP = API_VERSION+ "/student/requests/disbale_flip.php";
   static const _GET_FITNESS_DECLARATION = API_VERSION+ "/getDeclaration";
   static const _SAVE_FITNESS_DECLARATION = API_VERSION+ "/saveDeclaration";
+  static const _GET_FEE_DATA = "api/fee_payment_history";
+  static const _GET_DUES_DATA = "api/get_due_fee";
+  static const _GET_STUDENT_REMARKS = "api/get_student_remark";
+  static const _GET_REMARK_TYPE = "api/get_remark_type";
+  static const _SHOW_STUDENT_REMARK = "api/get_student_remark_for_student";
 
   static setSchoolRootUrl(String rootUrl) {
     SCHOOL_ROOT = rootUrl;
@@ -213,6 +218,14 @@ class GConstants {
   static getFitnessDeclarationRoute() => SCHOOL_ROOT + _GET_FITNESS_DECLARATION;
 
   static saveFitnessDeclarationRoute() => SCHOOL_ROOT + _SAVE_FITNESS_DECLARATION;
+
+  static getFeeDataRoute() => SCHOOL_ROOT + _GET_FEE_DATA;
+
+  static getDuesDataRoute() => SCHOOL_ROOT + _GET_DUES_DATA;
+
+  static getStudentRemarksRoute() => SCHOOL_ROOT + _SHOW_STUDENT_REMARK;
+
+  static getRemarkTypeRoute() => SCHOOL_ROOT + _GET_REMARK_TYPE;
 
 
 }

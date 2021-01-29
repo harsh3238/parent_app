@@ -24,8 +24,8 @@ class ActivityCustomVideoPlayer : AppCompatActivity() {
     var videoId = ""
     var topicName = ""
     var topicId = ""
-    private lateinit var videoList: JSONArray
     private  var video_index: Int = 0
+    private lateinit var videoList: JSONArray
     lateinit var contentView: CustomVideoPlayerBinding
     lateinit var ytPlayer: YouTubePlayer
     private var isViewLayoutDone = false
