@@ -88,6 +88,8 @@ class GConstants {
   static const _GET_STUDENT_REMARKS = "api/get_student_remark";
   static const _GET_REMARK_TYPE = "api/get_remark_type";
   static const _SHOW_STUDENT_REMARK = "api/get_student_remark_for_student";
+  static const _SAVE_POLL_ANSWER = "student/save_question_answer";
+  static const _GET_POLL_QUESTIONS = "student/get_poll_question";
 
   static setSchoolRootUrl(String rootUrl) {
     SCHOOL_ROOT = rootUrl;
@@ -226,6 +228,10 @@ class GConstants {
   static getStudentRemarksRoute() => SCHOOL_ROOT + _SHOW_STUDENT_REMARK;
 
   static getRemarkTypeRoute() => SCHOOL_ROOT + _GET_REMARK_TYPE;
+
+  static getSavePollAnswerRoute() => SCHOOL_ROOT + _SAVE_POLL_ANSWER;
+
+  static getPollQuestionsRoute() => SCHOOL_ROOT + _GET_POLL_QUESTIONS;
 
 
 }

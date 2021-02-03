@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:click_campus_parent/config/g_constants.dart';
 import 'package:click_campus_parent/data/app_data.dart';
+import 'package:click_campus_parent/views/payment/payment_gateway_screen.dart';
 import 'package:click_campus_parent/views/state_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -240,6 +241,7 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
   void addPaymentData(int position){
     debugPrint("POSITION:"+position.toString());
     _paymentList.clear();
+    grandTotal = 0;
     for(int i=0; i<=position; i++){
       _paymentList.add(_duesData[i]);
       grandTotal = grandTotal + _duesData[i]['amount'];
@@ -294,14 +296,14 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
-              height: 30.0,
-              width: 100,
+              height: 35.0,
+              width: 150,
               color: Colors.transparent,
               child: ClipRRect(
                 borderRadius:
                 BorderRadius.circular(30.0),
                 child: Container(
-                  width: 40,
+                  width: 150,
                   height: 10.0,
                   color: Colors.blue,
                   child: GestureDetector(
@@ -309,10 +311,19 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
                       StateHelper().showShortToast(context, "This feature will be roll out soon");
                     },
                     child: Center(
-                      child: new Text("PAY",
-                          style: TextStyle(
-                            color: Colors.white,
-                          )),
+                      child: GestureDetector(
+                        onTap: (){
+                          navigateToModule(
+                              PaymentGatewayScreen("Fee Dues Payment", grandTotal.toString(), "", ""));
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: new Text("Make Payment",
+                              style: TextStyle(
+                                color: Colors.white,
+                              )),
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -504,7 +515,7 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
                                             child: Container(
                                               width: 40,
                                               height: 10.0,
-                                              color: Colors.orange,
+                                              color: Colors.red,
                                               child: Center(
                                                 child: new Text("Cancelled",
                                                     style: TextStyle(
@@ -682,5 +693,12 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
     } else {
       showServerError();
     }
+  }
+
+  void navigateToModule(Widget module) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => module),
+    );
   }
 }

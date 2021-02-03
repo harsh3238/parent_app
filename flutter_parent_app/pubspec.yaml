@@ -14,7 +14,7 @@ description: Stucare Click Campus app for parents
 version: 1.0.14+14
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -58,7 +58,8 @@ dependencies:
   firebase_auth: ^0.16.1
   cached_network_image: ^2.3.1
   fluttertoast: ^3.0.4
-  in_app_update: ^1.1.14
+  atompaynetz: ^0.0.5
+  flutter_webview_plugin: ^0.3.11
 
 dev_dependencies:
   flutter_test:
