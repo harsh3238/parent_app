@@ -662,8 +662,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
         break;
       case "facebook":
         String url = await DbSchoolInfo().getFacebookUrl();
-        //_launchURL(url);
-        navigateToModule(StudentPollsMain());
+        _launchURL(url);
         break;
       case "feedback":
         navigateToModule(dummyPage());
@@ -688,7 +687,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
         navigateToModule(dummyPage());
         break;
       case "polls":
-        navigateToModule(PollsMain());
+        navigateToModule(StudentPollsMain());
         break;
       case "references":
         navigateToModule(ReferencesMainList());
