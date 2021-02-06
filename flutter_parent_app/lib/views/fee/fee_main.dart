@@ -309,20 +309,15 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
                   child: GestureDetector(
                     onTap: (){
                       StateHelper().showShortToast(context, "This feature will be roll out soon");
+                      //navigateToModule(PaymentGatewayScreen("Fee Dues Payment", grandTotal.toString(), "", ""));
                     },
                     child: Center(
-                      child: GestureDetector(
-                        onTap: (){
-                          navigateToModule(
-                              PaymentGatewayScreen("Fee Dues Payment", grandTotal.toString(), "", ""));
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: new Text("Make Payment",
-                              style: TextStyle(
-                                color: Colors.white,
-                              )),
-                        ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: new Text("Make Payment",
+                            style: TextStyle(
+                              color: Colors.white,
+                            )),
                       ),
                     ),
                   ),
