@@ -37,7 +37,7 @@ class StatePollPreview extends State<PollPreview> with StateHelper {
     return Scaffold(
       key: _scaffoldState,
       appBar: AppBar(
-        title: Text("Poll Preview"),
+        title: Text("Poll"),
       ),
       body: Column(
         children: <Widget>[

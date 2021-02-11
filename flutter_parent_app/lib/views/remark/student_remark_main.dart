@@ -33,25 +33,19 @@ class _StudentRemarkMainState extends State<StudentRemarkMain>
     String sessionToken = await AppData().getSessionToken();
     int studentId = await AppData().getSelectedStudent();
 
-    var requestBody;
-    if (_selectedRemarkType == null || _selectedRemarkType["id"] == 0) {
-      requestBody = {
-        'active_session': sessionToken,
-        'session_id': activeSession.sessionId.toString(),
-        'stucare_id': studentId.toString(),
-        'page_number': "0",
-        'limit': "100",
-      };
-    } else {
-      requestBody = {
-        'active_session': sessionToken,
-        'session_id': activeSession.sessionId.toString(),
-        'stucare_id': studentId.toString(),
-        'page_number': "0",
-        'limit': "100",
-        'remark_type_id': _selectedRemarkType["id"].toString(),
-      };
+
+    Map requestBody = {
+      'active_session': sessionToken,
+      'session_id': activeSession.sessionId.toString(),
+      'remarkee_id': studentId.toString(),
+      'page_number': "0",
+      'limit': "100",
+    };
+
+    if (_selectedRemarkType != null && _selectedRemarkType["id"] != 0) {
+      requestBody.putIfAbsent('remark_type_id', () => _selectedRemarkType["id"].toString());
     }
+
     var modulesResponse =
         await http.post(GConstants.getStudentRemarksRoute(), body: requestBody);
 

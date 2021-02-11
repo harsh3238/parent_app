@@ -101,7 +101,7 @@ class RemarkFilterState extends State<RemarkFilter> {
                       });
                     },
                     hint: Text(
-                      'Select Remark Type',
+                      'Select Category',
                       style: TextStyle(
                         color: Colors.grey,
                       ),
