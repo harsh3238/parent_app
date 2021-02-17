@@ -9,7 +9,7 @@ import 'package:click_campus_parent/data/session_db_provider.dart';
 import 'package:click_campus_parent/views/dashboard/frg_home.dart';
 import 'package:click_campus_parent/views/login/select_impersonation.dart';
 import 'package:click_campus_parent/views/messages/messages_tab_main.dart';
-import 'package:click_campus_parent/views/profile/profile_one_page.dart';
+import 'package:click_campus_parent/views/profile/student_profile.dart';
 import 'package:click_campus_parent/views/splash/splash_screen.dart';
 import 'package:click_campus_parent/views/state_helper.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -311,7 +311,7 @@ class DashboardMainState extends State<DashboardMain>
     dashboardScreens = <Widget>[
       _homeFragment,
       MessageTabMain(),
-      ProfileOnePage(),
+      StudentProfile(),
       Container(
         color: Colors.purpleAccent,
       )

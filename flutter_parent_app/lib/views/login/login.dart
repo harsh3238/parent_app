@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:click_campus_parent/config/g_constants.dart';
 import 'package:click_campus_parent/data/app_data.dart';
 import 'package:click_campus_parent/data/db_school_info.dart';
 import 'package:click_campus_parent/views/dashboard/the_dashboard_main.dart';
 import 'package:click_campus_parent/views/login/activity_impersonation.dart';
+import 'package:click_campus_parent/views/splash/splash_screen.dart';
 import 'package:click_campus_parent/views/state_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
@@ -28,12 +30,12 @@ class _LinkTextSpan extends TextSpan {
   _LinkTextSpan(_LoginScreenState state,
       {TextStyle style, String url, String text})
       : super(
-            style: style,
-            text: text ?? url,
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                state.resendOtp();
-              });
+      style: style,
+      text: text ?? url,
+      recognizer: TapGestureRecognizer()
+        ..onTap = () {
+          state.resendOtp();
+        });
 }
 
 class _LoginScreenState extends State<LoginScreen> with StateHelper {
@@ -63,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
     var schoolDataResponse = await http.post(GConstants.schoolDataRoute(),
         body: {'school_id': _schoolIdTextController.text});
 
-    debugPrint("${schoolDataResponse.request} : ${schoolDataResponse.body}");
+    log("${schoolDataResponse.request} : ${schoolDataResponse.body}");
 
     if (schoolDataResponse.statusCode == 200) {
       ///Getting School Data
@@ -72,7 +74,6 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
         String tempSchoolUrl = responseObject["api_route_base"];
         GConstants.setSchoolRootUrl(tempSchoolUrl);
 
-        await AppData().setBaseUrl(tempSchoolUrl);
         ///Now that we have received the school's root url we can
         ///continue logging in user, so make another request
         ///now to the school directly
@@ -82,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
           'school_id': sId.toString()
         });
 
-        debugPrint("${loginResponse.request} : ${loginResponse.body}");
+        log("${loginResponse.request} : ${loginResponse.body}");
 
         if (loginResponse.statusCode == 200) {
           Map loginResponseObject = json.decode(loginResponse.body);
@@ -138,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
       if (loginResponseObject.containsKey("status")) {
         if (loginResponseObject["status"] == "success") {
           int loginRecordId =
-              await saveLoginReport(int.parse(loginResponseObject['login_id']));
+          await saveLoginReport(int.parse(loginResponseObject['login_id']));
           if (loginRecordId != 0) {
             loginResponseObject["login_record_id"] = loginRecordId;
 
@@ -151,10 +152,10 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
             hideProgressDialog();
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (BuildContext context) {
-              return Scaffold(
-                body: DashboardMain(false),
-              );
-            }));
+                  return Scaffold(
+                    body: DashboardMain(false),
+                  );
+                }));
           } else {
             showSnackBar(loginResponseObject["message"]);
           }
@@ -244,6 +245,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
                 ImpersonationMain(_schoolIdTextController.text)));
   }
 
+
   void _verifyPhoneNumber() async {
     authCompleted = false;
     final PhoneVerificationCompleted verificationCompleted =
@@ -257,10 +259,10 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
 
     final PhoneVerificationFailed verificationFailed =
         (AuthException authException) {
-      debugPrint("Auth Exception:" + authException.message);
+      debugPrint("Auth Exception:"+authException.message);
       hideProgressDialog();
       _scaffoldState.currentState?.showSnackBar(SnackBar(
-        content: Text("Firebase auth error: " + authException.message),
+        content: Text("Firebase auth error: "+authException.message),
       ));
     };
 
@@ -306,12 +308,12 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
   _firebaseSignIn() async {
     showProgressDialog();
     try {
+
       final AuthCredential credential = PhoneAuthProvider.getCredential(
         verificationId: _smsVerificationCode,
         smsCode: _otpTextController.text,
       );
-      final AuthResult user =
-          await _firebaseAuth.signInWithCredential(credential);
+      final AuthResult user = await _firebaseAuth.signInWithCredential(credential);
       final FirebaseUser currentUser = await _firebaseAuth.currentUser();
       assert(user.user.uid == currentUser.uid);
       hideProgressDialog();
@@ -333,12 +335,10 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
         break;
     }
   }
-
   void _afterFirebaseAuthRoutine() async {
     showProgressDialog();
 
-    var otpResponse =
-        await http.post(GConstants.afterFirebaseAuthRoute(), body: {
+    var otpResponse = await http.post(GConstants.afterFirebaseAuthRoute(), body: {
       'mobile_no': _mobileNumberTextController.text,
     });
     //print(otpResponse.body);
@@ -348,7 +348,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
       if (loginResponseObject.containsKey("status")) {
         if (loginResponseObject["status"] == "success") {
           int loginRecordId =
-              await saveLoginReport(int.parse(loginResponseObject['login_id']));
+          await saveLoginReport(int.parse(loginResponseObject['login_id']));
           if (loginRecordId != 0) {
             loginResponseObject["login_record_id"] = loginRecordId;
             loginResponseObject.remove("status");
@@ -358,15 +358,15 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
             await AppData().setNormalSchoolRootUrlAndId(
                 GConstants.SCHOOL_ROOT, _schoolIdTextController.text);
             hideProgressDialog();
-            if (!_isManualFirebaseOTP) {
+            if(!_isManualFirebaseOTP){
               Navigator.of(context).pop();
             }
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (BuildContext context) {
-              return Scaffold(
-                body: DashboardMain(false),
-              );
-            }));
+                  return Scaffold(
+                    body: DashboardMain(false),
+                  );
+                }));
           } else {
             showSnackBar(loginResponseObject["message"]);
           }
@@ -382,6 +382,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
     }
     hideProgressDialog();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -400,7 +401,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
             children: <Widget>[
               SizedBox.expand(
                   child:
-                      Image.asset("assets/main_back.jpg", fit: BoxFit.cover)),
+                  Image.asset("assets/main_back.jpg", fit: BoxFit.cover)),
               Opacity(
                   opacity: 0.8,
                   child: Container(color: Colors.indigo.shade900)),
@@ -411,24 +412,24 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
                     children: <Widget>[
                       !_isKeyboardVisible
                           ? Container(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                  padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                                  child: Column(
-                                      children: <Widget>[
-                                        Icon(Icons.vpn_key,
-                                            size: 80, color: Colors.white),
-                                        Padding(
-                                            padding: EdgeInsets.all(0),
-                                            child: Text("",
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 20,
-                                                    fontWeight:
-                                                        FontWeight.bold)))
-                                      ],
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start)))
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                              padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                              child: Column(
+                                  children: <Widget>[
+                                    Icon(Icons.vpn_key,
+                                        size: 80, color: Colors.white),
+                                    Padding(
+                                        padding: EdgeInsets.all(0),
+                                        child: Text("",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 20,
+                                                fontWeight:
+                                                FontWeight.bold)))
+                                  ],
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start)))
                           : Container(height: 0),
                       Container(height: 10),
                       Stack(
@@ -451,13 +452,13 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
                                           decoration: InputDecoration(
                                               labelText: "School ID",
                                               contentPadding:
-                                                  EdgeInsets.fromLTRB(
-                                                      0, 16, 0, 2),
+                                              EdgeInsets.fromLTRB(
+                                                  0, 16, 0, 2),
                                               labelStyle:
-                                                  TextStyle(fontSize: 14)),
+                                              TextStyle(fontSize: 14)),
                                           maxLines: 1,
                                           keyboardType:
-                                              TextInputType.numberWithOptions(),
+                                          TextInputType.numberWithOptions(),
                                           scrollPadding: EdgeInsets.all(0),
                                           validator: (txt) {
                                             if (txt.length != 3) {
@@ -484,91 +485,90 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
                                                   enabled: !_showOtpUi,
                                                   decoration: InputDecoration(
                                                       labelText:
-                                                          "Enter your mobile number",
+                                                      "Enter your mobile number",
                                                       contentPadding:
-                                                          EdgeInsets.fromLTRB(
-                                                              0, 16, 0, 2),
+                                                      EdgeInsets.fromLTRB(
+                                                          0, 16, 0, 2),
                                                       labelStyle: TextStyle(
                                                           fontSize: 14)),
                                                   maxLines: 1,
                                                   keyboardType: TextInputType
                                                       .numberWithOptions(),
                                                   scrollPadding:
-                                                      EdgeInsets.all(0),
+                                                  EdgeInsets.all(0),
                                                   validator: (txt) {
                                                     if (txt.length != 10) {
                                                       return 'Invalid number';
                                                     }
                                                     Pattern pattern = "\\d+";
                                                     RegExp regex =
-                                                        new RegExp(pattern);
+                                                    new RegExp(pattern);
                                                     if (!regex.hasMatch(txt))
                                                       return 'Invalid number';
                                                     else
                                                       return null;
                                                   },
                                                   controller:
-                                                      _mobileNumberTextController))),
+                                                  _mobileNumberTextController))),
                                       _showOtpUi
                                           ? IconButton(
-                                              icon: Icon(Icons.edit),
-                                              onPressed: () {
-                                                setState(() {
-                                                  _showOtpUi = false;
-                                                });
-                                                _timer.cancel();
-                                              })
+                                          icon: Icon(Icons.edit),
+                                          onPressed: () {
+                                            setState(() {
+                                              _showOtpUi = false;
+                                            });
+                                            _timer.cancel();
+                                          })
                                           : Container(width: 0)
                                     ],
                                   ),
                                 ),
                                 _showOtpUi
                                     ? SizedBox(
-                                        width: 250,
-                                        child: Container(
-                                            child: Form(
-                                                key: _formKeyOtp,
-                                                child: TextFormField(
-                                                    autofocus: true,
-                                                    decoration: InputDecoration(
-                                                        hintText: "Enter OTP",
-                                                        contentPadding:
-                                                            EdgeInsets.fromLTRB(
-                                                                0, 5, 0, 0),
-                                                        focusedBorder:
-                                                            UnderlineInputBorder(
-                                                                borderSide: BorderSide(
-                                                                    color: Colors
-                                                                        .grey)),
-                                                        enabledBorder:
-                                                            UnderlineInputBorder(
-                                                                borderSide: BorderSide(
-                                                                    color: Colors
-                                                                        .grey)),
-                                                        alignLabelWithHint:
-                                                            true,
-                                                        hintStyle: TextStyle(
-                                                            fontSize: 12),
-                                                        errorStyle: TextStyle(
-                                                            fontSize: 10)),
-                                                    maxLines: 1,
-                                                    textAlign: TextAlign.center,
-                                                    keyboardType:
-                                                        TextInputType.number,
-                                                    scrollPadding:
-                                                        EdgeInsets.all(0),
-                                                    style: TextStyle(color: Colors.grey),
-                                                    validator: (txt) {
-                                                      if (txt.isEmpty) {
-                                                        return "  Invalid OTP";
-                                                      }
-                                                      return null;
-                                                    },
-                                                    controller: _otpTextController)),
-                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 15
-                                            )))
+                                    width: 250,
+                                    child: Container(
+                                        child: Form(
+                                            key: _formKeyOtp,
+                                            child: TextFormField(
+                                                autofocus: true,
+                                                decoration: InputDecoration(
+                                                    hintText: "Enter OTP",
+                                                    contentPadding:
+                                                    EdgeInsets.fromLTRB(
+                                                        0, 16, 0, 2),
+                                                    focusedBorder:
+                                                    UnderlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            color: Colors
+                                                                .grey)),
+                                                    enabledBorder:
+                                                    UnderlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            color: Colors
+                                                                .grey)),
+                                                    alignLabelWithHint:
+                                                    true,
+                                                    hintStyle: TextStyle(
+                                                        fontSize: 12),
+                                                    errorStyle: TextStyle(
+                                                        fontSize: 10)),
+                                                maxLines: 1,
+                                                textAlign: TextAlign.center,
+                                                keyboardType:
+                                                TextInputType.number,
+                                                scrollPadding:
+                                                EdgeInsets.all(0),
+                                                style: TextStyle(color: Colors.grey),
+                                                validator: (txt) {
+                                                  if(txt.isEmpty){
+                                                    return "  Invalid OTP";
+                                                  }
+                                                  return null;
+                                                },
+                                                controller: _otpTextController)),
+                                        padding: EdgeInsets.fromLTRB(0, 20, 0, 20)))
                                     : Container(height: 40),
-                                //Container(height: 20),
+                                Container(height: 20),
                                 SizedBox(
                                     width: 290,
                                     child: Align(
@@ -580,16 +580,15 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
                                                   if (_showOtpUi) {
                                                     if (_formKeyOtp.currentState
                                                         .validate()) {
-                                                      if (_isUsingFirebaseOTP) {
+
+                                                      if(_isUsingFirebaseOTP){
                                                         setState(() {
-                                                          _isManualFirebaseOTP =
-                                                              true;
+                                                          _isManualFirebaseOTP = true;
                                                         });
                                                         _firebaseSignIn();
-                                                      } else {
+                                                      }else{
                                                         setState(() {
-                                                          _isManualFirebaseOTP =
-                                                              false;
+                                                          _isManualFirebaseOTP = false;
                                                         });
                                                         _otpVerifyRequest();
                                                       }
@@ -608,7 +607,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
                                                     if (_formKey.currentState
                                                         .validate()) {
                                                       if (_mobileNumberTextController
-                                                              .text ==
+                                                          .text ==
                                                           "9876543210") {
                                                         _impersonationLogic();
                                                       } else {
@@ -628,37 +627,37 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
                                 Container(height: 10),
                                 _showOtpUi
                                     ? SizedBox(
-                                        width: 300,
-                                        child: Align(
-                                            alignment: Alignment.center,
-                                            child: Container(
-                                                margin: EdgeInsets.fromLTRB(
-                                                    0, 10, 0, 0),
-                                                child: RichText(
-                                                    textAlign: TextAlign.center,
-                                                    text: TextSpan(children: <
-                                                        TextSpan>[
-                                                      TextSpan(
-                                                          text: _resendOtpLabel,
-                                                          style: TextStyle(
-                                                              color: Colors.grey
-                                                                  .shade700,
-                                                              fontSize: 12)),
-                                                      _start < 1
-                                                          ? _LinkTextSpan(this,
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .indigo,
-                                                                  fontSize: 12),
-                                                              url: 'RESEND OTP')
-                                                          : TextSpan(
-                                                              text: '',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .grey
-                                                                      .shade700,
-                                                                  fontSize: 12))
-                                                    ])))))
+                                    width: 300,
+                                    child: Align(
+                                        alignment: Alignment.center,
+                                        child: Container(
+                                            margin: EdgeInsets.fromLTRB(
+                                                0, 10, 0, 0),
+                                            child: RichText(
+                                                textAlign: TextAlign.center,
+                                                text: TextSpan(children: <
+                                                    TextSpan>[
+                                                  TextSpan(
+                                                      text: _resendOtpLabel,
+                                                      style: TextStyle(
+                                                          color: Colors.grey
+                                                              .shade700,
+                                                          fontSize: 12)),
+                                                  _start < 1
+                                                      ? _LinkTextSpan(this,
+                                                      style: TextStyle(
+                                                          color: Colors
+                                                              .indigo,
+                                                          fontSize: 12),
+                                                      url: 'RESEND OTP')
+                                                      : TextSpan(
+                                                      text: '',
+                                                      style: TextStyle(
+                                                          color: Colors
+                                                              .grey
+                                                              .shade700,
+                                                          fontSize: 12))
+                                                ])))))
                                     : Container(height: 0)
                               ],
                               mainAxisSize: MainAxisSize.min,
@@ -678,96 +677,96 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
               ),
               (!_isKeyboardVisible)
                   ? Container(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: EdgeInsets.all(30),
-                        child: Column(
-                          children: <Widget>[
-                            Row(
-                              children: <Widget>[
-                                IconButton(
-                                    icon: Icon(
-                                      FontAwesomeIcons.facebook,
-                                      color: Colors.white54,
-                                    ),
-                                    onPressed: () async {
-                                      String url =
-                                          await DbSchoolInfo().getFacebookUrl();
-                                      _launchURL(url);
-                                    }),
-                                Container(
-                                  width: 10,
-                                ),
-                                IconButton(
-                                    icon: Icon(
-                                      Icons.email,
-                                      color: Colors.white54,
-                                      size: 30,
-                                    ),
-                                    onPressed: () async {
-                                      String url =
-                                          await DbSchoolInfo().getEmail();
-                                      var uri = "mailto:$url";
-                                      _launchURL(uri);
-                                    }),
-                                Container(
-                                  width: 10,
-                                ),
-                                IconButton(
-                                    icon: Icon(
-                                      FontAwesomeIcons.link,
-                                      color: Colors.white54,
-                                    ),
-                                    onPressed: () async {
-                                      String url =
-                                          await DbSchoolInfo().getWebUrl();
-                                      _launchURL(url);
-                                    }),
-                                Container(
-                                  width: 10,
-                                ),
-                                IconButton(
-                                    icon: Icon(
-                                      FontAwesomeIcons.mobileAlt,
-                                      color: Colors.white54,
-                                    ),
-                                    onPressed: () async {
-                                      String url =
-                                          await DbSchoolInfo().getPhone();
-                                      _launchURL("tel://$url");
-                                    }),
-                                Container(
-                                  width: 10,
-                                ),
-                                IconButton(
-                                    icon: Icon(
-                                      FontAwesomeIcons.whatsapp,
-                                      color: Colors.white54,
-                                      size: 28,
-                                    ),
-                                    onPressed: () async {
-                                      await launch(
-                                          "https://wa.me/918009121315");
-                                    })
-                              ],
-                              mainAxisAlignment: MainAxisAlignment.center,
-                            ),
-                            Container(
-                              height: 40,
-                            ),
-                            Text(
-                              "Powered by Stucare Technologies Pvt. Ltd.",
-                              style: TextStyle(
-                                  color: Colors.white54, fontSize: 10),
-                            )
-                          ],
-                          mainAxisSize: MainAxisSize.min,
-                        ),
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: EdgeInsets.all(30),
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          IconButton(
+                              icon: Icon(
+                                FontAwesomeIcons.facebook,
+                                color: Colors.white54,
+                              ),
+                              onPressed: () async {
+                                String url =
+                                await DbSchoolInfo().getFacebookUrl();
+                                _launchURL(url);
+                              }),
+                          Container(
+                            width: 10,
+                          ),
+                          IconButton(
+                              icon: Icon(
+                                Icons.email,
+                                color: Colors.white54,
+                                size: 30,
+                              ),
+                              onPressed: () async {
+                                String url =
+                                await DbSchoolInfo().getEmail();
+                                var uri = "mailto:$url";
+                                _launchURL(uri);
+                              }),
+                          Container(
+                            width: 10,
+                          ),
+                          IconButton(
+                              icon: Icon(
+                                FontAwesomeIcons.link,
+                                color: Colors.white54,
+                              ),
+                              onPressed: () async {
+                                String url =
+                                await DbSchoolInfo().getWebUrl();
+                                _launchURL(url);
+                              }),
+                          Container(
+                            width: 10,
+                          ),
+                          IconButton(
+                              icon: Icon(
+                                FontAwesomeIcons.mobileAlt,
+                                color: Colors.white54,
+                              ),
+                              onPressed: () async {
+                                String url =
+                                await DbSchoolInfo().getPhone();
+                                _launchURL("tel://$url");
+                              }),
+                          Container(
+                            width: 10,
+                          ),
+                          IconButton(
+                              icon: Icon(
+                                FontAwesomeIcons.whatsapp,
+                                color: Colors.white54,
+                                size: 28,
+                              ),
+                              onPressed: () async {
+                                await launch(
+                                    "https://wa.me/918009121315");
+                              })
+                        ],
+                        mainAxisAlignment: MainAxisAlignment.center,
                       ),
-                    )
+                      Container(
+                        height: 40,
+                      ),
+                      Text(
+                        "Powered by Stucare Technologies Pvt. Ltd.",
+                        style: TextStyle(
+                            color: Colors.white54, fontSize: 10),
+                      )
+                    ],
+                    mainAxisSize: MainAxisSize.min,
+                  ),
+                ),
+              )
                   : Container(
-                      height: 0,
-                    )
+                height: 0,
+              )
             ],
           ),
         ),
@@ -799,7 +798,7 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
 
   @override
   void dispose() {
-    if (_timer != null) {
+    if(_timer!=null){
       _timer.cancel();
     }
     super.dispose();
@@ -824,9 +823,9 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
           ),
           onWillPop: () {});
       await showDialog(
-              context: context,
-              builder: (BuildContext context) => dialog,
-              barrierDismissible: false)
+          context: context,
+          builder: (BuildContext context) => dialog,
+          barrierDismissible: false)
           .then((value) async {
         await AppData().setNormalSchoolRootUrlAndId(
             value['url'], value['school_id'].toString());
@@ -834,4 +833,5 @@ class _LoginScreenState extends State<LoginScreen> with StateHelper {
       });
     }
   }
+
 }

@@ -11,14 +11,14 @@ import 'package:click_campus_parent/widgets/profile_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class ProfileOnePage extends StatefulWidget {
+class StudentProfile extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return ProfileOnePageState();
+    return StudentProfileState();
   }
 }
 
-class ProfileOnePageState extends State<ProfileOnePage> with StateHelper {
+class StudentProfileState extends State<StudentProfile> with StateHelper {
   final GlobalKey<ScaffoldState> _scaffoldState = GlobalKey();
 
   var deviceSize;

@@ -24,6 +24,7 @@ import 'package:click_campus_parent/views/online_classes/online_classes_tab_main
 import 'package:click_campus_parent/views/photo_gallery/photo_gallery_main.dart';
 import 'package:click_campus_parent/views/polls/polls.dart';
 import 'package:click_campus_parent/views/polls/polls_main.dart';
+import 'package:click_campus_parent/views/school_info/school_profile.dart';
 import 'package:click_campus_parent/views/references/references_main_list.dart';
 import 'package:click_campus_parent/views/remark/student_remark_main.dart';
 import 'package:click_campus_parent/views/state_helper.dart';
@@ -675,7 +676,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
         openStudyModule();
         break;
       case "school_info":
-        navigateToModule(dummyPage());
+        navigateToModule(SchoolProfile());
         break;
       case "syllabus":
         navigateToModule(SyllabusMain());
