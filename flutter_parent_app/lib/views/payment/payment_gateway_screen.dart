@@ -99,7 +99,7 @@ class PaymentGatewayScreenState extends State<PaymentGatewayScreen> {
     var mDate = customDateFormat.format(now);
 
     var atompay = new AtomPaynetz(
-        login: '192',
+        login: '9132',
         pass: 'Test@123',
         prodid: 'NSE',
         amt: widget.price,
@@ -111,11 +111,11 @@ class PaymentGatewayScreenState extends State<PaymentGatewayScreen> {
         udf3: '9999999999',
         udf4: 'Noida',
         requesthashKey: 'KEY123657234',
-        requestencryptionKey: '8E41C78439831010F81F61C344B7BFC7',
-        requestsaltKey: '8E41C78439831010F81F61C344B7BFC7',
+        requestencryptionKey: 'A4476C2062FFA58980DC8F79EB6A799E',
+        requestsaltKey: 'A4476C2062FFA58980DC8F79EB6A799E',
         responsehashKey: 'KEYRESP123657234',
-        responseencypritonKey: '8E41C78439831010F81F61C344B7BFC7',
-        responsesaltKey: '8E41C78439831010F81F61C344B7BFC7',
+        responseencypritonKey: '75AEF0FA1B94B3C10D4F5B268F757F11',
+        responsesaltKey: '75AEF0FA1B94B3C10D4F5B268F757F11',
         mode: 'uat'); // put mode: 'live' in production
 
     var urlToSend = atompay.getUrl();

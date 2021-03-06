@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:click_campus_parent/config/g_constants.dart';
 import 'package:flutter/material.dart';
@@ -28,8 +29,9 @@ class ExamWebView extends StatefulWidget {
       'current_session': sessionId
     };
 
-    theuri = Uri.https(
-        GConstants.SCHOOL_ROOT_AUTH, '/api/app-report-card', queryParameters);
+    String url = GConstants.SCHOOL_ROOT_AUTH;
+    theuri = Uri.https(url.replaceAll('/', ''), '/api/app-report-card', queryParameters);
+    log("${theuri}");
     //print(theuri.toString());
   }
 

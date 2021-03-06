@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:click_campus_parent/config/g_constants.dart';
 import 'package:click_campus_parent/data/app_data.dart';
+import 'package:click_campus_parent/data/session_db_provider.dart';
 import 'package:click_campus_parent/views/payment/payment_gateway_screen.dart';
 import 'package:click_campus_parent/views/state_helper.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,7 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
   bool showTotal = false;
   String feesDue = "Not Available";
   int grandTotal = 0;
+  int orderId = 0;
 
   @override
   void initState() {
@@ -40,6 +42,7 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
     if (!_didGetData) {
       _didGetData = true;
       Future.delayed(Duration(milliseconds: 100), () async {
+        activeSession = await SessionDbProvider().getActiveSession();
         _getFeesData();
       });
     }
@@ -238,17 +241,16 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
     );
   }
 
-  void addPaymentData(int position){
-    debugPrint("POSITION:"+position.toString());
+  void addPaymentData(int position) {
+    debugPrint("POSITION:" + position.toString());
     _paymentList.clear();
     grandTotal = 0;
-    for(int i=0; i<=position; i++){
+    for (int i = 0; i <= position; i++) {
       _paymentList.add(_duesData[i]);
       grandTotal = grandTotal + _duesData[i]['amount'];
       debugPrint("Item Added");
     }
-    setState(() { });
-
+    setState(() {});
   }
 
   Widget _getTotalAmount() {
@@ -263,15 +265,15 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 "Payment Details",
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18),
               ),
             ),
           ),
           _buildDuesSubList(),
-          Divider(
-              color: Colors.black
-          ),
+          Divider(color: Colors.black),
           Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.end,
@@ -280,17 +282,25 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
                 padding: EdgeInsets.all(8),
                 child: Container(
                   height: 25,
-                  child: Text("Grand Total", style: TextStyle(fontWeight: FontWeight.bold),),
+                  child: Text(
+                    "Grand Total",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
               Padding(
                 padding: EdgeInsets.all(8),
                 child: Container(
                   height: 25,
-                  child: Text(grandTotal.toString(), style: TextStyle(fontWeight: FontWeight.bold),),
+                  child: Text(
+                    grandTotal.toString(),
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
-              SizedBox(width: 5,)
+              SizedBox(
+                width: 5,
+              )
             ],
           ),
           Padding(
@@ -300,15 +310,26 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
               width: 150,
               color: Colors.transparent,
               child: ClipRRect(
-                borderRadius:
-                BorderRadius.circular(30.0),
+                borderRadius: BorderRadius.circular(30.0),
                 child: Container(
                   width: 150,
                   height: 10.0,
                   color: Colors.blue,
                   child: GestureDetector(
-                    onTap: (){
-                      StateHelper().showShortToast(context, "This feature will be roll out soon");
+                    onTap: () {
+                      List<String> _modeIdList = [];
+                      List<String> _compileIdList = [];
+
+                      for (int i = 0; i < _paymentList.length; i++) {
+                        Map mode = _paymentList[i]['fee_mode'];
+                        _modeIdList.add(mode['id'].toString());
+                        _compileIdList.add(_paymentList[i]['id'].toString());
+                      }
+                      _initPayment(
+                          grandTotal.toString(),
+                          json.encode(_modeIdList),
+                          json.encode(_compileIdList),
+                          _modeIdList.length.toString());
                       //navigateToModule(PaymentGatewayScreen("Fee Dues Payment", grandTotal.toString(), "", ""));
                     },
                     child: Center(
@@ -410,56 +431,56 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
                         : CircularProgressIndicator())));
   }
 
-
   Widget _buildDuesSubList() {
     return Container(
-      color: Colors.white,
+        color: Colors.white,
         child: _paymentList.length > 0
             ? ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: _paymentList.length,
-            itemBuilder: (BuildContext context, int index) {
-              Map mode = _paymentList[index]["fee_mode"];
-              return Padding(
-                padding: EdgeInsets.all(12),
-                child: Row(
-                  children: <Widget>[
-                    Column(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: _paymentList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  Map mode = _paymentList[index]["fee_mode"];
+                  return Padding(
+                    padding: EdgeInsets.all(12),
+                    child: Row(
                       children: <Widget>[
-                        Text(mode['fee_mode_name'],
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey.shade800,
-                                fontSize: 12)),
+                        Column(
+                          children: <Widget>[
+                            Text(mode['fee_mode_name'],
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey.shade800,
+                                    fontSize: 12)),
+                          ],
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Column(
+                          children: <Widget>[
+                            Text(
+                                "₹ " + _paymentList[index]['amount'].toString(),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blue,
+                                    fontSize: 12)),
+                          ],
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                        )
                       ],
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      children: <Widget>[
-                        Text("₹ " + _paymentList[index]['amount'].toString(),
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blue,
-                                fontSize: 12)),
-                      ],
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                    )
-                  ],
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                ),
-              );
-            })
+                  );
+                })
             : Container(
-            height: 200,
-            child: Center(
-                child: isNoData
-                    ? Text("No Data Available")
-                    : CircularProgressIndicator())));
+                height: 200,
+                child: Center(
+                    child: isNoData
+                        ? Text("No Data Available")
+                        : CircularProgressIndicator())));
   }
 
   Widget _buildFeesList() {
@@ -602,11 +623,109 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
                         : CircularProgressIndicator())));
   }
 
+  void _initPayment(String amount, String modeIds, String compileIds,
+      String noOfDeposits) async {
+    showProgressDialog();
+    String sessionToken = await AppData().getSessionToken();
+    int studentId = await AppData().getSelectedStudent();
+
+    var requestBody = {
+      'session_id': activeSession.sessionId.toString(),
+      'stucare_id': studentId.toString(),
+      'active_session': sessionToken,
+      'depositing_amount': amount,
+      'mode_id': modeIds,
+      'compile_id': compileIds,
+      //'deposit_upto': noOfDeposits,
+    };
+
+    debugPrint("${requestBody}");
+
+    var modulesResponse = await http.post(GConstants.getInitFeesPaymentRoute(),
+        body: requestBody);
+
+    debugPrint("${modulesResponse.request} : ${modulesResponse.body}");
+
+    if (modulesResponse.statusCode == 200) {
+      Map modulesResponseObject = json.decode(modulesResponse.body);
+      if (modulesResponseObject.containsKey("data")) {
+        hideProgressDialog();
+        orderId = modulesResponseObject['data'];
+
+        if (orderId != null) {
+          final result = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => PaymentGatewayScreen("Fees Payment",
+                      amount + ".00", "productId", orderId.toString())));
+
+          if (result != null && result != "") {
+            if (result["f_code"] == "Ok") {
+              _processPayment(
+                  orderId.toString(), result["mmp_txn"], "complete");
+            } else if (result["f_code"] == "F") {
+              _processPayment(orderId.toString(), result["mmp_txn"], "failed");
+            } else if (result["f_code"] == "C") {
+              _processPayment(
+                  orderId.toString(), result["mer_txn"], "cancelled");
+            }
+          }
+        } else {
+          showShortToast(context,
+              "Something went wrong, Please restart app and try again");
+        }
+      } else {
+        hideProgressDialog();
+        showServerError();
+      }
+    } else {
+      hideProgressDialog();
+      showServerError();
+    }
+  }
+
+  void _processPayment(
+      String orderId, String transactionId, String status, ) async {
+    showProgressDialog();
+    String sessionToken = await AppData().getSessionToken();
+    int studentId = await AppData().getSelectedStudent();
+
+    var requestBody = {
+      'active_session': sessionToken,
+      'order_id': orderId,
+      'transaction_id': transactionId,
+      'status': status,
+    };
+
+    debugPrint("${requestBody}");
+
+    var modulesResponse = await http
+        .post(GConstants.getProcessFeesPaymentRoute(), body: requestBody);
+
+    debugPrint("${modulesResponse.request} : ${modulesResponse.body}");
+
+    if (modulesResponse.statusCode == 200) {
+      Map modulesResponseObject = json.decode(modulesResponse.body);
+      if (modulesResponseObject.containsKey("data")) {
+        hideProgressDialog();
+        showShortToast(context, modulesResponseObject['data']);
+        showTotal = false;
+        _getDuesData();
+      } else {
+        hideProgressDialog();
+        showServerError();
+      }
+    } else {
+      hideProgressDialog();
+      showServerError();
+    }
+  }
+
   void _getFeesData() async {
     String sessionToken = await AppData().getSessionToken();
     int studentId = await AppData().getSelectedStudent();
     var requestBody = {
-      'session_id': "3",
+      'session_id': activeSession.sessionId.toString(),
       'stucare_id': studentId.toString(),
       'active_session': sessionToken,
     };
@@ -653,14 +772,14 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
     int studentId = await AppData().getSelectedStudent();
 
     var requestBody = {
-      'session_id': "3",
+      'session_id': activeSession.sessionId.toString(),
       'stucare_id': studentId.toString(),
       'active_session': sessionToken,
     };
     var modulesResponse =
         await http.post(GConstants.getDuesDataRoute(), body: requestBody);
 
-    debugPrint("${modulesResponse.request} ; ${modulesResponse.body}");
+    log("${modulesResponse.request} ; ${modulesResponse.body}");
 
     if (modulesResponse.statusCode == 200) {
       Map modulesResponseObject = json.decode(modulesResponse.body);

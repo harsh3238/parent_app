@@ -90,6 +90,8 @@ class GConstants {
   static const _SHOW_STUDENT_REMARK = "api/get_student_remark_for_student";
   static const _SAVE_POLL_ANSWER = "student/save_question_answer";
   static const _GET_POLL_QUESTIONS = "student/get_poll_question";
+  static const _INIT_FEES_PAYMENT = "student/initiate_order";
+  static const _PROCESS_FEES_PAYMENT = "student/process_membership_payment";
 
   static setSchoolRootUrl(String rootUrl) {
     SCHOOL_ROOT = rootUrl;
@@ -232,6 +234,10 @@ class GConstants {
   static getSavePollAnswerRoute() => SCHOOL_ROOT + _SAVE_POLL_ANSWER;
 
   static getPollQuestionsRoute() => SCHOOL_ROOT + _GET_POLL_QUESTIONS;
+
+  static getInitFeesPaymentRoute() => SCHOOL_ROOT + _INIT_FEES_PAYMENT;
+
+  static getProcessFeesPaymentRoute() => SCHOOL_ROOT + _PROCESS_FEES_PAYMENT;
 
 
 }
