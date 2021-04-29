@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:click_campus_parent/config/g_constants.dart';
 import 'package:click_campus_parent/data/app_data.dart';
@@ -30,11 +29,21 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
   String feesDue = "Not Available";
   int grandTotal = 0;
   int orderId = 0;
+  bool isPaymentDetailsAvailable = false;
+  String productId;
+  String transactionPassword;
+  String merchantId;
+  String requestHashKey;
+  String responseHashKey;
+  String requestEncryptionKey;
+  String responseEncryptionKey;
+  ScrollController scrollController;
 
   @override
   void initState() {
     super.initState();
     super.init(context, _scaffoldState, state: this);
+    scrollController = new ScrollController();
   }
 
   @override
@@ -43,7 +52,8 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
       _didGetData = true;
       Future.delayed(Duration(milliseconds: 100), () async {
         activeSession = await SessionDbProvider().getActiveSession();
-        _getFeesData();
+        //_getFeesData();
+        _getPaymentCredentials();
       });
     }
 
@@ -55,6 +65,7 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
       ),
       body: SafeArea(
           child: CustomScrollView(
+        controller: scrollController,
         slivers: <Widget>[
           SliverToBoxAdapter(
             child: Container(
@@ -317,20 +328,25 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
                   color: Colors.blue,
                   child: GestureDetector(
                     onTap: () {
-                      List<String> _modeIdList = [];
-                      List<String> _compileIdList = [];
+                      if (isPaymentDetailsAvailable) {
+                        List<String> _modeIdList = [];
+                        List<String> _compileIdList = [];
 
-                      for (int i = 0; i < _paymentList.length; i++) {
-                        Map mode = _paymentList[i]['fee_mode'];
-                        _modeIdList.add(mode['id'].toString());
-                        _compileIdList.add(_paymentList[i]['id'].toString());
+                        for (int i = 0; i < _paymentList.length; i++) {
+                          Map mode = _paymentList[i]['fee_mode'];
+                          _modeIdList.add(mode['id'].toString());
+                          _compileIdList.add(_paymentList[i]['id'].toString());
+                        }
+
+                        _initPayment(
+                            grandTotal.toString(),
+                            json.encode(_modeIdList),
+                            json.encode(_compileIdList),
+                            _modeIdList.length.toString());
+                      } else {
+                        StateHelper().showLongToast(context,
+                            'Payment details not available, Please try again...');
                       }
-                      _initPayment(
-                          grandTotal.toString(),
-                          json.encode(_modeIdList),
-                          json.encode(_compileIdList),
-                          _modeIdList.length.toString());
-                      //navigateToModule(PaymentGatewayScreen("Fee Dues Payment", grandTotal.toString(), "", ""));
                     },
                     child: Center(
                       child: Padding(
@@ -389,6 +405,7 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
                                   addPaymentData(index);
                                   showTotal = true;
                                 });
+                                scrollToBottom();
                               },
                               color: Colors.orange,
                               child: Text(
@@ -623,6 +640,56 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
                         : CircularProgressIndicator())));
   }
 
+  void _getPaymentCredentials() async {
+    showProgressDialog();
+    String sessionToken = await AppData().getSessionToken();
+
+    var requestBody = {
+      'active_session': sessionToken,
+    };
+
+    var modulesResponse = await http
+        .post(GConstants.getPaymentCredentialsRoute(), body: requestBody);
+
+    debugPrint("${modulesResponse.request} : ${modulesResponse.body}");
+
+    if (modulesResponse.statusCode == 200) {
+      Map modulesResponseObject = json.decode(modulesResponse.body);
+      if (modulesResponseObject.containsKey("status") &&
+          modulesResponseObject['status'] == 'success') {
+        hideProgressDialog();
+        if (modulesResponseObject.containsKey("data")) {
+          List paymentTypes = modulesResponseObject["data"] as List;
+          for (int i = 0; i < paymentTypes.length; i++) {
+            Map map = json.decode(paymentTypes[i]['configuration']);
+            if (paymentTypes[i]['name'] == 'atom') {
+              isPaymentDetailsAvailable = true;
+              productId = map['productId'];
+              merchantId = map['merchantId'];
+              transactionPassword = map['transactionPassword'];
+              requestHashKey = map['hashRequestKey'];
+              responseHashKey = map['hashResponseKey'];
+              requestEncryptionKey = map['requestEncryptionKey'];
+              responseEncryptionKey = map['responseEncryptionKey'];
+            }
+          }
+          _getFeesData();
+        }
+      } else {
+        hideProgressDialog();
+        showServerError();
+        isPaymentDetailsAvailable = false;
+      }
+    } else if (modulesResponse.statusCode == 404) {
+      hideProgressDialog();
+      showSnackBar("API Not Found", color: Colors.red);
+      isPaymentDetailsAvailable = false;
+    } else {
+      hideProgressDialog();
+      showServerError();
+    }
+  }
+
   void _initPayment(String amount, String modeIds, String compileIds,
       String noOfDeposits) async {
     showProgressDialog();
@@ -656,8 +723,17 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
           final result = await Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => PaymentGatewayScreen("Fees Payment",
-                      amount + ".00", "productId", orderId.toString())));
+                  builder: (context) => PaymentGatewayScreen(
+                      "Fees Payment",
+                      amount + ".00",
+                      productId,
+                      orderId.toString(),
+                      merchantId,
+                      transactionPassword,
+                      requestHashKey,
+                      responseHashKey,
+                      requestEncryptionKey,
+                      responseEncryptionKey)));
 
           if (result != null && result != "") {
             if (result["f_code"] == "Ok") {
@@ -685,7 +761,10 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
   }
 
   void _processPayment(
-      String orderId, String transactionId, String status, ) async {
+    String orderId,
+    String transactionId,
+    String status,
+  ) async {
     showProgressDialog();
     String sessionToken = await AppData().getSessionToken();
     int studentId = await AppData().getSelectedStudent();
@@ -735,7 +814,7 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
     var modulesResponse =
         await http.post(GConstants.getFeeDataRoute(), body: requestBody);
 
-    log("${modulesResponse.request} : ${modulesResponse.body}");
+    print("${modulesResponse.request} : ${modulesResponse.body}");
 
     if (modulesResponse.statusCode == 200) {
       Map modulesResponseObject = json.decode(modulesResponse.body);
@@ -779,7 +858,7 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
     var modulesResponse =
         await http.post(GConstants.getDuesDataRoute(), body: requestBody);
 
-    log("${modulesResponse.request} ; ${modulesResponse.body}");
+    print("${modulesResponse.request} ; ${modulesResponse.body}");
 
     if (modulesResponse.statusCode == 200) {
       Map modulesResponseObject = json.decode(modulesResponse.body);
@@ -814,5 +893,16 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
       context,
       MaterialPageRoute(builder: (context) => module),
     );
+  }
+
+  void scrollToTop(){
+    scrollController.animateTo(0,
+        duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+  }
+  void scrollToBottom(){
+    Future.delayed(Duration(milliseconds: 500), (){
+      scrollController.animateTo(scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+    });
   }
 }

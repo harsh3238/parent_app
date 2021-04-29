@@ -47,6 +47,11 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
         <activity android:name=".classrooms.ActivityClassesTabs" />
         <activity android:name=".tests.OnlineTestsActivity" />
         <activity android:name=".tests.ActivityObjectiveTestRoom" />

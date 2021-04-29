@@ -131,11 +131,11 @@ class FrgLiveClasses : Fragment() {
 
         if (meetingObject.getString("live_type") == "gmeet") {
 
-
-            var liveLink = "https://"+meetingObject.getString("live_link")
-            if(liveLink.startsWith("http")){
-                liveLink = meetingObject.getString("live_link")
+            var liveLink = meetingObject.getString("live_link");
+            if(!liveLink.contains("http")){
+                liveLink = "http://"+meetingObject.getString("live_link");
             }
+
 
             Log.d("LIVE_CLASS", "GMEET")
             val mapIntent: Intent = Uri.parse(liveLink).let { liveClass ->
@@ -151,6 +151,22 @@ class FrgLiveClasses : Fragment() {
                 ).show()
             }
 
+
+        } else if (meetingObject.getString("live_type") == "zoom_link") {
+            Log.d("LIVE_CLASS", "ZOOM LINK")
+            var liveLink = meetingObject.getString("live_link");
+            val mapIntent: Intent = Uri.parse(liveLink).let { liveClass ->
+                Intent(Intent.ACTION_VIEW, liveClass)
+            }
+            try {
+                startActivity(mapIntent);
+            } catch (e: ActivityNotFoundException) {
+                Toast.makeText(
+                    activity,
+                    "Please install Zoom application",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
 
         } else if (meetingObject.getString("live_type") == "youtube") {
             Log.d("LIVE_CLASS", "YOUTUBE")
