@@ -139,9 +139,10 @@ class PaymentGatewayScreenState extends State<PaymentGatewayScreen> {
         udf3: '9999999999',
         udf4: 'Noida',
         requesthashKey: 'KEY123657234',
+        responsehashKey: 'KEYRESP123657234',
         requestencryptionKey: 'A4476C2062FFA58980DC8F79EB6A799E',
         requestsaltKey: 'A4476C2062FFA58980DC8F79EB6A799E',
-        responsehashKey: 'KEYRESP123657234',
+
         responseencypritonKey: '75AEF0FA1B94B3C10D4F5B268F757F11',
         responsesaltKey: '75AEF0FA1B94B3C10D4F5B268F757F11',
         mode: 'uat'); // put mode: 'live' in production
@@ -177,7 +178,7 @@ class PaymentGatewayScreenState extends State<PaymentGatewayScreen> {
         udf2: 'Not Available',
         udf3: 'Not Available',
         udf4: 'India',
-        requesthashKey: widget.responseHashKey,
+        requesthashKey: widget.requestHashKey,
         responsehashKey: widget.responseHashKey,
         requestencryptionKey: widget.requestEncryptionKey,
         responseencypritonKey: widget.responseEncryptionKey,

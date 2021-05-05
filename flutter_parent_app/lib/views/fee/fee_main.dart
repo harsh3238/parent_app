@@ -65,190 +65,190 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
       ),
       body: SafeArea(
           child: CustomScrollView(
-        controller: scrollController,
-        slivers: <Widget>[
-          SliverToBoxAdapter(
-            child: Container(
-              child: Column(
-                children: <Widget>[
-                  Stack(
+            controller: scrollController,
+            slivers: <Widget>[
+              SliverToBoxAdapter(
+                child: Container(
+                  child: Column(
                     children: <Widget>[
-                      Column(
+                      Stack(
                         children: <Widget>[
-                          Image.asset(
-                            "assets/color_back.jpg",
-                            height: 180,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
-                          Container(
-                            height: 20,
-                          ),
-                          Container(
-                            color: Colors.blue.shade50,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 12),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: EdgeInsets.all(4),
-                                    child: Container(
-                                      height: 25,
-                                      width:
-                                          (MediaQuery.of(context).size.width /
-                                                  2) -
-                                              15,
-                                      child: FlatButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            activeTab = 0;
-                                            showTotal = false;
-                                            _feesData.clear();
-                                            isNoData = false;
-                                            _getFeesData();
-                                          });
-                                        },
-                                        color: (activeTab == 0)
-                                            ? Colors.blue
-                                            : Colors.white,
-                                        child: Text(
-                                          "Fees",
-                                          style: TextStyle(
-                                              color: (activeTab == 0)
-                                                  ? Colors.white
-                                                  : Colors.grey.shade700),
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(40)),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.all(4),
-                                    child: Container(
-                                      height: 25,
-                                      width:
-                                          (MediaQuery.of(context).size.width /
-                                                  2) -
-                                              15,
-                                      child: FlatButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            activeTab = 1;
-                                            _duesData.clear();
-                                            isNoData = false;
-                                            _getDuesData();
-                                          });
-                                        },
-                                        color: (activeTab == 1)
-                                            ? Colors.blue
-                                            : Colors.white,
-                                        child: Text(
-                                          "Dues",
-                                          style: TextStyle(
-                                              color: (activeTab == 1)
-                                                  ? Colors.white
-                                                  : Colors.grey.shade700),
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(40)),
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                ],
+                          Column(
+                            children: <Widget>[
+                              Image.asset(
+                                "assets/color_back.jpg",
+                                height: 180,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
                               ),
-                            ),
-                          )
-                        ],
-                      ),
-                      Positioned(
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                              minWidth: MediaQuery.of(context).size.width),
-                          child: Padding(
-                            padding: EdgeInsets.all(20),
-                            child: Material(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(40)),
-                              child: Container(
-                                height: 40,
-                                decoration: new BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(20))),
-                                child: Center(
-                                  child: RichText(
-                                    text: TextSpan(
-                                      text: 'Payment History ',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.normal,
-                                          color: Colors.grey),
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                            text: today.toString(),
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.blue)),
-                                      ],
-                                    ),
+                              Container(
+                                height: 20,
+                              ),
+                              Container(
+                                color: Colors.blue.shade50,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 12),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: EdgeInsets.all(4),
+                                        child: Container(
+                                          height: 25,
+                                          width:
+                                          (MediaQuery.of(context).size.width /
+                                              2) -
+                                              15,
+                                          child: FlatButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                activeTab = 0;
+                                                showTotal = false;
+                                                _feesData.clear();
+                                                isNoData = false;
+                                                _getFeesData();
+                                              });
+                                            },
+                                            color: (activeTab == 0)
+                                                ? Colors.blue
+                                                : Colors.white,
+                                            child: Text(
+                                              "Fees",
+                                              style: TextStyle(
+                                                  color: (activeTab == 0)
+                                                      ? Colors.white
+                                                      : Colors.grey.shade700),
+                                            ),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(40)),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.all(4),
+                                        child: Container(
+                                          height: 25,
+                                          width:
+                                          (MediaQuery.of(context).size.width /
+                                              2) -
+                                              15,
+                                          child: FlatButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                activeTab = 1;
+                                                _duesData.clear();
+                                                isNoData = false;
+                                                _getDuesData();
+                                              });
+                                            },
+                                            color: (activeTab == 1)
+                                                ? Colors.blue
+                                                : Colors.white,
+                                            child: Text(
+                                              "Dues",
+                                              style: TextStyle(
+                                                  color: (activeTab == 1)
+                                                      ? Colors.white
+                                                      : Colors.grey.shade700),
+                                            ),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(40)),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
                                   ),
                                 ),
-                              ),
-                              elevation: 2,
-                            ),
+                              )
+                            ],
                           ),
-                        ),
-                        bottom: 40,
-                      ),
-                      Positioned(
-                        top: 30,
-                        left: 20,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            /* Text("Due Fee",
+                          Positioned(
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                  minWidth: MediaQuery.of(context).size.width),
+                              child: Padding(
+                                padding: EdgeInsets.all(20),
+                                child: Material(
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(40)),
+                                  child: Container(
+                                    height: 40,
+                                    decoration: new BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                        BorderRadius.all(Radius.circular(20))),
+                                    child: Center(
+                                      child: RichText(
+                                        text: TextSpan(
+                                          text: 'Payment History ',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.normal,
+                                              color: Colors.grey),
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                                text: today.toString(),
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.blue)),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  elevation: 2,
+                                ),
+                              ),
+                            ),
+                            bottom: 40,
+                          ),
+                          Positioned(
+                            top: 30,
+                            left: 20,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                /* Text("Due Fee",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white)),*/
-                            Text("₹ " + feesDue,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    fontSize: 32)),
-                            Text("Due Fee",
-                                style: TextStyle(color: Colors.white))
-                          ],
-                        ),
+                                Text("₹ " + feesDue,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                        fontSize: 32)),
+                                Text("Due Fee",
+                                    style: TextStyle(color: Colors.white))
+                              ],
+                            ),
+                          )
+                        ],
                       )
                     ],
-                  )
-                ],
+                  ),
+                  color: Colors.blue.shade50,
+                ),
               ),
-              color: Colors.blue.shade50,
-            ),
-          ),
-          SliverList(
-              delegate: SliverChildListDelegate([
-            SingleChildScrollView(
-              child: activeTab == 0 ? _buildFeesList() : _buildDuesList(),
-            )
-          ])),
-          SliverList(
-              delegate: SliverChildListDelegate([
-            SingleChildScrollView(
-              child:
-                  activeTab == 1 && showTotal ? _getTotalAmount() : Container(),
-            )
-          ]))
-        ],
-      )),
+              SliverList(
+                  delegate: SliverChildListDelegate([
+                    SingleChildScrollView(
+                      child: activeTab == 0 ? _buildFeesList() : _buildDuesList(),
+                    )
+                  ])),
+              SliverList(
+                  delegate: SliverChildListDelegate([
+                    SingleChildScrollView(
+                      child:
+                      activeTab == 1 && showTotal ? _getTotalAmount() : Container(),
+                    )
+                  ]))
+            ],
+          )),
     );
   }
 
@@ -258,8 +258,7 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
     grandTotal = 0;
     for (int i = 0; i <= position; i++) {
       _paymentList.add(_duesData[i]);
-      grandTotal = grandTotal + _duesData[i]['amount'];
-      debugPrint("Item Added");
+      grandTotal = grandTotal + _duesData[i]['paying_amount'];
     }
     setState(() {});
   }
@@ -371,81 +370,81 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
     return Container(
         child: _duesData.length > 0
             ? ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: _duesData.length,
-                itemBuilder: (BuildContext context, int index) {
-                  Map mode = _duesData[index]["fee_mode"];
-                  return Card(
-                    child: Padding(
-                      padding: EdgeInsets.all(12),
-                      child: Row(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: _duesData.length,
+            itemBuilder: (BuildContext context, int index) {
+              Map mode = _duesData[index]["fee_mode"];
+              return Card(
+                child: Padding(
+                  padding: EdgeInsets.all(12),
+                  child: Row(
+                    children: <Widget>[
+                      Column(
                         children: <Widget>[
-                          Column(
-                            children: <Widget>[
-                              Text(mode['fee_mode_name'],
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.grey.shade800,
-                                      fontSize: 12)),
-                              Text(mode['due_date'],
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.grey,
-                                      fontSize: 12))
-                            ],
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                          ),
-                          Spacer(),
-                          Container(
-                            height: 20,
-                            child: FlatButton(
-                              onPressed: () {
-                                setState(() {
-                                  addPaymentData(index);
-                                  showTotal = true;
-                                });
-                                scrollToBottom();
-                              },
-                              color: Colors.orange,
-                              child: Text(
-                                "Pay Now",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 11),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(40)),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Column(
-                            children: <Widget>[
-                              Text("₹ " + _duesData[index]['amount'].toString(),
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.blue,
-                                      fontSize: 12)),
-                            ],
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                          )
+                          Text(mode['fee_mode_name'],
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey.shade800,
+                                  fontSize: 12)),
+                          Text(mode['due_date'],
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey,
+                                  fontSize: 12))
                         ],
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                       ),
-                    ),
-                    elevation: 0,
-                  );
-                })
+                      Spacer(),
+                      Container(
+                        height: 20,
+                        child: FlatButton(
+                          onPressed: () {
+                            setState(() {
+                              addPaymentData(index);
+                              showTotal = true;
+                            });
+                            scrollToBottom();
+                          },
+                          color: Colors.orange,
+                          child: Text(
+                            "Pay Now",
+                            style: TextStyle(
+                                color: Colors.white, fontSize: 11),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(40)),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Column(
+                        children: <Widget>[
+                          Text("₹ " + _duesData[index]['paying_amount'].toString(),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue,
+                                  fontSize: 12)),
+                        ],
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                      )
+                    ],
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  ),
+                ),
+                elevation: 0,
+              );
+            })
             : Container(
-                height: 200,
-                child: Center(
-                    child: isNoData
-                        ? Text("No Data Available")
-                        : CircularProgressIndicator())));
+            height: 200,
+            child: Center(
+                child: isNoData
+                    ? Text("No Data Available")
+                    : CircularProgressIndicator())));
   }
 
   Widget _buildDuesSubList() {
@@ -453,191 +452,191 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
         color: Colors.white,
         child: _paymentList.length > 0
             ? ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: _paymentList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  Map mode = _paymentList[index]["fee_mode"];
-                  return Padding(
-                    padding: EdgeInsets.all(12),
-                    child: Row(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: _paymentList.length,
+            itemBuilder: (BuildContext context, int index) {
+              Map mode = _paymentList[index]["fee_mode"];
+              return Padding(
+                padding: EdgeInsets.all(12),
+                child: Row(
+                  children: <Widget>[
+                    Column(
                       children: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            Text(mode['fee_mode_name'],
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey.shade800,
-                                    fontSize: 12)),
-                          ],
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Column(
-                          children: <Widget>[
-                            Text(
-                                "₹ " + _paymentList[index]['amount'].toString(),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue,
-                                    fontSize: 12)),
-                          ],
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                        )
+                        Text(mode['fee_mode_name'],
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey.shade800,
+                                fontSize: 12)),
                       ],
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                     ),
-                  );
-                })
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Column(
+                      children: <Widget>[
+                        Text(
+                            "₹ " + _paymentList[index]['paying_amount'].toString(),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blue,
+                                fontSize: 12)),
+                      ],
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                    )
+                  ],
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                ),
+              );
+            })
             : Container(
-                height: 200,
-                child: Center(
-                    child: isNoData
-                        ? Text("No Data Available")
-                        : CircularProgressIndicator())));
+            height: 200,
+            child: Center(
+                child: isNoData
+                    ? Text("No Data Available")
+                    : CircularProgressIndicator())));
   }
 
   Widget _buildFeesList() {
     return Container(
         child: _feesData.length > 0
             ? ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: _feesData.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return GestureDetector(
-                    onTap: () {},
-                    child: Card(
-                      child: Padding(
-                        padding: EdgeInsets.all(12),
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              flex: 4,
-                              child: Column(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: _feesData.length,
+            itemBuilder: (BuildContext context, int index) {
+              return GestureDetector(
+                onTap: () {},
+                child: Card(
+                  child: Padding(
+                    padding: EdgeInsets.all(12),
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          flex: 4,
+                          child: Column(
+                            children: <Widget>[
+                              Row(
                                 children: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      Text(
-                                          "Receipt No. :" +
-                                              _feesData[index]['rec_no_label']
-                                                  .toString(),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black,
-                                              fontSize: 12)),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Visibility(
-                                        visible: _feesData[index]
-                                                    ['cancel_reason'] ==
-                                                null
-                                            ? false
-                                            : true,
+                                  Text(
+                                      "Receipt No. :" +
+                                          _feesData[index]['rec_no_label']
+                                              .toString(),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                          fontSize: 12)),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Visibility(
+                                    visible: _feesData[index]
+                                    ['cancel_reason'] ==
+                                        null
+                                        ? false
+                                        : true,
+                                    child: Container(
+                                      height: 18.0,
+                                      width: 80,
+                                      color: Colors.transparent,
+                                      child: ClipRRect(
+                                        borderRadius:
+                                        BorderRadius.circular(30.0),
                                         child: Container(
-                                          height: 18.0,
-                                          width: 80,
-                                          color: Colors.transparent,
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(30.0),
-                                            child: Container(
-                                              width: 40,
-                                              height: 10.0,
-                                              color: Colors.red,
-                                              child: Center(
-                                                child: new Text("Cancelled",
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                    )),
-                                              ),
-                                            ),
+                                          width: 40,
+                                          height: 10.0,
+                                          color: Colors.red,
+                                          child: Center(
+                                            child: new Text("Cancelled",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                )),
                                           ),
                                         ),
                                       ),
-                                    ],
+                                    ),
                                   ),
-                                  Text(_feesData[index]['mode'],
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.grey.shade800,
-                                          fontSize: 12)),
-                                  Text(_feesData[index]['paying_date'],
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.grey,
-                                          fontSize: 12)),
-                                  Visibility(
-                                    visible:
-                                        _feesData[index]['cancel_status'] == 0
-                                            ? false
-                                            : true,
-                                    child: Text(
-                                        _feesData[index]['cancel_reason'] !=
-                                                null
-                                            ? "Reason: " +
-                                                _feesData[index]
-                                                    ['cancel_reason']
-                                            : "Reason not available",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.grey,
-                                            fontSize: 12)),
-                                  )
                                 ],
-                                crossAxisAlignment: CrossAxisAlignment.start,
                               ),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Column(
-                                children: <Widget>[
-                                  _feesData[index]['cancel_status'] == 1
-                                      ? Text(
-                                          "₹ " + _feesData[index]['paid_amt'],
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.blue,
-                                              fontSize: 12,
-                                              decoration:
-                                                  TextDecoration.lineThrough))
-                                      : Text(
-                                          "₹ " + _feesData[index]['paid_amt'],
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.blue,
-                                              fontSize: 12)),
-                                  Text(_feesData[index]['receipt_type'],
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.grey,
-                                          fontSize: 12)),
-                                ],
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                              ),
-                            )
-                          ],
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              Text(_feesData[index]['mode'],
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey.shade800,
+                                      fontSize: 12)),
+                              Text(_feesData[index]['paying_date'],
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey,
+                                      fontSize: 12)),
+                              Visibility(
+                                visible:
+                                _feesData[index]['cancel_status'] == 0
+                                    ? false
+                                    : true,
+                                child: Text(
+                                    _feesData[index]['cancel_reason'] !=
+                                        null
+                                        ? "Reason: " +
+                                        _feesData[index]
+                                        ['cancel_reason']
+                                        : "Reason not available",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.grey,
+                                        fontSize: 12)),
+                              )
+                            ],
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                          ),
                         ),
-                      ),
-                      elevation: 0,
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            children: <Widget>[
+                              _feesData[index]['cancel_status'] == 1
+                                  ? Text(
+                                  "₹ " + _feesData[index]['paid_amt'],
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue,
+                                      fontSize: 12,
+                                      decoration:
+                                      TextDecoration.lineThrough))
+                                  : Text(
+                                  "₹ " + _feesData[index]['paid_amt'],
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue,
+                                      fontSize: 12)),
+                              Text(_feesData[index]['receipt_type'],
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey,
+                                      fontSize: 12)),
+                            ],
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                          ),
+                        )
+                      ],
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     ),
-                  );
-                })
+                  ),
+                  elevation: 0,
+                ),
+              );
+            })
             : Container(
-                height: 200,
-                child: Center(
-                    child: isNoData
-                        ? Text("No Data Available")
-                        : CircularProgressIndicator())));
+            height: 200,
+            child: Center(
+                child: isNoData
+                    ? Text("No Data Available")
+                    : CircularProgressIndicator())));
   }
 
   void _getPaymentCredentials() async {
@@ -761,10 +760,10 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
   }
 
   void _processPayment(
-    String orderId,
-    String transactionId,
-    String status,
-  ) async {
+      String orderId,
+      String transactionId,
+      String status,
+      ) async {
     showProgressDialog();
     String sessionToken = await AppData().getSessionToken();
     int studentId = await AppData().getSelectedStudent();
@@ -812,7 +811,7 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
     debugPrint("${requestBody}");
 
     var modulesResponse =
-        await http.post(GConstants.getFeeDataRoute(), body: requestBody);
+    await http.post(GConstants.getFeeDataRoute(), body: requestBody);
 
     print("${modulesResponse.request} : ${modulesResponse.body}");
 
@@ -856,7 +855,7 @@ class _FeeMainState extends State<FeeMain> with StateHelper {
       'active_session': sessionToken,
     };
     var modulesResponse =
-        await http.post(GConstants.getDuesDataRoute(), body: requestBody);
+    await http.post(GConstants.getDuesDataRoute(), body: requestBody);
 
     print("${modulesResponse.request} ; ${modulesResponse.body}");
 
