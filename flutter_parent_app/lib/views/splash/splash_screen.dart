@@ -1,11 +1,11 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:click_campus_parent/config/g_constants.dart';
 import 'package:click_campus_parent/data/app_data.dart';
 import 'package:click_campus_parent/data/db_school_info.dart';
 import 'package:click_campus_parent/views/dashboard/the_dashboard_main.dart';
 import 'package:click_campus_parent/views/login/login.dart';
+import 'package:click_campus_parent/views/login/login_pass.dart';
 import 'package:click_campus_parent/views/login/select_impersonation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +17,7 @@ import 'package:url_launcher/url_launcher.dart';
 class SplashScreen extends StatelessWidget {
   BuildContext _context;
   bool areWeDone = false;
+  String _loginMode = "default";
 
   void _getSchoolInfo() async {
     await GConstants.getSchoolUrl();
@@ -35,6 +36,8 @@ class SplashScreen extends StatelessWidget {
       if (modulesResponseObject.containsKey("status")) {
         if (modulesResponseObject["status"] == "success") {
           Map<String, dynamic> modulesData = modulesResponseObject['data'];
+          _loginMode = modulesData['login_mode'];
+          modulesData.remove('login_mode');
 
           if(modulesData.containsKey("access_key")){
             AppData().setAccessKey(modulesData['access_key']);
@@ -156,7 +159,7 @@ class SplashScreen extends StatelessWidget {
       Navigator.pushReplacement(
           _context,
           MaterialPageRoute(
-            builder: (BuildContext context) => LoginScreen(),
+            builder: (BuildContext context) => _loginMode == "default" ? LoginScreen() : LoginScreenPass(),
           ));
     } else {
       var impersonatedSchool = await AppData().getImpersonatedSchool();
@@ -226,12 +229,12 @@ class SplashScreen extends StatelessWidget {
     _context = context;
     return Container(
       child: Stack(fit: StackFit.loose, children: <Widget>[
-        SizedBox.expand(
+        /*SizedBox.expand(
           child: Image.asset(
             "assets/main_back.jpg",
             fit: BoxFit.cover,
           ),
-        ),
+        )*/
         Opacity(
           opacity: 0.8,
           child: Container(

@@ -54,9 +54,9 @@ class ActivityTestReports : AppCompatActivity() {
         progressBar.show()
 
         val call = NetworkClient.create().getObjectiveTestReport(
-            intent.getStringExtra("stucareId"),
-            intent.getStringExtra("test_id"),
-            intent.getStringExtra("accessToken")
+            intent.getStringExtra("stucareId") ?: "",
+            intent.getStringExtra("test_id") ?: "",
+            intent.getStringExtra("accessToken") ?: ""
         )
         call.enqueue(object : Callback<String> {
 

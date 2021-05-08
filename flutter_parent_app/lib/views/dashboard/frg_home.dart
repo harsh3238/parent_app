@@ -271,6 +271,7 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
       if (schoolInfoRsObject.containsKey("status")) {
         if (schoolInfoRsObject["status"] == "success") {
           Map<String, dynamic> modulesData = schoolInfoRsObject['data'];
+          modulesData.remove('login_mode');
 
           if (modulesData.containsKey("access_key")) {
             AppData().setAccessKey(modulesData['access_key']);
