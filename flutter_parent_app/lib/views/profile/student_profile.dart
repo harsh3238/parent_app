@@ -1,15 +1,20 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:click_campus_parent/config/g_constants.dart';
 import 'package:click_campus_parent/data/app_data.dart';
 import 'package:click_campus_parent/data/session_db_provider.dart';
+import 'package:click_campus_parent/utils/s3_upload.dart';
 import 'package:click_campus_parent/views/login/select_impersonation.dart';
 import 'package:click_campus_parent/views/splash/splash_screen.dart';
 import 'package:click_campus_parent/views/state_helper.dart';
 import 'package:click_campus_parent/widgets/profile_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:mime_type/mime_type.dart';
 
 class StudentProfile extends StatefulWidget {
   @override
@@ -28,6 +33,11 @@ class StudentProfileState extends State<StudentProfile> with StateHelper {
   Map<String, String> classInfoData = Map();
   Map<String, String> contactInfoData = Map();
   bool _didGetData = false;
+  File _selectedImage = null;
+  List<Map<String, String>> _filePathsToUpload = [];
+  String profileImageUrl="";
+  bool isPictureChangeAllowed = true;
+  String imageStatus = "pending";
 
   void _getProfileData() async {
     showProgressDialog();
@@ -36,7 +46,6 @@ class StudentProfileState extends State<StudentProfile> with StateHelper {
     var activeSession = await SessionDbProvider().getActiveSession();
     String sessionToken = await AppData().getSessionToken();
 
-
     var profileResponse = await http.post(GConstants.getProfileRoute(), body: {
       'stucare_id': userStucareId.toString(),
       'session_id': activeSession.sessionId.toString(),
@@ -44,6 +53,7 @@ class StudentProfileState extends State<StudentProfile> with StateHelper {
     });
 
     log("${profileResponse.request} : ${profileResponse.body}");
+    print("${profileResponse.request} : ${profileResponse.body}");
 
     if (profileResponse.statusCode == 200) {
       String response = profileResponse.body;
@@ -91,6 +101,16 @@ class StudentProfileState extends State<StudentProfile> with StateHelper {
                 profileResponseObject['data']['p_postcode'] ?? '';
 
             _profileData = profileResponseObject['data'];
+            imageStatus = _profileData['stu_photo_status'];
+
+            if(_profileData['stu_photo_status']=="approved" && _profileData['photo_student']!=null && _profileData['photo_student']!=""){
+              isPictureChangeAllowed = false;
+            }else if(_profileData['stu_photo_status']=="disapprove"){
+              isPictureChangeAllowed = true;
+            }else if(_profileData['stu_photo_status']=="pending"){
+              isPictureChangeAllowed = false;
+            }
+            setState(() {});
           });
           return null;
         } else {
@@ -202,28 +222,59 @@ class StudentProfileState extends State<StudentProfile> with StateHelper {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius:
-                  new BorderRadius.all(new Radius.circular(60.0)),
-                  border: new Border.all(
-                    color: Colors.white,
-                    width: 2.0,
+            Stack(fit: StackFit.loose, children: <Widget>[
+              new Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius:
+                      new BorderRadius.all(new Radius.circular(60.0)),
+                      border: new Border.all(
+                        color: Colors.white,
+                        width: 2.0,
+                      ),
+                    ),
+                    child: CircleAvatar(
+                      backgroundImage: _profileData != null
+                          ? (_profileData['photo_student'] != null &&
+                          _profileData['photo_student'] != ""
+                          ? NetworkImage(_profileData['photo_student'])
+                          : AssetImage("assets/profile.png"))
+                          : AssetImage("assets/profile.png"),
+                      foregroundColor: Colors.black,
+                      radius: 60.0,
+                    ),
                   ),
-                ),
-                child: CircleAvatar(
-                  backgroundImage: _profileData != null
-                      ? (_profileData['photo_student'] != null
-                      ? NetworkImage(_profileData['photo_student'])
-                      : AssetImage("assets/profile.png"))
-                      : AssetImage("assets/profile.png"),
-                  foregroundColor: Colors.black,
-                  radius: 60.0,
-                ),
+                ],
               ),
-            ),
+              Padding(
+                  padding: EdgeInsets.only(top: 70.0, right: 100.0),
+                  child: InkWell(
+                    onTap: () {
+                      if(isPictureChangeAllowed){
+                        _pickImage(context);
+                      }else{
+                       StateHelper().showShortToast(context, "Operation not allowed, Please contact school");
+                      }
+
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        new CircleAvatar(
+                          backgroundColor: Colors.indigo,
+                          radius: 15.0,
+                          child: new Icon(
+                            isPictureChangeAllowed? Icons.camera_alt: Icons.lock_outline,
+                            color: Colors.white,
+                          ),
+                        )
+                      ],
+                    ),
+                  )),
+            ]),
             ProfileTile(
               title:
               _profileData != null ? _profileData['stu_full_name'] : '',
@@ -237,7 +288,100 @@ class StudentProfileState extends State<StudentProfile> with StateHelper {
     ),
   );
 
-  //column2
+  void _pickImage(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return Container(
+            child: new Wrap(
+              children: <Widget>[
+                new ListTile(
+                  title: new Text(
+                    'Choose Image',
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: const Color(0xff7c7c74),
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Poppins'),
+                  ),
+                ),
+                new ListTile(
+                    leading: new Icon(Icons.camera_alt),
+                    title: new Text('Camera'),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      _getFromCamera();
+                    }),
+                new ListTile(
+                  leading: new Icon(Icons.photo_album),
+                  title: new Text('Gallery'),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    _getFromGallery();
+                  },
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
+  _getFromCamera() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.getImage(
+        source: ImageSource.camera
+    );
+
+    setState(() {
+      if (pickedFile != null) {
+        _selectedImage = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+    _cropImage(pickedFile.path);
+  }
+  _getFromGallery() async {
+    PickedFile pickedFile = await ImagePicker().getImage(
+      source: ImageSource.gallery,
+      maxWidth: 1800,
+      maxHeight: 1800,
+    );
+    setState(() {
+      if (pickedFile != null) {
+        _selectedImage = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+    _cropImage(pickedFile.path);
+  }
+
+  _cropImage(filePath) async {
+    debugPrint("PATH:" + filePath);
+    File croppedImage = await ImageCropper.cropImage(
+        sourcePath: filePath,
+        cropStyle: CropStyle.rectangle,
+        maxWidth: 720,
+        maxHeight: 720,
+        aspectRatioPresets: [CropAspectRatioPreset.square]);
+    if (croppedImage != null) {
+      _selectedImage = croppedImage;
+
+      showProgressDialog();
+      bool shouldGoAhead = await _uploadImage(_selectedImage);
+      if(shouldGoAhead){
+        StateHelper().showShortToast(context, "Image Upload Successful");
+        setState(() {
+          isPictureChangeAllowed = false;
+        });
+        _updateProfileImage();
+      }else{
+        hideProgressDialog();
+      }
+
+    }
+  }
 
   Widget bodyData() {
     return SingleChildScrollView(
@@ -434,6 +578,108 @@ class StudentProfileState extends State<StudentProfile> with StateHelper {
     );
   }
 
+  Future<bool> _uploadImage(File image) async {
+    String filePath = image.path;
+    String mimeType = mime(filePath);
+
+    String extension;
+    int lastDot = filePath.lastIndexOf('.', filePath.length - 1);
+    if (lastDot != -1) {
+      extension = filePath.substring(lastDot + 1);
+    }
+
+    var fileNameNew =
+        "${DateTime.now().millisecondsSinceEpoch.toString()}.$extension";
+
+    String fileDirectory = "ProfileImages";
+
+    var rs = await s3Upload(image, fileDirectory, fileNameNew);
+    if (!rs) {
+      showSnackBar("Could not upload files");
+      return false;
+    }
+
+    Map<String, String> map = Map();
+
+    if (mimeType.contains("image")) {
+      map['media_type'] = "image";
+    } else if (mimeType.contains("video")) {
+      map['media_type'] = "video";
+    } else if (mimeType.contains("audio")) {
+      map['media_type'] = "audio";
+    } else if (mimeType.contains("pdf")) {
+      map['media_type'] = "pdf";
+    }
+
+    String schoolBucketName = GConstants.getBucketDirName();
+    String _awsURL = await AppData().getBucketUrl();
+    map['url'] = "$_awsURL/$schoolBucketName/$fileDirectory/$fileNameNew";
+
+    _filePathsToUpload.add(map);
+    _profileData['photo_student']= "$_awsURL/$schoolBucketName/$fileDirectory/$fileNameNew";
+    return true;
+  }
+
+
+  Future<void> _updateProfileImage() async {
+    var stucareId = await AppData().getSelectedStudent();
+    String sessionToken = await AppData().getSessionToken();
+
+    var allClassesResponse =
+    await http.post(GConstants.getUpdateProfileImageRoute(), body: {
+      'session_id': activeSession.sessionId.toString(),
+      'active_session': sessionToken,
+      'stucare_id': stucareId.toString(),
+      'image': _profileData['photo_student'],
+      'status': 'pending',
+    });
+
+    print(allClassesResponse.body);
+
+    if (allClassesResponse.statusCode == 200) {
+      Map allClassesObject = json.decode(allClassesResponse.body);
+      if (allClassesObject.containsKey("status")) {
+        if (allClassesObject["status"] == "success") {
+          _filePathsToUpload.clear();
+          hideProgressDialog();
+          showUpdateSuccessDialog();
+          return null;
+        } else {
+          hideProgressDialog();
+          showSnackBar(allClassesObject["message"]);
+          return null;
+        }
+      } else {
+        showServerError();
+      }
+    } else {
+      showServerError();
+    }
+    hideProgressDialog();
+  }
+
+  void showUpdateSuccessDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Images Updated"),
+            content: Text("Profile image submitted successfully, New profile image will be visible once approved by school"),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text("Close"),
+              )
+            ],
+          );
+        });
+
+  }
+
+
   Widget getActiveColumn() {
     switch (currentlyViewedColumn) {
       case 1:
@@ -449,6 +695,7 @@ class StudentProfileState extends State<StudentProfile> with StateHelper {
   Widget build(BuildContext context) {
     if (!_didGetData) {
       Future.delayed(Duration(milliseconds: 100), () async {
+        activeSession = await SessionDbProvider().getActiveSession();
         _getProfileData();
       });
       _didGetData = true;

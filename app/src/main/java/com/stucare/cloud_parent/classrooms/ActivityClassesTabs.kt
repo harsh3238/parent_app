@@ -1,5 +1,6 @@
 package com.stucare.cloud_parent.classrooms
 
+import android.app.ProgressDialog
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -22,6 +23,8 @@ class ActivityClassesTabs : AppCompatActivity(), InitAuthSDKCallback {
 
     lateinit var firebaseAnalytics: FirebaseAnalytics
     lateinit var contentView: TicketsTabActivityBinding
+
+    lateinit var progressDialog: ProgressDialog
     var schoolId: Int? = null
     var stucareId: Int? = null
     var accessToken: String? = null
@@ -42,6 +45,11 @@ class ActivityClassesTabs : AppCompatActivity(), InitAuthSDKCallback {
         accessToken = intent.getStringExtra("sessionToken")
         studentName = intent.getStringExtra("studentName")
         schoolUrl = intent.getStringExtra("baseUrl")
+
+        progressDialog = ProgressDialog(this@ActivityClassesTabs)
+        progressDialog.setTitle("Establishing secure connection")
+        progressDialog.setMessage("Please wait, connecting to live class...")
+        progressDialog.show()
 
         if(schoolUrl==null){
             Toast.makeText(
@@ -84,13 +92,14 @@ class ActivityClassesTabs : AppCompatActivity(), InitAuthSDKCallback {
         if (errorCode != ZoomError.ZOOM_ERROR_SUCCESS) {
             Toast.makeText(
                 this,
-                "Failed to initialize Zoom SDK. Error: $errorCode, internalErrorCode=$internalErrorCode",
+                "Error: $errorCode, internalErrorCode=$internalErrorCode, Failed to initialize Zoom SDK, Please restart app ",
                 Toast.LENGTH_LONG
             ).show()
         } else {
             ZoomSDK.getInstance().meetingSettingsHelper.enable720p(false)
             ZoomSDK.getInstance().meetingSettingsHelper.enableShowMyMeetingElapseTime(true)
             Toast.makeText(this, "Live Class Initialized.", Toast.LENGTH_LONG).show()
+            if(progressDialog!=null && progressDialog.isShowing) progressDialog.dismiss()
         }
     }
 

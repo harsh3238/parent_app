@@ -39,6 +39,7 @@ class GConstants {
   static const _VALIDATE_LOGIN_ROUTE = API_VERSION+ "/student/requests/validate_login_session.php";
   static const _GET_SIBLINGS_ROUTE = API_VERSION+ "/student/requests/get_siblings.php";
   static const _GET_PROFILE = API_VERSION+ "/student/requests/get_profile.php";
+  static const _UPDATE_PROFILE_IMAGE = API_VERSION+ "/student/requests/update_profile_image.php";
   static const _GET_ACTIVE_MODULES = API_VERSION+ "/student/requests/get_active_modules.php";
   static const _ADD_REFERENCE_ROUTE = API_VERSION+ "/student/requests/add_reference.php";
   static const _GET_CLASSES_ROUTE = API_VERSION+ "/student/requests/get_all_classes.php";
@@ -91,6 +92,9 @@ class GConstants {
   static const _SHOW_STUDENT_REMARK = "api/get_student_remark_for_student";
   static const _SAVE_POLL_ANSWER = "student/save_question_answer";
   static const _GET_POLL_QUESTIONS = "student/get_poll_question";
+  static const _INIT_FEES_PAYMENT = "student/initiate_order";
+  static const _PROCESS_FEES_PAYMENT = "student/process_membership_payment";
+  static const _PAYMENT_CREDENTIALS = API_VERSION+ "/student/requests/get_online_payment_credential.php";
 
   static setSchoolRootUrl(String rootUrl) {
     SCHOOL_ROOT = rootUrl;
@@ -140,6 +144,8 @@ class GConstants {
   static getSiblingsRoute() => SCHOOL_ROOT + _GET_SIBLINGS_ROUTE;
 
   static getProfileRoute() => SCHOOL_ROOT + _GET_PROFILE;
+
+  static getUpdateProfileImageRoute() => SCHOOL_ROOT + _UPDATE_PROFILE_IMAGE;
 
   static getActiveModulesRoute() => SCHOOL_ROOT + _GET_ACTIVE_MODULES;
 
@@ -237,5 +243,10 @@ class GConstants {
 
   static getPollQuestionsRoute() => SCHOOL_ROOT + _GET_POLL_QUESTIONS;
 
+  static getInitFeesPaymentRoute() => SCHOOL_ROOT + _INIT_FEES_PAYMENT;
+
+  static getProcessFeesPaymentRoute() => SCHOOL_ROOT + _PROCESS_FEES_PAYMENT;
+
+  static getPaymentCredentialsRoute() => SCHOOL_ROOT + _PAYMENT_CREDENTIALS;
 
 }

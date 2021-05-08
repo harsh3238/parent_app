@@ -12,3 +12,10 @@
 /captures
 .externalNativeBuild
 .cxx
+
+# Built application files
+*.aar
+
+# Zoom sdk files
+commonlib/build
+mobilertc/build

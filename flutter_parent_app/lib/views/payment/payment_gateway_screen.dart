@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:core';
 import 'dart:developer';
 
-import 'package:atompaynetz/atompaynetz.dart';
+import 'package:click_campus_parent/data/app_data.dart';
+import 'package:click_campus_parent/views/payment/payment_sdk.dart';
 import 'package:click_campus_parent/views/state_helper.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:intl/intl.dart';
@@ -12,11 +12,28 @@ import 'package:intl/intl.dart';
 class PaymentGatewayScreen extends StatefulWidget {
   String title;
   String price;
-  String productId;
   String orderId;
   String transactionId;
+  String productId;
+  String merchantId;
+  String transactionPassword;
+  String requestHashKey;
+  String responseHashKey;
+  String requestEncryptionKey;
+  String responseEncryptionKey;
 
-  PaymentGatewayScreen(this.title, this.price, this.productId, this.orderId);
+
+  PaymentGatewayScreen(
+      this.title,
+      this.price,
+      this.productId,
+      this.orderId,
+      this.merchantId,
+      this.transactionPassword,
+      this.requestHashKey,
+      this.responseHashKey,
+      this.requestEncryptionKey,
+      this.responseEncryptionKey);
 
   @override
   State<StatefulWidget> createState() {
@@ -32,8 +49,10 @@ class PaymentGatewayScreenState extends State<PaymentGatewayScreen> {
   void initState() {
     super.initState();
 
+    print('loading payment gateway');
+
     flutterWebViewPlugin.onUrlChanged.listen((String url) {
-      log(url, name: "RESPONSE");
+      print("RESPONSE"+url);
       if (url.contains('/response.php')) {
         var pageUrl = url.substring(0, url.indexOf('?'));
         var subString = url.substring(url.indexOf("?") + 1, url.length);
@@ -50,11 +69,20 @@ class PaymentGatewayScreenState extends State<PaymentGatewayScreen> {
                   if (val.contains("f_code"))
                     {
                       if (val == "f_code=Ok")
-                        {StateHelper().showShortToast(context, "Payment Success")}
+                        {
+                          StateHelper()
+                              .showShortToast(context, "Payment Success")
+                        }
                       else if (val == "f_code=F")
-                        {StateHelper().showShortToast(context, "Payment Failed")}
+                        {
+                          StateHelper()
+                              .showShortToast(context, "Payment Failed")
+                        }
                       else if (val == "f_code=C")
-                        {StateHelper().showShortToast(context, "Payment Canceled")}
+                        {
+                          StateHelper()
+                              .showShortToast(context, "Payment Canceled")
+                        }
                     }
                 })
             .toList();
@@ -91,38 +119,98 @@ class PaymentGatewayScreenState extends State<PaymentGatewayScreen> {
     );
   }
 
-  Future<String> getUrl() async {
-
+  /*Future<String> getUrl() async {
+    String userName = await AppData().getUserName();
 
     DateTime now = DateTime.now();
     final customDateFormat = new DateFormat('dd/MM/yyyy HH:mm:ss');
     var mDate = customDateFormat.format(now);
 
     var atompay = new AtomPaynetz(
-        login: '192',
+        login: '9132',
         pass: 'Test@123',
         prodid: 'NSE',
         amt: widget.price,
         date: mDate.toString(),
         txnid: widget.orderId !=""?widget.orderId:DateTime.now().millisecondsSinceEpoch.toString(),
         custacc: '0',
-        udf1: 'Stucare Student',
-        udf2: 'stucare@gmail.com',
+        udf1: userName!=null && userName!=""? userName:'Awadhbar Association',
+        udf2: 'awadhbar@gmail.com',
         udf3: '9999999999',
         udf4: 'Noida',
         requesthashKey: 'KEY123657234',
-        requestencryptionKey: '8E41C78439831010F81F61C344B7BFC7',
-        requestsaltKey: '8E41C78439831010F81F61C344B7BFC7',
         responsehashKey: 'KEYRESP123657234',
-        responseencypritonKey: '8E41C78439831010F81F61C344B7BFC7',
-        responsesaltKey: '8E41C78439831010F81F61C344B7BFC7',
+        requestencryptionKey: 'A4476C2062FFA58980DC8F79EB6A799E',
+        requestsaltKey: 'A4476C2062FFA58980DC8F79EB6A799E',
+
+        responseencypritonKey: '75AEF0FA1B94B3C10D4F5B268F757F11',
+        responsesaltKey: '75AEF0FA1B94B3C10D4F5B268F757F11',
         mode: 'uat'); // put mode: 'live' in production
 
     var urlToSend = atompay.getUrl();
     debugPrint("URL GENERATED: ${urlToSend}");
     return urlToSend;
-  }
+  }*/
 
+  Future<String> getUrl() async {
+    String userName = await AppData().getSelectedStudentName();
+
+    if (userName == "") {
+      StateHelper().showShortToast(context, "Error getting user name");
+    }
+
+    DateTime now = DateTime.now();
+    final customDateFormat = new DateFormat('dd/MM/yyyy HH:mm:ss');
+    var mDate = customDateFormat.format(now);
+
+    //old account with AES encryption
+    var atompay = new AtomPaynetz(
+        login: widget.merchantId,
+        pass: widget.transactionPassword,
+        prodid: widget.productId,
+        amt: widget.price,
+        date: mDate.toString(),
+        txnid: widget.orderId != ""
+            ? widget.orderId
+            : DateTime.now().millisecondsSinceEpoch.toString(),
+        custacc: '0',
+        udf1: userName != "" ? userName : 'Not Available',
+        udf2: 'Not Available',
+        udf3: 'Not Available',
+        udf4: 'India',
+        requesthashKey: widget.requestHashKey,
+        responsehashKey: widget.responseHashKey,
+        requestencryptionKey: widget.requestEncryptionKey,
+        responseencypritonKey: widget.responseEncryptionKey,
+        requestsaltKey: widget.requestEncryptionKey,
+        responsesaltKey: widget.responseEncryptionKey,
+        mode: 'live',
+        platform: "WITH_AES");
+
+    //new account without AES encryption
+    /*var atompay = new AtomPaynetz(
+        login: widget.merchantId,
+        pass: widget.transactionPassword,
+        prodid: widget.productId,
+        amt: widget.price,
+        date: mDate.toString(),
+        txnid: widget.orderId != ""
+            ? widget.orderId
+            : DateTime.now().millisecondsSinceEpoch.toString(),
+        custacc: '0',
+        udf1: userName != "" ? userName : 'Not Available',
+        udf2: 'Not Available',
+        udf3: 'Not Available',
+        udf4: 'India',
+        requesthashKey: widget.requestHashKey,
+        responsehashKey: widget.responseHashKey,
+        mode: 'live',
+        platform: "WITHOUT_AES");*/
+
+    var urlToSend = atompay.getUrl();
+    print("URL TO SEND:${urlToSend}");
+    return urlToSend;
+  }
 
   static Map<String, String> splitQueryString(String query,
       {Encoding encoding = utf8}) {
