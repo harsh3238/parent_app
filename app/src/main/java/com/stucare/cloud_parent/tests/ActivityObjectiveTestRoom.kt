@@ -75,7 +75,7 @@ class ActivityObjectiveTestRoom : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         contentView = DataBindingUtil.setContentView(this, R.layout.activity_objective_test_room)
 
-        monitorTest = intent.getStringExtra("monitor_test")
+        monitorTest = intent.getStringExtra("monitor_test") ?: ""
         monitorStudent = intent.getIntExtra("monitor_student", 0)
 
         /*if(monitorTest!=null){
@@ -171,7 +171,7 @@ class ActivityObjectiveTestRoom : AppCompatActivity() {
         progressDialog.show()
 
 
-        val call = NetworkClient.create().getOptionalTestQuestions(intent.getStringExtra("test_id"), accessToken)
+        val call = NetworkClient.create().getOptionalTestQuestions(intent.getStringExtra("test_id") ?: "", accessToken)
         call.enqueue(object : Callback<String> {
 
             override fun onResponse(call: Call<String>?, response: Response<String>?) {
@@ -649,15 +649,15 @@ class ActivityObjectiveTestRoom : AppCompatActivity() {
 
 
     fun getClass(): String {
-        return intent.getStringExtra("class")
+        return intent.getStringExtra("class") ?: ""
     }
 
     fun getSubjectId(): String {
-        return intent.getStringExtra("subjectId")
+        return intent.getStringExtra("subjectId") ?: ""
     }
 
     fun getTopics(): String {
-        return intent.getStringExtra("topics")
+        return intent.getStringExtra("topics") ?: ""
     }
 
     fun getTestQuestionIds(): String {

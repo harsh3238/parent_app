@@ -32,6 +32,7 @@ class GConstants {
   static const _SUPER_USER_OTP_VERIFY = API_VERSION+ "/requests/verify_otp_super_user.php";
 
   static const _LOGIN_ROUTE = API_VERSION+"/student/requests/login.php";
+  static const _LOGIN_PASS_ROUTE = API_VERSION+"/student/requests/login_pass.php";
   static const _OTP_VERIFY_ROUTE = API_VERSION+ "/student/requests/verify_otp.php";
   static const _OTP_RESEND_ROUTE = API_VERSION+ "/student/requests/resend_otp.php";
   static const _LOGIN_REPORT_ROUTE = API_VERSION+ "/student/requests/login_report.php";
@@ -42,7 +43,7 @@ class GConstants {
   static const _ADD_REFERENCE_ROUTE = API_VERSION+ "/student/requests/add_reference.php";
   static const _GET_CLASSES_ROUTE = API_VERSION+ "/student/requests/get_all_classes.php";
   static const _GET_SYLLABUS_ROUTE = API_VERSION+ "/student/requests/get_syllabus_v2.php";
-  static const _GET_SCHOOL_INFO_ROUTE = API_VERSION+ "/student/requests/get_school_info1.php";
+  static const _GET_SCHOOL_INFO_ROUTE = API_VERSION+ "/student/requests/get_school_info2.php";
   static const _GET_DASH_SLIDER_ROUTE = API_VERSION+ "/student/requests/get_dash_sliders.php";
   static const _GET_SESSIONS_ROUTE = API_VERSION+ "/admin/requests/get_all_sessions.php";
   static const _MSG_THREAD_ROUTE = API_VERSION+ "/student/requests/get_message_threads.php";
@@ -124,6 +125,9 @@ class GConstants {
   static getLoginAsRoute(String rootUrl) => rootUrl + _LOGIN_AS_ROUTE;
 
   static loginRoute() => SCHOOL_ROOT + _LOGIN_ROUTE;
+
+  static loginPassRoute() => SCHOOL_ROOT + _LOGIN_PASS_ROUTE;
+
 
   static otpVerifyRoute() => SCHOOL_ROOT + _OTP_VERIFY_ROUTE;
 

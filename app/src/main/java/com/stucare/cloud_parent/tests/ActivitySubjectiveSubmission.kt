@@ -335,7 +335,7 @@ class ActivitySubjectiveSubmission : AppCompatActivity() {
         val fileKEy = "flip/tests/test_${intent.getStringExtra("test_id")}/${mUserId}_${fileToUpload.name}"
         val call = NetworkClient.create().getSignedUrlForS3(
             fileKEy,
-            intent.getStringExtra("accessToken")
+            intent.getStringExtra("accessToken") ?: ""
         )
         call.enqueue(object : Callback<String> {
 
@@ -397,11 +397,11 @@ class ActivitySubjectiveSubmission : AppCompatActivity() {
         progressBar.setCancelable(false)
 
         val call = NetworkClient.create().saveSubjectiveTests(
-            intent.getStringExtra("stucareId"),
+            intent.getStringExtra("stucareId") ?: "",
             intent.getStringExtra("test_id")!!,
             intent.getStringExtra("time_spent")!!,
             s3FileKey,
-            intent.getStringExtra("accessToken")
+            intent.getStringExtra("accessToken") ?: ""
         )
 
         call.enqueue(object : Callback<String> {

@@ -50,7 +50,7 @@ class ActivitySubjectiveTestRoom : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         mContentView = DataBindingUtil.setContentView(this, R.layout.activity_subjective_test)
 
-        monitorTest = intent.getStringExtra("monitor_test")
+        monitorTest = intent.getStringExtra("monitor_test") ?: ""
 
         if (intent.getIntExtra("monitor_student", 0) == 1) {
             mContentView.camera.setLifecycleOwner(this)
@@ -114,8 +114,8 @@ class ActivitySubjectiveTestRoom : AppCompatActivity() {
         progressBar.show()
 
         val call = NetworkClient.create().getSubjectiveTest(
-            intent.getStringExtra("test_id"),
-            intent.getStringExtra("accessToken")
+            intent.getStringExtra("test_id") ?: "",
+            intent.getStringExtra("accessToken") ?: ""
         )
         call.enqueue(object : Callback<String> {
 
@@ -407,7 +407,7 @@ class ActivitySubjectiveTestRoom : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == SUBMISSION_REQUEST_CODE && resultCode == RESULT_OK){
-            var finishStatus: String =  data!!.getStringExtra("finish_status")
+            var finishStatus: String =  data!!.getStringExtra("finish_status") ?: ""
             if(finishStatus=="0"){
                 finish()
             }

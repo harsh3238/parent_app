@@ -162,11 +162,10 @@ class ActivityVideoPlayer : YouTubeBaseActivity() {
     }
 
 
-    override fun onConfigurationChanged(newConfig: Configuration?) {
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         if (newConfig?.orientation == Configuration.ORIENTATION_PORTRAIT) youtubePlayer.setFullscreen(false)
         else youtubePlayer.setFullscreen(true)
-
     }
-
 }
