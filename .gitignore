@@ -17,5 +17,7 @@
 *.aar
 
 # Zoom sdk files
-commonlib/build
-mobilertc/build
+/commonlib/build/
+/mobilertc/build/
+/commonlib/build/.transforms/
+/mobilertc/build/.transforms/
