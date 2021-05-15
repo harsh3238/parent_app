@@ -102,6 +102,7 @@ class StateSelectImpersonation extends State<SelectImpersonation>
         if (loginResponseObject["status"] == "success") {
           hideProgressDialog();
           GConstants.setSchoolRootUrl(tempSchoolUrl);
+          userData['active_session'] = loginResponseObject["user_access_token"];
           await AppData().saveUsersData(userData);
           Navigator.push(
               context,
