@@ -35,7 +35,6 @@ import 'package:click_campus_parent/views/video_gallery/video_gallery_main.dart'
 import 'package:click_campus_parent/views/voice_calls/voice_call_main.dart';
 import 'package:crypto/crypto.dart';
 import 'package:device_info/device_info.dart';
-import 'package:ext_storage/ext_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -104,33 +103,6 @@ class FragmentHomeState extends State<FragmentHome> with StateHelper {
 
   int _unseenHomework = 0;
 
-  void setFlipLoginInfo() async {
-    var directory = await ExtStorage.getExternalStorageDirectory();
-    final savedDir = Directory(directory + '/stucare');
-    bool hasExisted = await savedDir.exists();
-    savedDir.create();
-    var path = savedDir.path;
-
-    var file = File('$path/event.stucare');
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-    var id =
-        "${androidInfo.manufacturer}${androidInfo.model}${androidInfo.device}${androidInfo.board}";
-
-    String mobileNumber = await AppData().getLoggedInUsersPhone();
-    int userStucareId = await AppData().getSelectedStudent();
-    var sId = await GConstants.schoolId();
-
-    var uInfo = "$mobileNumber-$userStucareId-$sId";
-
-    var bytes = utf8.encode(id);
-    var digest = sha512.convert(bytes);
-    var fString = "${digest.toString()}-$uInfo";
-    // //print("DIGEST = ${fString}");
-    file.writeAsString(fString.toString());
-    String contents = await file.readAsString();
-    // //print("DIGEST READ = ${contents}");
-  }
 
   void _disableFLip() async {
     int userStucareId = await AppData().getSelectedStudent();

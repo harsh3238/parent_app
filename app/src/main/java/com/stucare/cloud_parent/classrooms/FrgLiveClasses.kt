@@ -192,11 +192,11 @@ class FrgLiveClasses : Fragment() {
                     opts.no_audio = false
                     opts.no_video = true
                     opts.meeting_views_options =
-                        MeetingViewsOptions.NO_BUTTON_SHARE + MeetingViewsOptions.NO_TEXT_MEETING_ID + MeetingViewsOptions.NO_TEXT_PASSWORD
+                        MeetingViewsOptions.NO_BUTTON_SHARE + MeetingViewsOptions.NO_TEXT_MEETING_ID + MeetingViewsOptions.NO_TEXT_PASSWORD + MeetingViewsOptions.NO_BUTTON_PARTICIPANTS
                     opts.no_meeting_error_message = true
 
                     val params = JoinMeetingParams()
-                    params.displayName = (activity as ActivityClassesTabs).studentName
+                    params.displayName = "${(activity as ActivityClassesTabs).studentName}(${meetingObject.getString("class_name")}-${meetingObject.getString("section_name")})"
                     params.meetingNo = meetingObject.getString("live_link")
                     params.password = meetingObject.getString("live_password")
 

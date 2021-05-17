@@ -49,7 +49,7 @@ class ActivityClassesTabs : AppCompatActivity(), InitAuthSDKCallback {
         progressDialog = ProgressDialog(this@ActivityClassesTabs)
         progressDialog.setTitle("Establishing secure connection")
         progressDialog.setMessage("Please wait, connecting to live class...")
-        progressDialog.show()
+
 
         if(schoolUrl==null){
             Toast.makeText(
@@ -63,7 +63,10 @@ class ActivityClassesTabs : AppCompatActivity(), InitAuthSDKCallback {
 
         Log.d("SENT_TOKEN", ""+accessToken);
 
-        InitAuthSDKHelper.getInstance().initSDK(this, this)
+        if(!ZoomSDK.getInstance().isInitialized){
+            progressDialog.show()
+            InitAuthSDKHelper.getInstance().initSDK(this, this)
+        }
     }
 
 
